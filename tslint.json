@@ -1,0 +1,29 @@
+{
+    "extends": "tslint-config-standard",
+    "rules": {
+        "no-any": true,
+        "semicolon": [
+            true,
+            "always"
+        ],
+        "ter-indent": [
+            true,
+            4,
+            { "SwitchCase": 1 }
+        ],
+        "space-before-function-paren": [
+            true,
+            {
+                "anonymous": "always",
+                "named": "never",
+                "asyncArrow": "always"
+            }
+        ],
+        "adjacent-overload-signatures": true,
+        "member-access": [
+            true,
+            "no-public"
+        ],
+        "no-console": [true]
+    }
+}

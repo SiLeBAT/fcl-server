@@ -1,0 +1,22 @@
+{
+    "server": {
+        "port": 3000,
+        "jwtSecret": "",
+        "apiUrl": "",
+        "logLevel": "info"
+    },
+    "dataStore": {
+        "connectionString": ""
+    },
+    "mail": {
+        "fromAddress": "",
+        "replyToAddress": ""
+    },
+    "login": {
+      "threshold": 0,
+      "secondsDelay": 0
+    },
+    "appName": "FoodChain-Lab",
+    "supportContact": "",
+    "jobRecipient": ""
+}

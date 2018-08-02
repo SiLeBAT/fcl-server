@@ -1,0 +1,13 @@
+{
+    "server": {
+        "port": "FCL_NODE_PORT",
+        "jwtSecret": "FCL_JWT_SECRET",
+        "apiUrl": "FCL_API_URL",
+        "logLevel": "FCL_LOG_LEVEL"
+    },
+    "dataStore": {
+        "connectionString": "FCL_DB_CONNECTION"
+    },
+    "supportContact": "FCL_SUPPORT_CONTACT",
+    "jobRecipient": "FCL_JOB_RECIPIENT"
+}
