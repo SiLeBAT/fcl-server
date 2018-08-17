@@ -24,7 +24,9 @@ class RegistrationController implements IRegistrationController {
             res.status(200);
         } catch (err) {
             logger.error('Unable to activate user', { error: err });
-            dto = {};
+            dto = {
+                title: 'Your account activation failed!'
+            };
             res.status(400);
         }
         logger.info('RegistrationController.activate, Response sent');
@@ -42,7 +44,9 @@ class RegistrationController implements IRegistrationController {
             res.status(200);
         } catch (err) {
             logger.error('Unable to admin activate user', { error: err });
-            dto = {};
+            dto = {
+                title: 'Your admin account activation failed!'
+            };
             res.status(400);
         }
         logger.info('RegistrationController.adminactivate, Response sent');
