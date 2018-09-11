@@ -16,14 +16,15 @@ class ResetController implements IResetController {
         try {
             await this.passwordService.resetPassword(req.params.token, req.body.newPw);
             dto = {
-                title: 'Bitte melden Sie sich mit Ihrem neuen Passwort an' // 'Please login with your new password'
+                title: 'Please login with your new password'
             };
             res.status(200);
 
         } catch (err) {
             logger.error(`ResetController.reset, Unable to reset password. error=${err}`);
             dto = {
-                title: `Fehler beim Passwort zurücksetzten, Token ungültig. Bitte lassen Sie sich einen neuen 'Passwort-Reset' Link mit Hilfe der Option 'Passwort vergessen?' zuschicken.`
+                title: `Error during password reset, the token is not valid.
+						Please receive a new 'Password-Reset' link with the option 'Password forgotten?'.`
             };
             res.status(500);
         }

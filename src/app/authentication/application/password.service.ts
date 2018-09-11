@@ -70,7 +70,7 @@ class PasswordService implements IPasswordService {
     private createResetRequestNotification(user: IUser, recoveryData: IRecoveryData, resetToken: IUserToken) {
         return {
             type: NotificationType.REQUEST_RESET,
-            title: `Setzen Sie Ihr ${APP_NAME}-Konto Passwort zurück.`,// `Reset Password for ${APP_NAME}`;
+            title: `Reset password for your ${APP_NAME} account.`,
             payload: {
                 'name': user.firstName + ' ' + user.lastName,
                 'action_url': API_URL + '/users/reset/' + resetToken.token,
@@ -89,7 +89,7 @@ class PasswordService implements IPasswordService {
     private createResetSuccessNotification(user: IUser) {
         return {
             type: NotificationType.RESET_SUCCESS,
-            title: `Passwort für ${APP_NAME}-Konto erfolgreich zurückgesetzt.`,// `Reset Password for ${APP_NAME} successful`;
+            title: `Reset password successful for your ${APP_NAME} account.`,
             payload: {
                 'name': user.firstName + ' ' + user.lastName,
                 'api_url': API_URL,

@@ -4,7 +4,7 @@
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title>Password reset for {{ appName }}</title>
+	<title>Account activation for {{ appName }}</title>
 	<!--
     The style block is collapsed on page load to save you some scrolling.
     Postmark automatically inlines all CSS properties for maximum email client
@@ -339,7 +339,7 @@
 			border-bottom: 10px solid #3869D4;
 			border-left: 18px solid #3869D4;
 			display: inline-block;
-			color: #FFF;
+			color: #FFF !important;
 			text-decoration: none;
 			border-radius: 3px;
 			box-shadow: 0 2px 3px rgba(0, 0, 0, 0.16);
@@ -407,7 +407,6 @@
 	</style>
 </head>
 
-
 <body>
 	<table class="email-wrapper" width="100%" cellpadding="0" cellspacing="0">
 		<tr>
@@ -427,46 +426,15 @@
 								<!-- Body content -->
 								<tr>
 									<td class="content-cell">
-										<h1>Dear) {{name}},</h1>
-										<p>You recently requested to reset the password for your {{ appName }} account. Use the link below to reset
-											it. <strong>This password reset is only valid for the next 24 hours.</strong></p>
-										<!-- Action -->
-										<table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0">
-											<tr>
-												<td align="center">
-													<!-- Border based button
-						   https://litmus.com/blog/a-guide-to-bulletproof-buttons-in-email-design -->
-													<table width="100%" border="0" cellspacing="0" cellpadding="0">
-														<tr>
-															<td align="center">
-																<table border="0" cellspacing="0" cellpadding="0">
-																	<tr>
-																		<td>
-																			<a href="{{action_url}}" class="button button--green" target="_blank">Reset your password</a>
-																		</td>
-																	</tr>
-																</table>
-															</td>
-														</tr>
-													</table>
-												</td>
-											</tr>
-										</table>
-										<p>For security reasons: This request was received from a device using {{user_agent}}. If you did not request
-											a password reset, please ignore this email or contact
-											<a href="mailto:{{support_contact}}">support</a> if you have questions.</p>
-										<p>
-											<br>The {{ appName }} team</p>
-										<!-- Sub copy -->
-										<table class="body-sub">
-											<tr>
-												<td>
-													<p class="sub">If you’re having trouble with the link above, copy and paste the URL below into your web
-														browser.</p>
-													<p class="sub">{{action_url}}</p>
-												</td>
-											</tr>
-										</table>
+										<h1>Dear {{name}},</h1>
+										<p>You tried to register for an {{ appName }} account with your email address.</p>
+										<p>However, your email address is already associated with your existing {{appName}} account.</p>
+										<p>If you have forgotten your password, you can create a new one via <a href="{{ action_url }}">Password
+												forgotten?</a>
+
+											<p>
+												<br>The {{ appName }} team</p>
+											<!-- Sub copy -->
 									</td>
 								</tr>
 							</table>
@@ -477,7 +445,7 @@
 							<table class="email-footer" align="center" width="570" cellpadding="0" cellspacing="0">
 								<tr>
 									<td class="content-cell" align="center">
-										<p class="sub align-center">&copy; 2017 {{ appName }}. All rights reserved.</p>
+										<p class="sub align-center">&copy; 2018 {{ appName }}. All rights reserved.</p>
 										<p class="sub align-center">
 											BfR - Bundesinstitut für Risikobewertung
 											<br>Max-Dohrn-Str. 8-10
@@ -493,6 +461,5 @@
 		</tr>
 	</table>
 </body>
-
 
 </html>

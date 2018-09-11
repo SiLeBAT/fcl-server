@@ -153,7 +153,7 @@ class RegistrationService implements IRegistrationService {
     private createRequestActivationNotification(user: IUser, recoveryData: IRecoveryData, activationToken: IUserToken) {
     	return {
       		type: NotificationType.REQUEST_ACTIVATION,
-	        title: `Aktivieren Sie Ihr Konto für ${APP_NAME} `,// `Activate your account for ${APP_NAME}`;
+	        title: `Activate your account for ${APP_NAME} `,
 	        payload: {
 	            'name': user.firstName + ' ' + user.lastName,
 	            'action_url': API_URL + '/users/activate/' + activationToken.token,
@@ -174,7 +174,7 @@ class RegistrationService implements IRegistrationService {
 
         return {
             type: NotificationType.REQUEST_ADMIN_ACTIVATION,
-            title: `Aktivieren Sie das ${APP_NAME} Konto für ${fullName}`,// `Activate your account for ${APP_NAME}`;
+            title: `Activate the ${APP_NAME} account for ${fullName}`,
             payload: {
                 'name': fullName,
                 'action_url': API_URL + '/users/adminactivate/' + adminActivationToken.token,
@@ -193,7 +193,7 @@ class RegistrationService implements IRegistrationService {
 
 	    return {
 	        type: NotificationType.NOTIFICATION_ADMIN_ACTIVATION,
-	        title: `Admin Aktivierung Ihres ${APP_NAME} Kontos`,
+	        title: `Admin activation of your ${APP_NAME} account`,
 	        payload: {
 	            'name': fullName,
 	            'appName': APP_NAME
@@ -209,7 +209,7 @@ class RegistrationService implements IRegistrationService {
 
 	    return {
 	        type: NotificationType.NOTIFICATION_NOT_ADMIN_ACTIVATED,
-	        title: `Noch keine Admin Aktivierung Ihres ${APP_NAME} Kontos`,
+	        title: `Your ${APP_NAME} account is not yet admin activated`,
 	        payload: {
 	            'name': fullName,
 	            'appName': APP_NAME
@@ -225,7 +225,7 @@ class RegistrationService implements IRegistrationService {
 
 	    return {
 	        type: NotificationType.REMINDER_ADMIN_ACTIVATION,
-	        title: `Erinnerung: Bitte aktivieren Sie das ${APP_NAME} Konto für ${fullName}`,
+	        title: `Reminder: Please activate the ${APP_NAME} account for ${fullName}`,
 	        payload: {
 	            'name': fullName,
 	            'email': user.email,
@@ -242,7 +242,7 @@ class RegistrationService implements IRegistrationService {
 
 	    return {
 	        type: NotificationType.NOTIFICATION_ALREADY_REGISTERED,
-	        title: `Ihre Registrierung für ein ${APP_NAME} Konto`,
+	        title: `Your registration for an ${APP_NAME} account`,
 	        payload: {
             'name': fullName,
             'action_url': API_URL + '/users/recovery',
