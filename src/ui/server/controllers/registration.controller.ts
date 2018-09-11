@@ -19,7 +19,7 @@ class RegistrationController implements IRegistrationController {
         try {
             await this.registrationService.activateUser(req.params.token);
             dto = {
-                title: 'Kontoaktivierung erfolgreich!' // 'Account Activation successful!'
+                title: 'Account activation successful!' // 'Account Activation successful!'
             };
             res.status(200);
         } catch (err) {
@@ -38,7 +38,7 @@ class RegistrationController implements IRegistrationController {
         try {
             const userName = await this.registrationService.adminActivateUser(req.params.token);
             dto = {
-                title: `Admin Kontoaktivierung erfolgreich! Bestätigung gesendet an ${userName}`, // 'Account Activation successful!'
+                title: `Admin account activation! A confirmation is sent to ${userName}`,
                 obj: userName
             };
             res.status(200);
@@ -61,16 +61,16 @@ class RegistrationController implements IRegistrationController {
         try {
             await this.registrationService.registerUser(credentials);
             dto = {
-                title: `Bitte aktivieren Sie Ihren Account: Eine Email mit weiteren Anweisungen wurde an ${credentials.email} gesendet` // `Please activate your account: An email has been sent to ${credentials.email} with further instructions`
+                title: `Please activate your account: An email has been sent to an ${credentials.email} with further instructions.`
             };
             res.status(200);
 
         } catch (err) {
             logger.error(`Unable to register user. error=${err}`);
             dto = {
-                title: `Fehler beim Registrieren.
-						Eine Email mit weiteren Informationen wurde an ${credentials.email} gesendet.
-						Wenn Sie keine Email erhalten, wenden Sie sich bitte direkt per Email an uns: ${SUPPORT_CONTACT}.`
+                title: `Error during registration.
+						An email has been sent to an ${credentials.email} with further instructions.
+						If you don't receive an email please contact us directly per email to: ${SUPPORT_CONTACT}.`
             };
             res.status(500);
         }

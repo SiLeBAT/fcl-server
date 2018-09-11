@@ -4,7 +4,7 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <title>Kontoaktivierung für das {{ appName }}</title>
+  <title>Account activation for {{ appName }}</title>
   <!--
     The style block is collapsed on page load to save you some scrolling.
     Postmark automatically inlines all CSS properties for maximum email client
@@ -424,19 +424,48 @@
                 <!-- Body content -->
                 <tr>
                   <td class="content-cell">
+                    <h1>Hello {{ appName }} Admin,</h1>
+					<p>please register the user for a {{ appName }} account: </p>
 
-						<h1>Hallo {{ appName }} Admin,</h1>
-						<p>Der User</p>
+					<p> {{ name }}<br>
+						{{ email }}<br>
 
-						<p> {{ name }}<br>
-							{{ email }}<br>
-
-						<p>versucht sich auf seinem {{ appname }} Konto anzumelden und ist noch nicht von Ihnen aktiviert worden.</p>
-
-						<p>Bitte benutzen Sie den Link aus der entsprechenden Registrierungsmail, um das Konto zu aktivieren.</p>
-						<p>
-							<br>Der {{ appName }} Registrierungsprozess
-						</p>
+					<p>Please use the link below to activate the account.
+					  <strong>This activation link is valid for the next 7 days.</strong>
+                    </p>
+                    <!-- Action -->
+                    <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td align="center">
+                          <!-- Border based button
+                       https://litmus.com/blog/a-guide-to-bulletproof-buttons-in-email-design -->
+                          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <tr>
+                              <td align="center">
+                                <table border="0" cellspacing="0" cellpadding="0">
+                                  <tr>
+                                    <td>
+                                      <a href="{{action_url}}" class="button button--green" target="_blank">Activate the user account</a>
+                                    </td>
+                                  </tr>
+                                </table>
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+                    </table>
+                    <p>
+                      <br>The {{ appName }} registration process</p>
+                    <!-- Sub copy -->
+                    <table class="body-sub">
+                      <tr>
+                        <td>
+						  <p class="sub">If you have problems with the link above, copy the URL below and paste it into your web browser.</p>
+                          <p class="sub">{{action_url}}</p>
+                        </td>
+                      </tr>
+                    </table>
                   </td>
                 </tr>
               </table>

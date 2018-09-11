@@ -4,7 +4,7 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <title>Kontoaktivierung für das {{ appName }}</title>
+  <title>Account activation for {{ appName }}</title>
   <!--
     The style block is collapsed on page load to save you some scrolling.
     Postmark automatically inlines all CSS properties for maximum email client
@@ -424,11 +424,10 @@
                 <!-- Body content -->
                 <tr>
                   <td class="content-cell">
-                    <h1>Liebe(r) {{name}},</h1>
-					<p>Sie haben die im Anhang befindlichen Probendaten erfolgreich an das BfR gesendet</p>
-					<p>Bitte vergessen Sie nicht die Exceltabelle in Ihrem Mailanhang auszudrucken und Ihren Isolaten beizulegen.</p>
+                    <h1>Dear {{name}},</h1>
+					<p>The {{ appName }} administrator has just now activated your account. You can login now to the portal.</p>
 					<br>
-					<p>Das {{ appName }} Team</p>
+					<p>The {{ appName }} team</p>
                   </td>
                 </tr>
               </table>

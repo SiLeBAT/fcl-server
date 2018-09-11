@@ -30,7 +30,7 @@ const replyToAddress = mailConfig.replyToAddress;
 const host = 'localhost';
 const port = 25;
 
-const viewsDir = __dirname + '/views/de/';
+const viewsDir = __dirname + '/views/en/';
 
 function registerListeners(notificationService: INotificationPort) {
     notificationService.addHandler(async (data: INotification) => {
@@ -51,9 +51,6 @@ function registerListeners(notificationService: INotificationPort) {
             case NotificationType.REQUEST_ADMIN_ACTIVATION:
                 templateFile = await readFilePromise(viewsDir + 'adminactivation.html');
                 break;
-            case NotificationType.REQUEST_UNKNOWN_INSTITUTE:
-                templateFile = await readFilePromise(viewsDir + 'adminactivationUnknownInst.html');
-                break;
             case NotificationType.NOTIFICATION_ADMIN_ACTIVATION:
                 templateFile = await readFilePromise(viewsDir + 'adminactivationNotification.html');
                 break;
@@ -65,9 +62,6 @@ function registerListeners(notificationService: INotificationPort) {
                 break;
             case NotificationType.REMINDER_ADMIN_ACTIVATION:
                 templateFile = await readFilePromise(viewsDir + 'adminactivationReminder.html');
-                break;
-            case NotificationType.NOTIFICATION_SENT:
-                templateFile = await readFilePromise(viewsDir + 'sentnotification.html');
                 break;
             default:
                 logger.warn('Unknown notification type', { notification: data.type });
