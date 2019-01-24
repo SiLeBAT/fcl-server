@@ -47,13 +47,13 @@ class LoginController implements ILoginController {
         if (response.timeToWait) {
             return {
                 title: `To many failed login attempts, please wait ${response.timeToWait}.`,
-                obj: {}
+                user: {}
             };
         }
 
         return {
             title: 'Login successful',
-            obj: {
+            user: {
                 _id: response.user.uniqueId,
                 firstName: response.user.firstName,
                 lastName: response.user.lastName,
