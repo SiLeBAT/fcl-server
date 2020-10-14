@@ -34,7 +34,6 @@
 npm-debug.log
 yarn-error.log
 testem.log
-/data
 /local
 
 # System Files
@@ -45,7 +44,9 @@ Thumbs.db
 /config/*
 !/config/custom-environment-variables.json
 !/config/generic.config.json
-!/config/mydev.json
+!/config/default.json
+/data
 /playground
+server-patch.patch
 /tmp
 local-*

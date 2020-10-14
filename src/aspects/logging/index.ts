@@ -2,40 +2,56 @@ import * as winston from 'winston';
 import * as config from 'config';
 import { TransformableInfo } from 'logform';
 
+interface LogConfiguration {
+    logLevel: string;
+}
+const logConfiguration: LogConfiguration = config.get('general');
 /*
-*
-* Log levels are:
-*   error: 0,
-*   warn: 1,
-*   info: 2,
-*   verbose: 3,
-*   debug: 4,
-*   trace: 5
-*
-*/
+ *
+ * Log levels are:
+ *   error: 0,
+ *   warn: 1,
+ *   info: 2,
+ *   verbose: 3,
+ *   debug: 4,
+ *   trace: 5
+ *
+ */
 export class Logger {
-
     private _logger: winston.Logger;
 
     constructor() {
+        let logLevel: string = 'error';
+        try {
+            logLevel = logConfiguration.logLevel;
+        } catch (err) {
+            // tslint:disable-next-line:no-console
+            console.warn(
+                'Log Level configuration not found. Using default: ' + logLevel
+            );
+        }
+
         this._logger = winston.createLogger({
-            level: Logger.mapLogLevels(config.get('server.logLevel')),
+            level: Logger.mapLogLevels(logLevel),
             format: winston.format.combine(
-				winston.format.colorize(),
-				winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-				winston.format.printf(info => Logger.mapLogMessage(info))
-			),
-            transports: [
-                new winston.transports.Console()
-            ]
+                winston.format.colorize(),
+                winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+                winston.format.printf(info => Logger.mapLogMessage(info))
+            ),
+            transports: [new winston.transports.Console()]
         });
     }
 
     static mapLogMessage(info: TransformableInfo): string {
         let logMsg = `${info.timestamp} ${info.level} ${info.message}`;
-        logMsg = (info.meta !== undefined) ?
-				 logMsg + ' ' + (typeof(info.meta) === 'object' ? JSON.stringify(info.meta) : info.meta) :
-				 logMsg;
+        logMsg =
+            info.meta !== undefined
+                ? logMsg +
+                  ' ' +
+                  (typeof info.meta === 'object'
+                      ? JSON.stringify(info.meta)
+                      : info.meta)
+                : logMsg;
 
         return logMsg;
     }
@@ -115,6 +131,4 @@ export class Logger {
 
 const logger = new Logger();
 
-export {
-    logger
-};
+export { logger };

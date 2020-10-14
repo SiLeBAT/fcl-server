@@ -1,0 +1,1500 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "fcl-Portal Server",
+    "description": "This is the api of the fcl-Portal server",
+    "contact": {
+      "email": "foodrisklabs@bfr.berlin"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://fcl-portal.bfr.berlin/v1"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Util",
+      "description": "Access to Server Utiliy functions"
+    },
+    {
+      "name": "Sample",
+      "description": "Operations on samples",
+      "externalDocs": {
+        "description": "Find out more about our sample services",
+        "url": "https://mibi-portal.bfr.bund.de/content/faq"
+      }
+    },
+    {
+      "name": "User",
+      "description": "Operations on users",
+      "externalDocs": {
+        "description": "Find out more about user services",
+        "url": "https://mibi-portal.bfr.bund.de/content/faq"
+      }
+    },
+    {
+      "name": "Institute",
+      "description": "Operations on institutes"
+    },
+    {
+      "name": "Token",
+      "description": "Operations on tokens"
+    }
+  ],
+  "paths": {
+    "/info": {
+      "get": {
+        "operationId": "getSystemInfo",
+        "tags": [
+          "Util"
+        ],
+        "summary": "Retrieve server information",
+        "description": "Returns current server version number as well as the date of the last server update.",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SystemInformation"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Standard500ErrorResponse"
+          }
+        }
+      }
+    },
+    "/samples": {
+      "put": {
+        "operationId": "putSamples",
+        "tags": [
+          "Sample"
+        ],
+        "summary": "Convert a sample set JSON to an Einsendebogen excel or vice versa",
+        "description": "- JSON to Excel = application/json to multipart/form-data \n- Excel to JSON = multipart/form-data to application/json",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/SampleRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderContainer"
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarshalledData"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Standard400ErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/Standard500ErrorResponse"
+          }
+        }
+      }
+    },
+    "/samples/submitted": {
+      "post": {
+        "operationId": "postSubmitted",
+        "tags": [
+          "Sample"
+        ],
+        "summary": "Submit a sample set to the BfR",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/SendRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidatedSampleList"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Standard400ErrorResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedErrorResponse"
+          },
+          "422": {
+            "$ref": "#/components/responses/InvalidInputErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/Standard500ErrorResponse"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/samples/validated": {
+      "put": {
+        "operationId": "putValidated",
+        "description": "A user token can be supplied to aid in the validation process.",
+        "tags": [
+          "Sample"
+        ],
+        "summary": "Validate a sample set",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/ValidationRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidatedOrderContainer"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Standard400ErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/Standard500ErrorResponse"
+          }
+        }
+      }
+    },
+    "/users/login": {
+      "post": {
+        "operationId": "postLogin",
+        "tags": [
+          "User"
+        ],
+        "summary": "Logs user into the system and provides an access token",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/LoginRequest"
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/LoginSuccessResponse"
+          },
+          "401": {
+            "description": "Unauthorized access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FailedLoginError"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Standard500ErrorResponse"
+          }
+        }
+      }
+    },
+    "/users/registration": {
+      "post": {
+        "operationId": "postRegistration",
+        "tags": [
+          "User"
+        ],
+        "summary": "Register a new user",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/RegistrationRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterRequestConfirmation"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Standard400ErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/Standard500ErrorResponse"
+          }
+        }
+      }
+    },
+    "/users/reset-password-request": {
+      "put": {
+        "operationId": "putResetPasswordRequest",
+        "tags": [
+          "User"
+        ],
+        "summary": "Requests a password reset",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/RecoveryRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResetRequestConfirmation"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Standard400ErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/Standard500ErrorResponse"
+          }
+        }
+      }
+    },
+    "/users/reset-password/{token}": {
+      "patch": {
+        "operationId": "patchResetPassword",
+        "tags": [
+          "User"
+        ],
+        "summary": "Resets the user password",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/ResetRequest"
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pathToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResetConfirmation"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Standard400ErrorResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/Standard500ErrorResponse"
+          }
+        }
+      }
+    },
+    "/users/verification/{token}": {
+      "patch": {
+        "operationId": "patchVerification",
+        "tags": [
+          "User"
+        ],
+        "summary": "Sets the user's state to e-mail verified",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pathToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActivationConfirmation"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/Standard500ErrorResponse"
+          }
+        }
+      }
+    },
+    "/users/activation/{token}": {
+      "patch": {
+        "operationId": "patchActivation",
+        "tags": [
+          "User"
+        ],
+        "summary": "Sets the user's state to activated",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pathToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActivationConfirmation"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/Standard500ErrorResponse"
+          }
+        }
+      }
+    },
+    "/institutes": {
+      "get": {
+        "operationId": "getInstitutes",
+        "tags": [
+          "Institute"
+        ],
+        "summary": "Returns list of registered institutes",
+        "description": "Returns a list of currently registered institutes",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InstituteContainer"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Standard500ErrorResponse"
+          }
+        }
+      }
+    },
+    "/tokens": {
+      "post": {
+        "operationId": "postTokens",
+        "tags": [
+          "Token"
+        ],
+        "summary": "Refreshes the jwt token",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenRefreshConfirmation"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/Standard500ErrorResponse"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "required": [
+          "code",
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "code": {
+            "$ref": "#/components/schemas/ErrorCode"
+          }
+        }
+      },
+      "ErrorCode": {
+        "type": "number",
+        "enum": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "SystemInformation": {
+        "required": [
+          "lastChange",
+          "version",
+          "supportContact"
+        ],
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string",
+            "description": "Server version number"
+          },
+          "supportContact": {
+            "type": "string",
+            "description": "Email of the MiBi-portal support"
+          },
+          "lastChange": {
+            "type": "string",
+            "description": "Date of last code change",
+            "format": "date-time"
+          }
+        }
+      },
+      "MarshalledData": {
+        "type": "object",
+        "required": [
+          "data",
+          "type",
+          "fileName"
+        ],
+        "properties": {
+          "data": {
+            "type": "string",
+            "format": "byte"
+          },
+          "type": {
+            "type": "string"
+          },
+          "fileName": {
+            "type": "string"
+          }
+        }
+      },
+      "MarshalData": {
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "properties": {
+          "file": {
+            "description": "Microsoft Excel-Arbeitsblatt (.xlsx)",
+            "type": "string",
+            "format": "binary"
+          }
+        }
+      },
+      "SampleSubmission": {
+        "type": "object",
+        "required": [
+          "order"
+        ],
+        "properties": {
+          "comment": {
+            "type": "string"
+          },
+          "order": {
+            "$ref": "#/components/schemas/EditedOrder"
+          }
+        }
+      },
+      "SampleDataError": {
+        "type": "object",
+        "required": [
+          "code",
+          "message",
+          "samples"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "code": {
+            "$ref": "#/components/schemas/ErrorCode"
+          },
+          "samples": {
+            "$ref": "#/components/schemas/ValidatedSampleList"
+          }
+        }
+      },
+      "OrderMetaInformation": {
+        "type": "object",
+        "required": [
+          "nrl"
+        ],
+        "properties": {
+          "nrl": {
+            "type": "string"
+          },
+          "urgency": {
+            "type": "string",
+            "enum": [
+              "NORMAL",
+              "EILT"
+            ]
+          },
+          "analysis": {
+            "$ref": "#/components/schemas/Analysis"
+          },
+          "sender": {
+            "$ref": "#/components/schemas/Sender"
+          }
+        }
+      },
+      "Sender": {
+        "type": "object",
+        "properties": {
+          "instituteName": {
+            "type": "string"
+          },
+          "department": {
+            "type": "string"
+          },
+          "street": {
+            "type": "string"
+          },
+          "zip": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "contactPerson": {
+            "type": "string"
+          },
+          "telephone": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "Analysis": {
+        "type": "object",
+        "properties": {
+          "species": {
+            "type": "boolean"
+          },
+          "serological": {
+            "type": "boolean"
+          },
+          "phageTyping": {
+            "type": "boolean"
+          },
+          "resistance": {
+            "type": "boolean"
+          },
+          "vaccination": {
+            "type": "boolean"
+          },
+          "molecularTyping": {
+            "type": "boolean"
+          },
+          "toxin": {
+            "type": "boolean"
+          },
+          "zoonosenIsolate": {
+            "type": "boolean"
+          },
+          "esblAmpCCarbapenemasen": {
+            "type": "boolean"
+          },
+          "other": {
+            "type": "string"
+          },
+          "compareHuman": {
+            "type": "boolean"
+          }
+        }
+      },
+      "OrderContainer": {
+        "type": "object",
+        "required": [
+          "order"
+        ],
+        "properties": {
+          "order": {
+            "$ref": "#/components/schemas/Order"
+          }
+        }
+      },
+      "Order": {
+        "required": [
+          "samples",
+          "meta"
+        ],
+        "type": "object",
+        "properties": {
+          "samples": {
+            "$ref": "#/components/schemas/SampleList"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/OrderMetaInformation"
+          }
+        }
+      },
+      "SampleList": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Sample"
+        }
+      },
+      "Sample": {
+        "type": "object",
+        "required": [
+          "sample"
+        ],
+        "properties": {
+          "sample": {
+            "$ref": "#/components/schemas/SampleEntry"
+          }
+        }
+      },
+      "SampleEntry": {
+        "required": [
+          "comment",
+          "isolation_date",
+          "matrix_adv",
+          "matrix_text",
+          "operations_mode_adv",
+          "operations_mode_text",
+          "pathogen_adv",
+          "pathogen_text",
+          "process_state_adv",
+          "sample_id",
+          "sample_id_avv",
+          "sampling_date",
+          "sampling_location_adv",
+          "sampling_location_text",
+          "sampling_location_zip",
+          "sampling_reason_adv",
+          "sampling_reason_text",
+          "topic_adv",
+          "vvvo"
+        ],
+        "type": "object",
+        "properties": {
+          "sample_id": {
+            "$ref": "#/components/schemas/SamplePropertyEntry"
+          },
+          "sample_id_avv": {
+            "$ref": "#/components/schemas/SamplePropertyEntry"
+          },
+          "pathogen_adv": {
+            "$ref": "#/components/schemas/SamplePropertyEntry"
+          },
+          "pathogen_text": {
+            "$ref": "#/components/schemas/SamplePropertyEntry"
+          },
+          "sampling_date": {
+            "$ref": "#/components/schemas/SamplePropertyEntry"
+          },
+          "isolation_date": {
+            "$ref": "#/components/schemas/SamplePropertyEntry"
+          },
+          "sampling_location_adv": {
+            "$ref": "#/components/schemas/SamplePropertyEntry"
+          },
+          "sampling_location_zip": {
+            "$ref": "#/components/schemas/SamplePropertyEntry"
+          },
+          "sampling_location_text": {
+            "$ref": "#/components/schemas/SamplePropertyEntry"
+          },
+          "topic_adv": {
+            "$ref": "#/components/schemas/SamplePropertyEntry"
+          },
+          "matrix_adv": {
+            "$ref": "#/components/schemas/SamplePropertyEntry"
+          },
+          "matrix_text": {
+            "$ref": "#/components/schemas/SamplePropertyEntry"
+          },
+          "process_state_adv": {
+            "$ref": "#/components/schemas/SamplePropertyEntry"
+          },
+          "sampling_reason_adv": {
+            "$ref": "#/components/schemas/SamplePropertyEntry"
+          },
+          "sampling_reason_text": {
+            "$ref": "#/components/schemas/SamplePropertyEntry"
+          },
+          "operations_mode_adv": {
+            "$ref": "#/components/schemas/SamplePropertyEntry"
+          },
+          "operations_mode_text": {
+            "$ref": "#/components/schemas/SamplePropertyEntry"
+          },
+          "vvvo": {
+            "$ref": "#/components/schemas/SamplePropertyEntry"
+          },
+          "comment": {
+            "$ref": "#/components/schemas/SamplePropertyEntry"
+          }
+        }
+      },
+      "SamplePropertyEntry": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "type": "string"
+          }
+        }
+      },
+      "EditedOrderContainer": {
+        "type": "object",
+        "required": [
+          "order"
+        ],
+        "properties": {
+          "order": {
+            "$ref": "#/components/schemas/EditedOrder"
+          }
+        }
+      },
+      "EditedOrder": {
+        "required": [
+          "samples",
+          "meta"
+        ],
+        "type": "object",
+        "properties": {
+          "samples": {
+            "$ref": "#/components/schemas/EditedSampleList"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/OrderMetaInformation"
+          }
+        }
+      },
+      "EditedSampleList": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/EditedSample"
+        }
+      },
+      "EditedSample": {
+        "type": "object",
+        "required": [
+          "sample"
+        ],
+        "properties": {
+          "sample": {
+            "$ref": "#/components/schemas/EditedSampleEntry"
+          }
+        }
+      },
+      "EditedSampleEntry": {
+        "required": [
+          "comment",
+          "isolation_date",
+          "matrix_adv",
+          "matrix_text",
+          "operations_mode_adv",
+          "operations_mode_text",
+          "pathogen_adv",
+          "pathogen_text",
+          "process_state_adv",
+          "sample_id",
+          "sample_id_avv",
+          "sampling_date",
+          "sampling_location_adv",
+          "sampling_location_text",
+          "sampling_location_zip",
+          "sampling_reason_adv",
+          "sampling_reason_text",
+          "topic_adv",
+          "vvvo"
+        ],
+        "type": "object",
+        "properties": {
+          "sample_id": {
+            "$ref": "#/components/schemas/EditedSamplePropertyEntry"
+          },
+          "sample_id_avv": {
+            "$ref": "#/components/schemas/EditedSamplePropertyEntry"
+          },
+          "pathogen_adv": {
+            "$ref": "#/components/schemas/EditedSamplePropertyEntry"
+          },
+          "pathogen_text": {
+            "$ref": "#/components/schemas/EditedSamplePropertyEntry"
+          },
+          "sampling_date": {
+            "$ref": "#/components/schemas/EditedSamplePropertyEntry"
+          },
+          "isolation_date": {
+            "$ref": "#/components/schemas/EditedSamplePropertyEntry"
+          },
+          "sampling_location_adv": {
+            "$ref": "#/components/schemas/EditedSamplePropertyEntry"
+          },
+          "sampling_location_zip": {
+            "$ref": "#/components/schemas/EditedSamplePropertyEntry"
+          },
+          "sampling_location_text": {
+            "$ref": "#/components/schemas/EditedSamplePropertyEntry"
+          },
+          "topic_adv": {
+            "$ref": "#/components/schemas/EditedSamplePropertyEntry"
+          },
+          "matrix_adv": {
+            "$ref": "#/components/schemas/EditedSamplePropertyEntry"
+          },
+          "matrix_text": {
+            "$ref": "#/components/schemas/EditedSamplePropertyEntry"
+          },
+          "process_state_adv": {
+            "$ref": "#/components/schemas/EditedSamplePropertyEntry"
+          },
+          "sampling_reason_adv": {
+            "$ref": "#/components/schemas/EditedSamplePropertyEntry"
+          },
+          "sampling_reason_text": {
+            "$ref": "#/components/schemas/EditedSamplePropertyEntry"
+          },
+          "operations_mode_adv": {
+            "$ref": "#/components/schemas/EditedSamplePropertyEntry"
+          },
+          "operations_mode_text": {
+            "$ref": "#/components/schemas/EditedSamplePropertyEntry"
+          },
+          "vvvo": {
+            "$ref": "#/components/schemas/EditedSamplePropertyEntry"
+          },
+          "comment": {
+            "$ref": "#/components/schemas/EditedSamplePropertyEntry"
+          }
+        }
+      },
+      "EditedSamplePropertyEntry": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "type": "string"
+          },
+          "oldValue": {
+            "type": "string"
+          }
+        }
+      },
+      "ValidatedOrderContainer": {
+        "type": "object",
+        "required": [
+          "order"
+        ],
+        "properties": {
+          "order": {
+            "$ref": "#/components/schemas/ValidatedOrder"
+          }
+        }
+      },
+      "ValidatedOrder": {
+        "required": [
+          "samples",
+          "meta"
+        ],
+        "type": "object",
+        "properties": {
+          "samples": {
+            "$ref": "#/components/schemas/ValidatedSampleList"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/OrderMetaInformation"
+          }
+        }
+      },
+      "ValidatedSampleList": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/ValidatedSample"
+        }
+      },
+      "ValidatedSample": {
+        "type": "object",
+        "required": [
+          "sample"
+        ],
+        "properties": {
+          "sample": {
+            "$ref": "#/components/schemas/ValidatedSampleEntry"
+          }
+        }
+      },
+      "ValidatedSampleEntry": {
+        "required": [
+          "comment",
+          "isolation_date",
+          "matrix_adv",
+          "matrix_text",
+          "operations_mode_adv",
+          "operations_mode_text",
+          "pathogen_adv",
+          "pathogen_text",
+          "process_state_adv",
+          "sample_id",
+          "sample_id_avv",
+          "sampling_date",
+          "sampling_location_adv",
+          "sampling_location_text",
+          "sampling_location_zip",
+          "sampling_reason_adv",
+          "sampling_reason_text",
+          "topic_adv",
+          "vvvo"
+        ],
+        "type": "object",
+        "properties": {
+          "sample_id": {
+            "$ref": "#/components/schemas/ValidatedSamplePropertyEntry"
+          },
+          "sample_id_avv": {
+            "$ref": "#/components/schemas/ValidatedSamplePropertyEntry"
+          },
+          "pathogen_adv": {
+            "$ref": "#/components/schemas/ValidatedSamplePropertyEntry"
+          },
+          "pathogen_text": {
+            "$ref": "#/components/schemas/ValidatedSamplePropertyEntry"
+          },
+          "sampling_date": {
+            "$ref": "#/components/schemas/ValidatedSamplePropertyEntry"
+          },
+          "isolation_date": {
+            "$ref": "#/components/schemas/ValidatedSamplePropertyEntry"
+          },
+          "sampling_location_adv": {
+            "$ref": "#/components/schemas/ValidatedSamplePropertyEntry"
+          },
+          "sampling_location_zip": {
+            "$ref": "#/components/schemas/ValidatedSamplePropertyEntry"
+          },
+          "sampling_location_text": {
+            "$ref": "#/components/schemas/ValidatedSamplePropertyEntry"
+          },
+          "topic_adv": {
+            "$ref": "#/components/schemas/ValidatedSamplePropertyEntry"
+          },
+          "matrix_adv": {
+            "$ref": "#/components/schemas/ValidatedSamplePropertyEntry"
+          },
+          "matrix_text": {
+            "$ref": "#/components/schemas/ValidatedSamplePropertyEntry"
+          },
+          "process_state_adv": {
+            "$ref": "#/components/schemas/ValidatedSamplePropertyEntry"
+          },
+          "sampling_reason_adv": {
+            "$ref": "#/components/schemas/ValidatedSamplePropertyEntry"
+          },
+          "sampling_reason_text": {
+            "$ref": "#/components/schemas/ValidatedSamplePropertyEntry"
+          },
+          "operations_mode_adv": {
+            "$ref": "#/components/schemas/ValidatedSamplePropertyEntry"
+          },
+          "operations_mode_text": {
+            "$ref": "#/components/schemas/ValidatedSamplePropertyEntry"
+          },
+          "vvvo": {
+            "$ref": "#/components/schemas/ValidatedSamplePropertyEntry"
+          },
+          "comment": {
+            "$ref": "#/components/schemas/ValidatedSamplePropertyEntry"
+          }
+        }
+      },
+      "ValidatedSamplePropertyEntry": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "type": "string"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SampleValidationError"
+            }
+          },
+          "correctionOffer": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "oldValue": {
+            "type": "string"
+          }
+        }
+      },
+      "SampleValidationError": {
+        "type": "object",
+        "required": [
+          "code",
+          "level",
+          "message"
+        ],
+        "properties": {
+          "code": {
+            "type": "number",
+            "format": "int32"
+          },
+          "level": {
+            "type": "number",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "Token": {
+        "type": "string"
+      },
+      "Credentials": {
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string",
+            "format": "password"
+          }
+        }
+      },
+      "TokenizedUser": {
+        "type": "object",
+        "required": [
+          "firstname",
+          "lastName",
+          "email",
+          "token",
+          "instituteId"
+        ],
+        "properties": {
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "token": {
+            "$ref": "#/components/schemas/Token"
+          },
+          "instituteId": {
+            "type": "string"
+          }
+        }
+      },
+      "FailedLoginError": {
+        "type": "object",
+        "required": [
+          "message",
+          "code"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "code": {
+            "$ref": "#/components/schemas/ErrorCode"
+          },
+          "waitTime": {
+            "description": "Time interval in seconds",
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "RegistrationDetails": {
+        "type": "object",
+        "required": [
+          "email",
+          "firstName",
+          "lastName",
+          "instituteId",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "instituteId": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string",
+            "format": "password"
+          }
+        }
+      },
+      "RegisterRequestConfirmation": {
+        "type": "object",
+        "required": [
+          "registerRequest"
+        ],
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "registerRequest": {
+            "type": "boolean"
+          }
+        }
+      },
+      "RecoveryInformation": {
+        "type": "object",
+        "required": [
+          "email"
+        ],
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "ResetRequestConfirmation": {
+        "type": "object",
+        "required": [
+          "passwordResetRequest"
+        ],
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "passwordResetRequest": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ResetInformation": {
+        "type": "object",
+        "required": [
+          "password"
+        ],
+        "properties": {
+          "password": {
+            "type": "string",
+            "format": "password"
+          }
+        }
+      },
+      "ResetConfirmation": {
+        "type": "object",
+        "required": [
+          "passwordReset"
+        ],
+        "properties": {
+          "passwordReset": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ActivationConfirmation": {
+        "type": "object",
+        "required": [
+          "activation"
+        ],
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "activation": {
+            "type": "boolean"
+          }
+        }
+      },
+      "InstituteContainer": {
+        "type": "object",
+        "required": [
+          "institutes"
+        ],
+        "properties": {
+          "institutes": {
+            "$ref": "#/components/schemas/InstituteList"
+          }
+        }
+      },
+      "InstituteList": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Institute"
+        }
+      },
+      "Institute": {
+        "required": [
+          "id",
+          "city",
+          "name",
+          "short",
+          "zip"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "short": {
+            "$ref": "#/components/schemas/StateShort"
+          },
+          "addendum": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "zip": {
+            "maxLength": 5,
+            "minLength": 5,
+            "pattern": "[0-9]{5}",
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "fax": {
+            "type": "string"
+          },
+          "email": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "StateShort": {
+        "maxLength": 2,
+        "minLength": 2,
+        "pattern": "[A-Z]{2}",
+        "type": "string"
+      },
+      "TokenRefreshConfirmation": {
+        "type": "object",
+        "required": [
+          "refresh",
+          "token"
+        ],
+        "properties": {
+          "refresh": {
+            "type": "boolean"
+          },
+          "token": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "responses": {
+      "InvalidInputErrorResponse": {
+        "description": "The supplied sample contains validation errors or autocorrections",
+        "content": {
+          "application/json:": {
+            "schema": {
+              "$ref": "#/components/schemas/SampleDataError"
+            }
+          }
+        }
+      },
+      "UnauthorizedErrorResponse": {
+        "description": "Token is missing or invalid",
+        "content": {
+          "application/json:": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Standard500ErrorResponse": {
+        "description": "An unexpected error occured",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Standard400ErrorResponse": {
+        "description": "Invalid request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "LoginSuccessResponse": {
+        "description": "Successful authentication",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/TokenizedUser"
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "pathToken": {
+        "name": "token",
+        "in": "path",
+        "description": "The provided access token",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/Token"
+        }
+      }
+    },
+    "requestBodies": {
+      "SampleRequest": {
+        "description": "A set of samples and meta data",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/EditedOrderContainer"
+            }
+          },
+          "multipart/form-data": {
+            "schema": {
+              "$ref": "#/components/schemas/MarshalData"
+            }
+          }
+        },
+        "required": true
+      },
+      "SendRequest": {
+        "description": "Request for sending sample data to the BfR",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SampleSubmission"
+            }
+          }
+        }
+      },
+      "ValidationRequest": {
+        "description": "A set of samples and meta data",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/OrderContainer"
+            }
+          }
+        },
+        "required": true
+      },
+      "ResetRequest": {
+        "description": "Password reset request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ResetInformation"
+            }
+          }
+        },
+        "required": true
+      },
+      "RecoveryRequest": {
+        "description": "Password recovery request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/RecoveryInformation"
+            }
+          }
+        },
+        "required": true
+      },
+      "LoginRequest": {
+        "description": "User credentials",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Credentials"
+            }
+          }
+        },
+        "required": true
+      },
+      "RegistrationRequest": {
+        "description": "Registration details",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/RegistrationDetails"
+            }
+          }
+        },
+        "required": true
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

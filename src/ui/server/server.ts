@@ -1,85 +1,127 @@
 import * as path from 'path';
-
 import * as express from 'express';
+import * as helmet from 'helmet';
+import * as compression from 'compression';
 import * as bodyParser from 'body-parser';
 import * as cors from 'cors';
 import * as morgan from 'morgan';
+import * as swaggerUi from 'swagger-ui-express';
+import { InversifyExpressServer } from 'inversify-express-utils';
 
 // local
-import { routes } from './routes';
 import { logger } from './../../aspects';
-import { validateToken } from './middleware';
+import { validateToken } from './middleware/token-validator.middleware';
 import { Logger } from '../../aspects/logging';
-import { IControllerFactory } from './sharedKernel';
+import { SERVER_ERROR_CODE, ROUTE } from './model/enums';
+import { AppServerConfiguration } from './model/server.model';
+import { injectable, Container } from 'inversify';
+import SERVER_TYPES from './server.types';
 
-export interface IServerConfig {
-    port: number;
-    jwtSecret: string;
-    apiUrl: string;
-    logLevel: string;
-    controllerFactory: IControllerFactory;
-}
-
-export interface IAppServer {
+export interface AppServer {
     startServer(): void;
 }
 
-class AppServer implements IAppServer {
-
-    private server: express.Express;
+@injectable()
+export class DefaultAppServer implements AppServer {
+    private server: InversifyExpressServer;
 
     private publicDir = 'public';
 
-    constructor(config: IServerConfig) {
-        this.initialise(config);
+    constructor(container: Container) {
+        this.initialise(container);
     }
 
     startServer() {
-        this.server.listen(this.server.get('port'), () => this.server.get('logger').info('API running', { 'port': this.server.get('port') }));
+        const app = this.server.build();
+        app.listen(app.get('port'), () =>
+            app.get('logger').info('API running', { port: app.get('port') })
+        );
     }
 
-    private initialise(serverConfig: IServerConfig) {
-        this.server = express();
-        this.server.set('port', serverConfig.port);
-        this.server.set('logger', logger);
-        this.server.set('controllerFactory', serverConfig.controllerFactory);
+    private initialise(container: Container) {
+        this.server = new InversifyExpressServer(container);
+        const serverConfig = container.get<AppServerConfiguration>(
+            SERVER_TYPES.AppServerConfiguration
+        );
+        this.server.setConfig(app => {
+            app.use(helmet());
+            app.use(compression());
+            app.set('port', serverConfig.port);
+            app.set('logger', logger);
 
-        this.server.use(bodyParser.json());
-        this.server.use(bodyParser.urlencoded({
-            extended: false
-        }));
+            // tslint:disable-next-line: deprecation
+            app.use(bodyParser.json({ limit: '50mb' }));
+            app.use(
+                // tslint:disable-next-line: deprecation
+                bodyParser.urlencoded({
+                    extended: false
+                })
+            );
 
-        this.server.use(validateToken(serverConfig.jwtSecret));
+            app.use((req, res, next) => {
+                res.setHeader('X-Frame-Options', 'deny');
+                res.setHeader(
+                    'Cache-Control',
+                    'no-cache, no-store, must-revalidate'
+                );
+                res.setHeader('Pragma', 'no-cache');
+                res.setHeader('X-XSS-Protection', '1; mode=block');
+                res.setHeader('X-Content-Type-Options', 'nosniff');
+                return next();
+            });
 
-        this.server.use(cors());
-        this.server.use(morgan(Logger.mapLevelToMorganFormat(serverConfig.logLevel)));
-        this.server.use(express.static(path.join(__dirname, this.publicDir)));
+            app.use(cors());
+            app.use(
+                morgan(Logger.mapLevelToMorganFormat(serverConfig.logLevel))
+            );
+            app.use(express.static(path.join(__dirname, this.publicDir)));
+            app.use(
+                '/api-docs' + ROUTE.VERSION,
+                swaggerUi.serve,
+                swaggerUi.setup(null, {
+                    swaggerUrl: ROUTE.VERSION
+                })
+            );
+            app.use(
+                ROUTE.VERSION + '/*',
+                validateToken(serverConfig.jwtSecret)
+            );
+        });
 
-        this.server.use(this.errorResponses.bind(this));
+        this.server.setErrorConfig(app => {
+            app.use(
+                (
+                    // tslint:disable-next-line
+                    err: any,
+                    req: express.Request,
+                    res: express.Response,
+                    next: express.NextFunction
+                ) => {
+                    if (err.status === 401) {
+                        app.get('logger').warn(
+                            `Log caused error with status 401. error=${err}`
+                        );
+                        res.status(401)
+                            .send({
+                                code: SERVER_ERROR_CODE.AUTHORIZATION_ERROR,
+                                message: err.message
+                            })
+                            .end();
+                    }
+                }
+            );
 
-        routes.init(this.server);
-
-        this.server.get('*', (req: express.Request, res: express.Response) => {
-            logger.verbose('AppServer.initialise, Getting index.html');
-            res.sendFile(path.join(__dirname, this.publicDir + '/index.html'));
+            app.get('*', (req: express.Request, res: express.Response) => {
+                res.sendFile(
+                    path.join(__dirname, this.publicDir + '/index.html')
+                );
+            });
         });
     }
-
-    // tslint:disable-next-line
-    private errorResponses(err: any, req: express.Request, res: express.Response, next: express.NextFunction) {
-        if (err.status === 401) {
-            this.server.get('logger').warn('Log in attempt with invalid credentials');
-            return res
-                .status(401)
-                .end();
-        }
-    }
 }
 
-function createApplication(config: IServerConfig): IAppServer {
-    return new AppServer(config);
+function createServer(container: Container): AppServer {
+    return new DefaultAppServer(container);
 }
 
-export {
-    createApplication
-};
+export { createServer };

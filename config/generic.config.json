@@ -1,22 +1,31 @@
 {
-    "server": {
-        "port": 3000,
-        "jwtSecret": "",
+  "application": {
+      "appName": "Portal",
+      "jobRecipient": "",
+      "login": {
+          "threshold": 0,
+          "secondsDelay": 0
+        },
         "apiUrl": "",
-        "logLevel": "info"
-    },
-    "dataStore": {
-        "connectionString": ""
-    },
-    "mail": {
-        "fromAddress": "",
-        "replyToAddress": ""
-    },
-    "login": {
-      "threshold": 0,
-      "secondsDelay": 0
-    },
-    "appName": "FoodChain-Lab",
-    "supportContact": "",
-    "jobRecipient": ""
+        "gdprDate": ""
+  },
+  "server": {
+      "port": 3000,
+      "publicAPIDoc": {
+
+      }
+  },
+  "dataStore": {
+      "connectionString": "",
+      "dataDir": ""
+  },
+  "mail": {
+      "fromAddress": "",
+      "replyToAddress": ""
+  },
+  "general":{
+      "supportContact": "",
+      "logLevel": "info",
+      "jwtSecret": ""
+  }
 }

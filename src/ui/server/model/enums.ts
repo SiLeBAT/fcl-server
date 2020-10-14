@@ -1,0 +1,12 @@
+export enum SERVER_ERROR_CODE {
+    UNKNOWN_ERROR = 1,
+    AUTHORIZATION_ERROR = 2,
+    AUTHENTICATION_ERROR = 3,
+    INPUT_ERROR = 4,
+    INVALID_INPUT = 5,
+    AUTOCORRECTED_INPUT = 6
+}
+
+export enum ROUTE {
+    VERSION = '/v1'
+}

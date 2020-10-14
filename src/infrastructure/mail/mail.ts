@@ -3,115 +3,167 @@
 // npm
 import * as handlebars from 'handlebars';
 import * as nodemailer from 'nodemailer';
-import * as config from 'config';
 import * as readFilePromise from 'fs-readfile-promise';
 
 // local
 import { logger } from './../../aspects';
-import { INotificationPort, NotificationType, INotification } from '../../app/ports';
+import { NotificationType } from '../../app/ports';
+import { injectable, inject } from 'inversify';
+import {
+    MailService,
+    MailConfiguration,
+    EmailData,
+    MailOptions
+} from './mail.model';
+import { MAIL_TYPES } from './mail.types';
 
-interface IMailConfig {
-    replyToAddress: string;
-    fromAddress: string;
-}
+@injectable()
+export class DefaultMailService implements MailService {
+    private host = 'localhost';
+    private port = 25;
 
-interface IMailOptions {
-    to: string;
-    cc: string[];
-    subject: string;
-    // tslint:disable-next-line
-    attachments: any[];
-}
+    private viewsDir = __dirname + '/views/en/';
 
-const mailConfig: IMailConfig = config.get('mail');
+    constructor(
+        @inject(MAIL_TYPES.MailConfiguration)
+        private mailConfiguration: MailConfiguration
+    ) {}
 
-const fromAddress = mailConfig.fromAddress;
-const replyToAddress = mailConfig.replyToAddress;
-const host = 'localhost';
-const port = 25;
+    getMailHandler() {
+        return async (data: EmailData) => {
+            let templateFile;
+            logger.info(
+                `${this.constructor.name}, handling notification type. data.type=${data.type}`
+            );
+            switch (data.type) {
+                case NotificationType.RESET_SUCCESS:
+                    templateFile = await readFilePromise(
+                        this.viewsDir + 'pwnotification.html'
+                    );
+                    break;
+                case NotificationType.REQUEST_ACTIVATION:
+                    templateFile = await readFilePromise(
+                        this.viewsDir + 'regactivation.html'
+                    );
+                    break;
+                case NotificationType.REQUEST_ALTERNATIVE_CONTACT:
+                    templateFile = await readFilePromise(
+                        this.viewsDir + 'pwresethelp.html'
+                    );
+                    break;
+                case NotificationType.REQUEST_RESET:
+                    templateFile = await readFilePromise(
+                        this.viewsDir + 'pwreset.html'
+                    );
+                    break;
+                case NotificationType.REQUEST_JOB:
+                    templateFile = await readFilePromise(
+                        this.viewsDir + 'jobnotification.html'
+                    );
+                    break;
+                case NotificationType.REQUEST_ADMIN_ACTIVATION:
+                    templateFile = await readFilePromise(
+                        this.viewsDir + 'adminactivation.html'
+                    );
+                    break;
+                case NotificationType.REQUEST_UNKNOWN_INSTITUTE:
+                    templateFile = await readFilePromise(
+                        this.viewsDir + 'adminactivationUnknownInst.html'
+                    );
+                    break;
+                case NotificationType.NOTIFICATION_ADMIN_ACTIVATION:
+                    templateFile = await readFilePromise(
+                        this.viewsDir + 'adminactivationNotification.html'
+                    );
+                    break;
+                case NotificationType.NOTIFICATION_NOT_ADMIN_ACTIVATED:
+                    templateFile = await readFilePromise(
+                        this.viewsDir + 'notAdminactivationNotification.html'
+                    );
+                    break;
+                case NotificationType.NOTIFICATION_ALREADY_REGISTERED:
+                    templateFile = await readFilePromise(
+                        this.viewsDir + 'reguserexists.html'
+                    );
+                    break;
+                case NotificationType.REMINDER_ADMIN_ACTIVATION:
+                    templateFile = await readFilePromise(
+                        this.viewsDir + 'adminactivationReminder.html'
+                    );
+                    break;
+                case NotificationType.NOTIFICATION_SENT:
+                    templateFile = await readFilePromise(
+                        this.viewsDir + 'sentnotification.html'
+                    );
+                    break;
+                case NotificationType.NEWSLETTER_AGREEMENT:
+                    templateFile = await readFilePromise(
+                        this.viewsDir + 'newsagreement.html'
+                    );
+                    break;
+                default:
+                    logger.warn('Unknown notification type', {
+                        notification: data.type
+                    });
+            }
+            if (templateFile) {
+                this.sendMail(data.payload, templateFile.toString('utf-8'), {
+                    ...data.meta,
+                    ...{
+                        from: this.mailConfiguration.fromAddress,
+                        replyTo: this.mailConfiguration.replyToAddress
+                    }
+                });
+            }
+        };
+    }
 
-const viewsDir = __dirname + '/views/en/';
+    private sendMail(
+        // tslint:disable-next-line
+        templateData: any,
+        templateFile: string,
+        options: MailOptions
+    ) {
+        templateData.copyrightYear = new Date().getFullYear();
 
-function registerListeners(notificationService: INotificationPort) {
-    notificationService.addHandler(async (data: INotification) => {
-        let templateFile;
-        switch (data.type) {
-            case NotificationType.RESET_SUCCESS:
-                templateFile = await readFilePromise(viewsDir + 'pwnotification.html');
-                break;
-            case NotificationType.REQUEST_ACTIVATION:
-                templateFile = await readFilePromise(viewsDir + 'regactivation.html');
-                break;
-            case NotificationType.REQUEST_ALTERNATIVE_CONTACT:
-                templateFile = await readFilePromise(viewsDir + 'pwresethelp.html');
-                break;
-            case NotificationType.REQUEST_RESET:
-                templateFile = await readFilePromise(viewsDir + 'pwreset.html');
-                break;
-            case NotificationType.REQUEST_ADMIN_ACTIVATION:
-                templateFile = await readFilePromise(viewsDir + 'adminactivation.html');
-                break;
-            case NotificationType.NOTIFICATION_ADMIN_ACTIVATION:
-                templateFile = await readFilePromise(viewsDir + 'adminactivationNotification.html');
-                break;
-            case NotificationType.NOTIFICATION_NOT_ADMIN_ACTIVATED:
-                templateFile = await readFilePromise(viewsDir + 'notAdminactivationNotification.html');
-                break;
-            case NotificationType.NOTIFICATION_ALREADY_REGISTERED:
-                templateFile = await readFilePromise(viewsDir + 'reguserexists.html');
-                break;
-            case NotificationType.REMINDER_ADMIN_ACTIVATION:
-                templateFile = await readFilePromise(viewsDir + 'adminactivationReminder.html');
-                break;
-            default:
-                logger.warn('Unknown notification type', { notification: data.type });
-        }
-        if (templateFile) {
-            sendMail(data.payload, templateFile.toString('utf-8'), {
-                to: data.meta.email,
-                cc: data.meta.cc ? data.meta.cc : [],
-                subject: data.title,
-                attachments: []
+        let template = handlebars.compile(templateFile);
+        let result = template(templateData);
+
+        const transporter = nodemailer.createTransport({
+            host: this.host,
+            port: this.port,
+            tls: {
+                rejectUnauthorized: false
+            }
+        });
+
+        const mailOptions = {
+            ...options,
+            ...{
+                html: result
+            }
+        };
+
+        try {
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    logger.error(
+                        `Error sending mail. error=${error} mailSubject="${mailOptions.subject}"`
+                    );
+                    return error;
+                } else {
+                    logger.info('Email sent', {
+                        subject: mailOptions.subject
+                    });
+                    logger.verbose(JSON.stringify(info));
+                    return info;
+                }
             });
+        } catch (error) {
+            logger.error(
+                `Error sending mail. error=${error} mailSubject="${mailOptions.subject}"`
+            );
+            throw error;
         }
-    });
-
+    }
 }
-
-// tslint:disable-next-line
-function sendMail(templateData: any, templateFile: string, options: IMailOptions) {
-    let template = handlebars.compile(templateFile);
-    let result = template(templateData);
-
-    const transporter = nodemailer.createTransport({
-        host: host,
-        port: port,
-        tls: {
-            rejectUnauthorized: false
-        }
-    });
-
-    const mailOptions = {
-        ...options,
-        ...{
-            from: fromAddress,
-            replyTo: replyToAddress,
-            html: result
-        }
-    };
-
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            logger.error('Error sending mail', { error: error });
-        } else {
-            logger.info('Email sent', {
-                subject: mailOptions.subject
-            });
-        }
-    });
-
-}
-
-export {
-    registerListeners
-};

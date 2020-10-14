@@ -1,0 +1,14 @@
+{
+    "transform": {
+      "^.+\\.ts$": "ts-jest"
+    },
+    "testRegex": "(.*|(\\.|/)(test|spec))\\.(ts)$",
+    "roots": ["test"],
+    "setupFilesAfterEnv": ["./test/setup.js"],
+    "moduleFileExtensions": [
+      "ts",
+      "js",
+      "json",
+      "node"
+    ]
+  }

@@ -1,0 +1,31 @@
+{
+    "application": {
+        "appName": "Portal",
+        "jobRecipient": "",
+        "login": {
+            "threshold": 5,
+            "secondsDelay": 600
+        },
+        "apiUrl": "",
+        "gdprDate": ""
+    },
+    "server": {
+        "port": 3000,
+        "publicAPIDoc": {
+
+        }
+    },
+    "dataStore": {
+        "connectionString": "mongodb://localhost/datadevdb",
+        "dataDir": "./datadev"
+    },
+    "mail": {
+        "fromAddress": "",
+        "replyToAddress": ""
+    },
+    "general": {
+        "supportContact": "",
+        "logLevel": "trace",
+        "jwtSecret": "0"
+    }
+}
