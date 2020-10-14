@@ -1,3 +1,0 @@
-export {
-    validateToken
-} from './tokenMW';
