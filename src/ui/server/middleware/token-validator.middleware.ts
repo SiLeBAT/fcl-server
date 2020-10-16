@@ -13,8 +13,6 @@ function validateToken(secret: string) {
         ROUTE.VERSION + '/users/gdpr-agreement',
         ROUTE.VERSION + '/users/registration',
         ROUTE.VERSION + '/users/reset-password-request',
-        ROUTE.VERSION + '/samples/validated',
-        ROUTE.VERSION + '/samples',
         /\/v1\/users\/reset-password\/*/,
         /\/v1\/users\/verification\/*/,
         /\/v1\/users\/activation\/*/,

@@ -1,5 +1,3 @@
-import { SampleSetDTO } from './shared-dto.model';
-
 export interface ResetRequestDTO {
     readonly email: string;
 }
@@ -16,11 +14,6 @@ export interface RegistrationDetailsDTO {
     readonly dataProtectionAgreed: boolean;
     readonly newsRegAgreed: boolean;
     readonly newsMailAgreed: boolean;
-}
-
-export interface SampleSubmissionDTO {
-    readonly order: SampleSetDTO;
-    readonly comment: string;
 }
 
 export interface GDPRConfirmationRequestDTO {

@@ -6,12 +6,7 @@ import * as Promise from 'bluebird';
 import { logger } from './../../../../aspects';
 import { createRepository } from './mongoose.repository';
 import { DataStore } from '../../model/data-store.model';
-import {
-    MongooseStateModel,
-    MongooseInstitutionModel,
-    MongooseNRLModel,
-    MongooseValidationErrorModel
-} from './mongoose.model';
+import { MongooseInstitutionModel } from './mongoose.model';
 
 // tslint:disable-next-line
 (mongoose as any).Promise = Promise;
@@ -61,14 +56,8 @@ export function createDataStore(connectionString: string): DataStore {
 
 export function mapCollectionToRepository(collection: string) {
     switch (collection) {
-        case 'states':
-            return createRepository(MongooseStateModel);
         case 'institutions':
             return createRepository(MongooseInstitutionModel);
-        case 'nrls':
-            return createRepository(MongooseNRLModel);
-        case 'validationerrors':
-            return createRepository(MongooseValidationErrorModel);
         default:
             throw new Error(`Collection not found. collection=${collection}`);
     }

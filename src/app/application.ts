@@ -2,7 +2,7 @@ import { Container } from 'inversify';
 import { NotificationService } from './core/model/notification.model';
 import { APPLICATION_TYPES } from './application.types';
 
-export interface MiBiApplication {
+export interface FclApplication {
     addNotificationHandler(handler: Function): void;
 }
 

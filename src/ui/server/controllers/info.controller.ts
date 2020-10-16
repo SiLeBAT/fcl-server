@@ -37,14 +37,14 @@ export class DefaultSystemInfoController extends AbstractController
             `${this.constructor.name}.${this.getSystemInfo.name}, Request received`
         );
         try {
-            if (!(pjson.version && pjson.mibiConfig.lastChange)) {
+            if (!(pjson.version && pjson.fclConfig.lastChange)) {
                 throw new UnknownPackageConfigurationError(
                     "Version number or date of last change can't be determined."
                 );
             }
             const dto: SystemInformationDTO = {
                 version: pjson.version,
-                lastChange: pjson.mibiConfig.lastChange,
+                lastChange: pjson.fclConfig.lastChange,
                 supportContact: this.supportContact
             };
             logger.info(

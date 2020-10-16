@@ -31,8 +31,7 @@ export const genericUser: User = {
     getLastLoginAttempt: jest.fn(),
     updateNumberOfFailedAttempts: jest.fn(),
     updateLastLoginAttempt: jest.fn(),
-    isNewsMailAgreed: jest.fn(() => true),
-
+    isNewsMailAgreed: jest.fn(() => true)
 };
 
 export function getMockUserService(): UserService {

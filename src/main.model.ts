@@ -7,7 +7,7 @@ export interface ServerConfiguration {
 
 export interface DataStoreConfiguration {
     connectionString: string;
-    dataDir: string;
+    // dataDir: string;
 }
 
 export interface GeneralConfiguration {

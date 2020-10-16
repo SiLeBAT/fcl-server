@@ -5,14 +5,12 @@ import {
     createDataStore,
     getPersistenceContainerModule,
     MailService,
-    initialiseCatalogRepository,
-    initialiseSearchAliasRepository,
     getMailContainerModule,
     MAIL_TYPES
 } from './infrastructure/ports';
 import {
     createApplication,
-    MiBiApplication,
+    FclApplication,
     getApplicationContainerModule
 } from './app/ports';
 import {
@@ -98,22 +96,6 @@ async function init() {
     const appConfiguration: AppConfiguration = configurationService.getApplicationConfiguration();
     const mailConfiguration: MailConfiguration = configurationService.getMailConfiguration();
 
-    const catalogRepository = await initialiseCatalogRepository(
-        dataStoreConfig.dataDir
-    ).catch((error: Error) => {
-        logger.error(`Failed to initialize Catalog Repository. error=${error}`);
-        throw error;
-    });
-
-    const searchAliasRepository = await initialiseSearchAliasRepository(
-        dataStoreConfig.dataDir
-    ).catch((error: Error) => {
-        logger.error(
-            `Failed to initialize Search Alias Repository. error=${error}`
-        );
-        throw error;
-    });
-
     createDataStore(dataStoreConfig.connectionString);
 
     const container = getContainer({ defaultScope: 'Singleton' });
@@ -124,11 +106,7 @@ async function init() {
             supportContact: generalConfig.supportContact,
             jwtSecret: generalConfig.jwtSecret
         }),
-        getPersistenceContainerModule({
-            searchAliasRepository,
-            catalogRepository,
-            dataDir: dataStoreConfig.dataDir
-        }),
+        getPersistenceContainerModule(),
         getServerContainerModule({
             ...serverConfig,
             jwtSecret: generalConfig.jwtSecret,
@@ -138,7 +116,7 @@ async function init() {
         getMailContainerModule(mailConfiguration)
     );
 
-    const application: MiBiApplication = createApplication(container);
+    const application: FclApplication = createApplication(container);
 
     const mailService = container.get<MailService>(MAIL_TYPES.MailService);
     application.addNotificationHandler(

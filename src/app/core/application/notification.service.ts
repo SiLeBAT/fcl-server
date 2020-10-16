@@ -11,7 +11,7 @@ import { logger } from '../../../aspects';
 
 @injectable()
 export class DefaultNotificationService implements NotificationService {
-    private notificationName = 'mibi-notification';
+    private notificationName = 'fcl-notification';
 
     private sender: EventEmitter = new EventEmitter();
 

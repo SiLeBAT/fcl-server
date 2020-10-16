@@ -3,29 +3,14 @@ export const APPLICATION_TYPES = {
 
     ConfigurationService: Symbol.for('ConfigurationService'),
     NotificationService: Symbol.for('NotificationService'),
-    ExcelUnmarshalService: Symbol.for('ExcelUnmarshalService'),
     InstituteService: Symbol.for('InstituteService'),
     UserService: Symbol.for('UserService'),
-    JSONMarshalService: Symbol.for('JSONMarshalService'),
     TokenService: Symbol.for('TokenService'),
-    SampleService: Symbol.for('SampleService'),
-    CatalogService: Symbol.for('CatalogService'),
-    NRLSelectorProvider: Symbol.for('NRLSelectorProvider'),
-    AVVFormatProvider: Symbol.for('AVVFormatProvider'),
-    ValidationErrorProvider: Symbol.for('ValidationErrorProvider'),
     RegistrationService: Symbol.for('RegistrationService'),
     PasswordService: Symbol.for('PasswordService'),
     LoginService: Symbol.for('LoginService'),
-    FormAutoCorrectionService: Symbol.for('FormAutoCorrectionService'),
-    FormValidatorService: Symbol.for('FormValidatorService'),
 
-    CatalogRepository: Symbol.for('CatalogRepository'),
-    NRLRepository: Symbol.for('NRLRepository'),
-    StateRepository: Symbol.for('StateRepository'),
     InstituteRepository: Symbol.for('InstituteRepository'),
     UserRepository: Symbol.for('UserRepository'),
-    TokenRepository: Symbol.for('TokenRepository'),
-    ValidationErrorRepository: Symbol.for('ValidationErrorRepository'),
-    SearchAliasRepository: Symbol.for('SearchAliasRepository'),
-    FileRepository: Symbol.for('FileRepository')
+    TokenRepository: Symbol.for('TokenRepository')
 };

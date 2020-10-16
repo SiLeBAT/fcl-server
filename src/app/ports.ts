@@ -3,7 +3,7 @@
  */
 export { getApplicationContainerModule } from './application.module';
 export { ApplicationConfiguration } from './core/model/configuration.model';
-export { createApplication, MiBiApplication } from './application';
+export { createApplication, FclApplication } from './application';
 export {
     Notification,
     Attachment,
@@ -53,55 +53,3 @@ export {
     TokenPayload,
     TokenRepository
 } from './authentication/model/token.model';
-
-/**
- * sampleManagement exports
- */
-export {
-    Sample,
-    SenderInfo,
-    SamplePort,
-    SampleSet,
-    AnnotatedSampleDataEntry,
-    SampleData,
-    SampleProperty,
-    SampleSetMetaData
-} from './sampleManagement/model/sample.model';
-
-export {
-    EditValue,
-    CorrectionSuggestions,
-    FormAutoCorrectionPort
-} from './sampleManagement/model/autocorrection.model';
-
-export {
-    ExcelUnmarshalPort,
-    ExcelFileInfo
-} from './sampleManagement/model/excel.model';
-
-export { Catalog, CatalogData } from './sampleManagement/model/catalog.model';
-
-export {
-    ValidationError,
-    NRLConfig,
-    FormValidatorPort,
-    ValidationOptions,
-    SearchAlias,
-    State,
-    AVVFormatCollection,
-    ValidationErrorCollection
-} from './sampleManagement/model/validation.model';
-
-export { createCatalog } from './sampleManagement/domain/catalog.entity';
-
-export { createSample } from './sampleManagement/domain/sample.entity';
-export { Urgency } from './sampleManagement/domain/enums';
-
-export {
-    ValidationErrorRepository,
-    SearchAliasRepository,
-    StateRepository,
-    NRLRepository,
-    CatalogRepository,
-    FileRepository
-} from './sampleManagement/model/repository.model';

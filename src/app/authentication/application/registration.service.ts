@@ -1,4 +1,3 @@
-import * as moment from 'moment';
 import { logger } from '../../../aspects';
 import {
     RegistrationService,

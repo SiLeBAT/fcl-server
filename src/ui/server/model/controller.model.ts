@@ -35,9 +35,3 @@ export interface UsersController extends Controller {
 export interface SystemInfoController extends Controller {
     getSystemInfo(res: Response): Promise<void>;
 }
-
-export interface SamplesController extends Controller {
-    putValidated(req: Request, res: Response): Promise<void>;
-    postSubmitted(req: Request, res: Response): Promise<void>;
-    putSamples(req: Request, res: Response): Promise<void>;
-}

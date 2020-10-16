@@ -1,5 +1,3 @@
-import { SampleDataDTO } from './shared-dto.model';
-
 export interface RegistrationRequestResponseDTO {
     readonly registerRequest: boolean;
     readonly email: string;
@@ -35,14 +33,6 @@ interface ErrorDTO {
 }
 
 export interface DefaultServerErrorDTO extends ErrorDTO {}
-
-export interface InvalidInputErrorDTO extends DefaultServerErrorDTO {
-    readonly samples: SampleDataDTO[];
-}
-
-export interface AutoCorrectedInputErrorDTO extends DefaultServerErrorDTO {
-    readonly samples: SampleDataDTO[];
-}
 
 export interface FailedLoginErrorDTO extends ErrorDTO {
     readonly waitTime?: number;

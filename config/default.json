@@ -16,8 +16,7 @@
         }
     },
     "dataStore": {
-        "connectionString": "mongodb://localhost/datadevdb",
-        "dataDir": "./datadev"
+        "connectionString": "mongodb://localhost/datadevdb"
     },
     "mail": {
         "fromAddress": "",

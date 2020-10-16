@@ -12,6 +12,3 @@ export { DataStore } from './persistence/model/data-store.model';
 export { MailService } from './mail/mail.model';
 
 export { getMailContainerModule } from './mail/mail.module';
-
-export { initialiseRepository as initialiseCatalogRepository } from './persistence/repositories/catalog.repository';
-export { initialiseRepository as initialiseSearchAliasRepository } from './persistence/repositories/search-alias.repository';

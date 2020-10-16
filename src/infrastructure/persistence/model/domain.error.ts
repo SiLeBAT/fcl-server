@@ -29,9 +29,3 @@ export class InstituteNotFoundError extends PersistenceError {
         super(...args);
     }
 }
-export class FileNotFoundError extends PersistenceError {
-    // tslint:disable-next-line: no-any
-    constructor(...args: any[]) {
-        super(...args);
-    }
-}

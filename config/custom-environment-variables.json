@@ -1,18 +1,17 @@
 {
   "application": {
-      "jobRecipient": "MIBI_JOB_RECIPIENT"
+      "jobRecipient": "FCL_JOB_RECIPIENT"
   },
   "server": {
-      "port": "MIBI_NODE_PORT",
-      "jwtSecret": "MIBI_JWT_SECRET",
-      "apiUrl": "MIBI_API_URL"
+      "port": "FCL_NODE_PORT",
+      "jwtSecret": "FCL_JWT_SECRET",
+      "apiUrl": "FCL_API_URL"
   },
   "dataStore": {
-      "connectionString": "MIBI_DB_CONNECTION",
-      "dataDir": "MIBI_DATA_DIR"
+      "connectionString": "FCL_DB_CONNECTION"
   },
   "general": {
-      "supportContact": "MIBI_SUPPORT_CONTACT",
-      "logLevel": "MIBI_LOG_LEVEL"
+      "supportContact": "FCL_SUPPORT_CONTACT",
+      "logLevel": "FCL_LOG_LEVEL"
   }
 }

@@ -16,8 +16,7 @@
       }
   },
   "dataStore": {
-      "connectionString": "",
-      "dataDir": ""
+      "connectionString": ""
   },
   "mail": {
       "fromAddress": "",
