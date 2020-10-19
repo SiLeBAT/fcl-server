@@ -7,7 +7,7 @@ import {
     AuthorizationError,
     LoginPort,
     RegistrationPort,
-    UserRegistration
+    UserRegistration,
 } from '../../../app/ports';
 import { UsersController } from '../model/controller.model';
 import { AbstractController } from './abstract.controller';
@@ -15,7 +15,7 @@ import {
     ResetRequestDTO,
     NewPasswordRequestDTO,
     RegistrationDetailsDTO,
-    GDPRConfirmationRequestDTO
+    GDPRConfirmationRequestDTO,
 } from '../model/request.model';
 import {
     PasswordResetRequestResponseDTO,
@@ -24,7 +24,7 @@ import {
     FailedLoginErrorDTO,
     ActivationResponseDTO,
     RegistrationRequestResponseDTO,
-    NewsConfirmationResponseDTO
+    NewsConfirmationResponseDTO,
 } from '../model/response.model';
 import { MalformedRequestError } from '../model/domain.error';
 import { SERVER_ERROR_CODE, ROUTE } from '../model/enums';
@@ -36,7 +36,7 @@ import {
     httpPost,
     requestParam,
     request,
-    response
+    response,
 } from 'inversify-express-utils';
 import { inject } from 'inversify';
 import { APPLICATION_TYPES } from './../../../app/application.types';
@@ -50,7 +50,7 @@ enum USERS_ROUTE {
     ACTIVATION = '/activation',
     REGISTRATION = '/registration',
     GDPR_AGREEMENT = '/gdpr-agreement',
-    NEWS_CONFIRMATION = '/news-confirmation'
+    NEWS_CONFIRMATION = '/news-confirmation',
 }
 @controller(ROUTE.VERSION + USERS_ROUTE.ROOT)
 export class DefaultUsersController extends AbstractController
@@ -82,11 +82,11 @@ export class DefaultUsersController extends AbstractController
             await this.passwordService.requestPasswordReset({
                 email: resetRequest.email,
                 host: req.headers['host'] as string,
-                userAgent: req.headers['user-agent'] as string
+                userAgent: req.headers['user-agent'] as string,
             });
             const dto: PasswordResetRequestResponseDTO = {
                 passwordResetRequest: true,
-                email: resetRequest.email
+                email: resetRequest.email,
             };
             logger.info(
                 `${this.constructor.name}.${this.putResetPasswordRequest.name}, Response sent`
@@ -121,7 +121,7 @@ export class DefaultUsersController extends AbstractController
                 newPasswordRequest.password
             );
             const dto: PasswordResetResponseDTO = {
-                passwordReset: true
+                passwordReset: true,
             };
             logger.info(
                 `${this.constructor.name}.${this.patchResetPassword.name}, Response sent`
@@ -208,7 +208,7 @@ export class DefaultUsersController extends AbstractController
             const username = await this.registrationService.verifyUser(token);
             const dto: ActivationResponseDTO = {
                 activation: true,
-                username
+                username,
             };
             logger.info(
                 `${this.constructor.name}.${this.patchVerification.name}, Response sent`
@@ -234,7 +234,7 @@ export class DefaultUsersController extends AbstractController
             const username = await this.registrationService.activateUser(token);
             const dto: ActivationResponseDTO = {
                 activation: true,
-                username
+                username,
             };
             logger.info(
                 `${this.constructor.name}.${this.patchActivation.name}, Response sent`
@@ -262,7 +262,7 @@ export class DefaultUsersController extends AbstractController
             await this.registrationService.registerUser(credentials);
             const dto: RegistrationRequestResponseDTO = {
                 registerRequest: true,
-                email: credentials.email
+                email: credentials.email,
             };
 
             logger.info(
@@ -292,7 +292,7 @@ export class DefaultUsersController extends AbstractController
 
             const dto: NewsConfirmationResponseDTO = {
                 newsconfirmation: true,
-                username
+                username,
             };
             logger.info(
                 `${this.constructor.name}.${this.patchNewsConfirmation.name}, Response sent`
@@ -312,19 +312,19 @@ export class DefaultUsersController extends AbstractController
         } else if (error instanceof JsonWebTokenError) {
             const dto = {
                 code: SERVER_ERROR_CODE.AUTHORIZATION_ERROR,
-                message: 'Unauthorized request'
+                message: 'Unauthorized request',
             };
             this.unauthorized(res, dto);
         } else if (error instanceof AuthorizationError) {
             let dto: FailedLoginErrorDTO = {
                 code: SERVER_ERROR_CODE.AUTHENTICATION_ERROR,
-                message: 'Authentication failure'
+                message: 'Authentication failure',
             };
             if (error.timeToWait) {
                 dto = {
                     code: SERVER_ERROR_CODE.AUTHENTICATION_ERROR,
                     message: 'Too many failed login attempts',
-                    waitTime: error.timeToWait
+                    waitTime: error.timeToWait,
                 };
             }
             this.unauthorized(res, dto);
@@ -362,7 +362,7 @@ export class DefaultUsersController extends AbstractController
                 newsMailAgreed: registrationDetail.newsMailAgreed,
                 institution: '',
                 userAgent: req.headers['user-agent'] as string,
-                host: req.headers['host'] as string
+                host: req.headers['host'] as string,
             };
             return credentials;
         } catch (error) {
@@ -379,7 +379,7 @@ export class DefaultUsersController extends AbstractController
             password: req.body.password,
             userAgent: req.headers['user-agent'],
             host: req.headers['host'],
-            gdprDate: req.body.gdprDate
+            gdprDate: req.body.gdprDate,
         };
     }
     private fromLoginResponseToResponseDTO(
@@ -391,7 +391,7 @@ export class DefaultUsersController extends AbstractController
             email: response.user.email,
             token: response.token,
             instituteId: response.user.institution.uniqueId,
-            gdprAgreementRequested: response.gdprAgreementRequested
+            gdprAgreementRequested: response.gdprAgreementRequested,
         };
     }
 }

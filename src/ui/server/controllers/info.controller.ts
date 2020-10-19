@@ -15,7 +15,7 @@ const pjson = require('../../../../package.json');
 
 enum INFO_ROUTE {
     ROOT = '/info',
-    GDPR_DATE = '/gdpr-date'
+    GDPR_DATE = '/gdpr-date',
 }
 @controller(ROUTE.VERSION + INFO_ROUTE.ROOT)
 export class DefaultSystemInfoController extends AbstractController
@@ -45,7 +45,7 @@ export class DefaultSystemInfoController extends AbstractController
             const dto: SystemInformationDTO = {
                 version: pjson.version,
                 lastChange: pjson.fclConfig.lastChange,
-                supportContact: this.supportContact
+                supportContact: this.supportContact,
             };
             logger.info(
                 `${this.constructor.name}.${this.getSystemInfo.name}, Response sent`
@@ -78,7 +78,7 @@ export class DefaultSystemInfoController extends AbstractController
                 );
             }
             const dto: GDPRDateDTO = {
-                gdprDate: gdprDate
+                gdprDate: gdprDate,
             };
             logger.info(
                 `${this.constructor.name}.${this.getGDPRDate.name}, Response sent`

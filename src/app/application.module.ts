@@ -1,7 +1,7 @@
 import { ContainerModule, interfaces } from 'inversify';
 import {
     ConfigurationService,
-    ApplicationConfiguration
+    ApplicationConfiguration,
 } from './core/model/configuration.model';
 import { DefaultConfigurationService } from './core/application/configuration.service';
 import { NotificationService } from './core/model/notification.model';
@@ -16,7 +16,7 @@ import { RegistrationService } from './authentication/model/registration.model';
 import { DefaultRegistrationService } from './authentication/application/registration.service';
 import {
     PasswordService,
-    LoginService
+    LoginService,
 } from './authentication/model/login.model';
 import { DefaultPasswordService } from './authentication/application/password.service';
 import { DefaultLoginService } from './authentication/application/login.service';

@@ -22,12 +22,12 @@ describe('Verify User Use Case', () => {
                 jobRecipient: 'test',
                 login: {
                     threshold: 0,
-                    secondsDelay: 0
+                    secondsDelay: 0,
                 },
                 apiUrl: 'test',
                 supportContact: 'test',
                 jwtSecret: 'test',
-                gdprDate: 'test'
+                gdprDate: 'test',
             }),
             mockPersistenceContainerModule
         );
@@ -55,14 +55,14 @@ describe('Verify User Use Case', () => {
             [
                 {
                     id: APPLICATION_TYPES.TokenService,
-                    instance: mockTokenService
-                }
+                    instance: mockTokenService,
+                },
             ]
         );
         expect.assertions(1);
         return service
             .verifyUser(token)
-            .then(result =>
+            .then((result) =>
                 expect(
                     mockTokenService.getUserTokenByJWT.mock.calls.length
                 ).toBe(1)
@@ -76,14 +76,14 @@ describe('Verify User Use Case', () => {
             [
                 {
                     id: APPLICATION_TYPES.TokenService,
-                    instance: mockTokenService
-                }
+                    instance: mockTokenService,
+                },
             ]
         );
         expect.assertions(1);
         return service
             .verifyUser(token)
-            .then(result =>
+            .then((result) =>
                 expect(
                     mockTokenService.verifyTokenWithUser.mock.calls.length
                 ).toBe(1)
@@ -98,23 +98,23 @@ describe('Verify User Use Case', () => {
             [
                 {
                     id: APPLICATION_TYPES.TokenService,
-                    instance: mockTokenService
+                    instance: mockTokenService,
                 },
                 {
                     id: APPLICATION_TYPES.UserService,
-                    instance: mockUserService
-                }
+                    instance: mockUserService,
+                },
             ]
         );
         expect.assertions(1);
         const isVerified = jest.fn();
         (mockUserService.getUserById as jest.Mock).mockReturnValueOnce({
             ...user,
-            ...{ isVerified }
+            ...{ isVerified },
         });
         return service
             .verifyUser(token)
-            .then(result => expect(isVerified.mock.calls.length).toBe(1));
+            .then((result) => expect(isVerified.mock.calls.length).toBe(1));
     });
     it('should call the user Repository to update the user', () => {
         const mockUserService = getMockUserService();
@@ -125,18 +125,18 @@ describe('Verify User Use Case', () => {
             [
                 {
                     id: APPLICATION_TYPES.TokenService,
-                    instance: mockTokenService
+                    instance: mockTokenService,
                 },
                 {
                     id: APPLICATION_TYPES.UserService,
-                    instance: mockUserService
-                }
+                    instance: mockUserService,
+                },
             ]
         );
         expect.assertions(1);
         return service
             .verifyUser(token)
-            .then(result =>
+            .then((result) =>
                 expect(
                     (mockUserService.updateUser as jest.Mock).mock.calls.length
                 ).toBe(1)
@@ -150,14 +150,14 @@ describe('Verify User Use Case', () => {
             [
                 {
                     id: APPLICATION_TYPES.TokenService,
-                    instance: mockTokenService
-                }
+                    instance: mockTokenService,
+                },
             ]
         );
         expect.assertions(1);
         return service
             .verifyUser(token)
-            .then(result =>
+            .then((result) =>
                 expect(
                     mockTokenService.deleteTokenForUser.mock.calls.length
                 ).toBe(2)
@@ -172,12 +172,12 @@ describe('Verify User Use Case', () => {
             [
                 {
                     id: APPLICATION_TYPES.TokenService,
-                    instance: mockTokenService
+                    instance: mockTokenService,
                 },
                 {
                     id: APPLICATION_TYPES.UserService,
-                    instance: mockUserService
-                }
+                    instance: mockUserService,
+                },
             ]
         );
         mockUserService.getUserById = jest.fn(() => {
@@ -187,11 +187,11 @@ describe('Verify User Use Case', () => {
         mockTokenService.deleteTokenForUser.mockReset();
         expect.assertions(1);
         return service.verifyUser(token).then(
-            result =>
+            (result) =>
                 expect(
                     mockTokenService.deleteTokenForUser.mock.calls.length
                 ).toBe(0),
-            err => expect(err).toBeTruthy()
+            (err) => expect(err).toBeTruthy()
         );
     });
 });

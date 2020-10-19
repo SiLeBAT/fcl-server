@@ -1,7 +1,7 @@
 import {
     InstituteService,
     Institute,
-    InstituteRepository
+    InstituteRepository,
 } from '../model/institute.model';
 import { injectable, inject } from 'inversify';
 import { APPLICATION_TYPES } from './../../application.types';
@@ -14,7 +14,7 @@ export class DefaultInstituteService implements InstituteService {
     ) {}
 
     retrieveInstitutes(): Promise<Institute[]> {
-        return this.instituteRepository.retrieve().then(institutes => {
+        return this.instituteRepository.retrieve().then((institutes) => {
             return institutes.filter(
                 (institute: Institute) => institute.name !== 'dummy'
             );

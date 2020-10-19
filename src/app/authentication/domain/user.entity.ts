@@ -8,7 +8,7 @@ const defaultHashOptions = {
     timeCost: 10,
     memoryCost: 1024,
     parallelism: 4,
-    type: argon2.argon2id
+    type: argon2.argon2id,
 };
 
 class GenericUser implements User {
@@ -123,7 +123,7 @@ class GenericUser implements User {
 
     updatePassword(password: string): Promise<string> {
         return this.hashPassword(password).then(
-            hashed => (this._password = hashed)
+            (hashed) => (this._password = hashed)
         );
     }
 

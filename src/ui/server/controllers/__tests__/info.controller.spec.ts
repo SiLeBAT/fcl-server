@@ -22,19 +22,19 @@ describe('Info controller', () => {
                 publicAPIDoc: {},
                 jwtSecret: 'test',
                 logLevel: 'info',
-                supportContact: 'test'
+                supportContact: 'test',
             }),
             getApplicationContainerModule({
                 appName: 'test',
                 jobRecipient: 'test',
                 login: {
                     threshold: 0,
-                    secondsDelay: 0
+                    secondsDelay: 0,
                 },
                 apiUrl: 'test',
                 supportContact: 'test',
                 jwtSecret: 'test',
-                gdprDate: 'test'
+                gdprDate: 'test',
             }),
             mockPersistenceContainerModule
         );
@@ -46,10 +46,10 @@ describe('Info controller', () => {
         container = null;
     });
 
-    it('should respond with JSON', function() {
+    it('should respond with JSON', function () {
         const res = new mockRes();
         expect.assertions(4);
-        return controller.getSystemInfo(res).then(success => {
+        return controller.getSystemInfo(res).then((success) => {
             expect(res.statusCode).toBe(200);
             const body = res._getJSON();
             expect(body).toHaveProperty('version');

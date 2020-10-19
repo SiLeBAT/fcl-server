@@ -15,7 +15,7 @@ export function rebindMocks<T>(
     if (!container) {
         throw Error();
     }
-    newBindings.forEach(binding => {
+    newBindings.forEach((binding) => {
         container.rebind(binding.id).toConstantValue(binding.instance);
     });
 

@@ -21,12 +21,12 @@ describe('Activate User Use Case', () => {
                 jobRecipient: 'test',
                 login: {
                     threshold: 0,
-                    secondsDelay: 0
+                    secondsDelay: 0,
                 },
                 apiUrl: 'test',
                 supportContact: 'test',
                 jwtSecret: 'test',
-                gdprDate: 'test'
+                gdprDate: 'test',
             }),
             mockPersistenceContainerModule
         );
@@ -52,14 +52,14 @@ describe('Activate User Use Case', () => {
             [
                 {
                     id: APPLICATION_TYPES.TokenService,
-                    instance: mockTokenService
-                }
+                    instance: mockTokenService,
+                },
             ]
         );
         expect.assertions(1);
         return service
             .activateUser(token)
-            .then(result =>
+            .then((result) =>
                 expect(
                     mockTokenService.getUserTokenByJWT.mock.calls.length
                 ).toBe(1)
@@ -73,14 +73,14 @@ describe('Activate User Use Case', () => {
             [
                 {
                     id: APPLICATION_TYPES.TokenService,
-                    instance: mockTokenService
-                }
+                    instance: mockTokenService,
+                },
             ]
         );
         expect.assertions(1);
         return service
             .activateUser(token)
-            .then(result =>
+            .then((result) =>
                 expect(
                     mockTokenService.verifyTokenWithUser.mock.calls.length
                 ).toBe(1)
@@ -95,22 +95,22 @@ describe('Activate User Use Case', () => {
             [
                 {
                     id: APPLICATION_TYPES.TokenService,
-                    instance: mockTokenService
+                    instance: mockTokenService,
                 },
                 {
                     id: APPLICATION_TYPES.UserService,
-                    instance: mockUserService
-                }
+                    instance: mockUserService,
+                },
             ]
         );
         expect.assertions(1);
         const isActivated = jest.fn();
         (mockUserService.getUserById as jest.Mock).mockReturnValueOnce({
-            isActivated
+            isActivated,
         });
         return service
             .activateUser(token)
-            .then(result => expect(isActivated.mock.calls.length).toBe(1));
+            .then((result) => expect(isActivated.mock.calls.length).toBe(1));
     });
     it('should call the token Repository to delete the token', () => {
         const mockTokenService = getMockTokenService();
@@ -120,14 +120,14 @@ describe('Activate User Use Case', () => {
             [
                 {
                     id: APPLICATION_TYPES.TokenService,
-                    instance: mockTokenService
-                }
+                    instance: mockTokenService,
+                },
             ]
         );
         expect.assertions(1);
         return service
             .activateUser(token)
-            .then(result =>
+            .then((result) =>
                 expect(
                     mockTokenService.deleteTokenForUser.mock.calls.length
                 ).toBe(1)
@@ -142,12 +142,12 @@ describe('Activate User Use Case', () => {
             [
                 {
                     id: APPLICATION_TYPES.TokenService,
-                    instance: mockTokenService
+                    instance: mockTokenService,
                 },
                 {
                     id: APPLICATION_TYPES.UserService,
-                    instance: mockUserService
-                }
+                    instance: mockUserService,
+                },
             ]
         );
         mockUserService.getUserById = jest.fn(() => {
@@ -155,11 +155,11 @@ describe('Activate User Use Case', () => {
         });
         expect.assertions(1);
         return service.activateUser(token).then(
-            result =>
+            (result) =>
                 expect(
                     mockTokenService.deleteTokenForUser.mock.calls.length
                 ).toBe(0),
-            err => expect(err).toBeTruthy()
+            (err) => expect(err).toBeTruthy()
         );
     });
     it('should trigger notification: sendNotification', () => {
@@ -171,18 +171,18 @@ describe('Activate User Use Case', () => {
             [
                 {
                     id: APPLICATION_TYPES.TokenService,
-                    instance: mockTokenService
+                    instance: mockTokenService,
                 },
                 {
                     id: APPLICATION_TYPES.NotificationService,
-                    instance: mockNotificationService
-                }
+                    instance: mockNotificationService,
+                },
             ]
         );
         expect.assertions(1);
         return service
             .activateUser(token)
-            .then(result =>
+            .then((result) =>
                 expect(
                     mockNotificationService.sendNotification.mock.calls.length
                 ).toBe(1)

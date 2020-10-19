@@ -7,6 +7,6 @@ export function getMockRegistrationService(): RegistrationService {
         activateUser: jest.fn(),
         registerUser: jest.fn(),
         handleNotActivatedUser: jest.fn(),
-        confirmNewsletterSubscription: jest.fn()
+        confirmNewsletterSubscription: jest.fn(),
     };
 }

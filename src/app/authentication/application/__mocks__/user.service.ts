@@ -20,7 +20,7 @@ export const genericUser: User = {
         zip: 'test',
         phone: 'test',
         fax: 'test',
-        email: []
+        email: [],
     },
     getFullName: jest.fn(),
     isAuthorized: jest.fn(),
@@ -31,7 +31,7 @@ export const genericUser: User = {
     getLastLoginAttempt: jest.fn(),
     updateNumberOfFailedAttempts: jest.fn(),
     updateLastLoginAttempt: jest.fn(),
-    isNewsMailAgreed: jest.fn(() => true)
+    isNewsMailAgreed: jest.fn(() => true),
 };
 
 export function getMockUserService(): UserService {
@@ -40,6 +40,6 @@ export function getMockUserService(): UserService {
         getUserByEmail: jest.fn(() => Promise.resolve(genericUser)),
         updateUser: jest.fn(),
         createUser: jest.fn(() => Promise.resolve(genericUser)),
-        hasUserWithEmail: jest.fn(() => Promise.resolve(false))
+        hasUserWithEmail: jest.fn(() => Promise.resolve(false)),
     };
 }

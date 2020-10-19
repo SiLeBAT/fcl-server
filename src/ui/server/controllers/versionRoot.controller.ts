@@ -51,7 +51,7 @@ export class DefaultVersionRootController extends AbstractController
 
     // tslint:disable-next-line: no-any
     private search(term: string, object: APIDefinition, found: any[] = []) {
-        Object.keys(object).forEach(key => {
+        Object.keys(object).forEach((key) => {
             if (key === term) {
                 found.push(object[key]);
                 return found;
@@ -101,7 +101,7 @@ export class DefaultVersionRootController extends AbstractController
             (t: { name: string }) => t.name
         );
 
-        tags.forEach(tag => {
+        tags.forEach((tag) => {
             if (!_.includes(remainingTags, tag)) {
                 _.remove(
                     definition.tags,

@@ -1,7 +1,7 @@
 import { getContainer } from '../../../../aspects/container/container';
 import {
     RegistrationService,
-    UserRegistration
+    UserRegistration,
 } from '../../model/registration.model';
 import { createUser } from '../../domain/user.entity';
 import { Container } from 'inversify';
@@ -13,8 +13,8 @@ import { getMockInstituteService } from '../__mocks__/institute.service';
 
 jest.mock('./../../domain/user.entity', () => ({
     createUser: jest.fn(() => ({
-        updatePassword: jest.fn()
-    }))
+        updatePassword: jest.fn(),
+    })),
 }));
 
 describe('Register User Use Case', () => {
@@ -29,12 +29,12 @@ describe('Register User Use Case', () => {
                 jobRecipient: 'test',
                 login: {
                     threshold: 0,
-                    secondsDelay: 0
+                    secondsDelay: 0,
                 },
                 apiUrl: 'test',
                 supportContact: 'test',
                 jwtSecret: 'test',
-                gdprDate: 'test'
+                gdprDate: 'test',
             }),
             mockPersistenceContainerModule
         );
@@ -52,7 +52,7 @@ describe('Register User Use Case', () => {
             newsRegAgreed: false,
             newsMailAgreed: false,
             userAgent: 'test',
-            host: 'test'
+            host: 'test',
         };
 
         (createUser as jest.Mock).mockClear();
@@ -72,8 +72,8 @@ describe('Register User Use Case', () => {
             [
                 {
                     id: APPLICATION_TYPES.InstituteService,
-                    instance: mockInstituteService
-                }
+                    instance: mockInstituteService,
+                },
             ]
         );
         mockInstituteService.getInstituteById = jest.fn(() => {
@@ -81,12 +81,12 @@ describe('Register User Use Case', () => {
         });
         expect.assertions(1);
         return service.registerUser(credentials).then(
-            result =>
+            (result) =>
                 expect(
                     (mockInstituteService.getInstituteById as jest.Mock).mock
                         .calls.length
                 ).toBe(1),
-            err => {
+            (err) => {
                 return expect(err).toBeTruthy();
             }
         );
@@ -95,19 +95,19 @@ describe('Register User Use Case', () => {
         expect.assertions(1);
         return service
             .registerUser(credentials)
-            .then(result =>
+            .then((result) =>
                 expect((createUser as jest.Mock).mock.calls.length).toBe(1)
             );
     });
     it('should update password for new user', () => {
         const updatePassword = jest.fn();
         (createUser as jest.Mock).mockReturnValueOnce({
-            updatePassword
+            updatePassword,
         });
         expect.assertions(1);
         return service
             .registerUser(credentials)
-            .then(result =>
+            .then((result) =>
                 expect((updatePassword as jest.Mock).mock.calls.length).toBe(1)
             );
     });

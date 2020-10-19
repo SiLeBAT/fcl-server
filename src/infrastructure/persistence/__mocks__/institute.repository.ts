@@ -6,6 +6,6 @@ export function getMockInstituteRepository(): InstituteRepository {
         findByInstituteId: jest.fn(() => Promise.resolve(genericInstitute)),
         findByInstituteName: jest.fn(() => Promise.resolve(genericInstitute)),
         retrieve: jest.fn(() => Promise.resolve([genericInstitute])),
-        createInstitute: jest.fn()
+        createInstitute: jest.fn(),
     };
 }

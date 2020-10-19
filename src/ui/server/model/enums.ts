@@ -4,9 +4,9 @@ export enum SERVER_ERROR_CODE {
     AUTHENTICATION_ERROR = 3,
     INPUT_ERROR = 4,
     INVALID_INPUT = 5,
-    AUTOCORRECTED_INPUT = 6
+    AUTOCORRECTED_INPUT = 6,
 }
 
 export enum ROUTE {
-    VERSION = '/v1'
+    VERSION = '/v1',
 }

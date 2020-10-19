@@ -8,14 +8,14 @@ import {
     controller,
     httpGet,
     request,
-    response
+    response,
 } from 'inversify-express-utils';
 import { inject } from 'inversify';
 import { ROUTE } from '../model/enums';
 import { APPLICATION_TYPES } from './../../../app/application.types';
 
 enum INSTITUTES_ROUTE {
-    ROOT = '/institutes'
+    ROOT = '/institutes',
 }
 @controller(ROUTE.VERSION + INSTITUTES_ROUTE.ROOT)
 export class DefaultInstituteController extends AbstractController
@@ -34,7 +34,7 @@ export class DefaultInstituteController extends AbstractController
         await this.instiuteService
             .retrieveInstitutes()
             .then((institutions: Institute[]) => {
-                const institutes: InstituteDTO[] = institutions.map(i =>
+                const institutes: InstituteDTO[] = institutions.map((i) =>
                     this.fromInstituteEntityToDTO(i)
                 );
                 const dto: InstituteCollectionDTO = { institutes };
@@ -43,7 +43,7 @@ export class DefaultInstituteController extends AbstractController
                 );
                 this.ok(res, dto);
             })
-            .catch(error => {
+            .catch((error) => {
                 logger.info(
                     `${this.constructor.name}.${this.getInstitutes.name} has thrown an error. ${error}`
                 );
@@ -65,7 +65,7 @@ export class DefaultInstituteController extends AbstractController
             zip: inst.zip,
             phone: inst.phone,
             fax: inst.fax,
-            email: inst.email
+            email: inst.email,
         };
     }
 }

@@ -3,7 +3,7 @@ import * as mockReq from 'mock-express-request';
 import * as mockRes from 'mock-express-response';
 import {
     AuthorizationError,
-    getApplicationContainerModule
+    getApplicationContainerModule,
 } from '../../../../app/ports';
 import { UsersController } from '../../model/controller.model';
 import { Container } from 'inversify';
@@ -26,19 +26,19 @@ describe('Login controller', () => {
                 publicAPIDoc: {},
                 jwtSecret: 'test',
                 logLevel: 'info',
-                supportContact: 'test'
+                supportContact: 'test',
             }),
             getApplicationContainerModule({
                 appName: 'test',
                 jobRecipient: 'test',
                 login: {
                     threshold: 0,
-                    secondsDelay: 0
+                    secondsDelay: 0,
                 },
                 apiUrl: 'test',
                 supportContact: 'test',
                 jwtSecret: 'test',
-                gdprDate: 'test'
+                gdprDate: 'test',
             }),
             mockPersistenceContainerModule
         );
@@ -57,14 +57,14 @@ describe('Login controller', () => {
             [
                 {
                     id: APPLICATION_TYPES.LoginService,
-                    instance: mockLoginService
-                }
+                    instance: mockLoginService,
+                },
             ]
         );
         const req = new mockReq({
             body: {
-                email: 'test'
-            }
+                email: 'test',
+            },
         });
         const res = new mockRes();
         const result = controller.postLogin(req, res);
@@ -79,8 +79,8 @@ describe('Login controller', () => {
             [
                 {
                     id: APPLICATION_TYPES.LoginService,
-                    instance: mockLoginService
-                }
+                    instance: mockLoginService,
+                },
             ]
         );
         mockLoginService.loginUser.mockImplementation(() => {
@@ -88,13 +88,13 @@ describe('Login controller', () => {
         });
         const req = new mockReq({
             body: {
-                email: 'test2'
-            }
+                email: 'test2',
+            },
         });
         const res = new mockRes();
         const result = controller.postLogin(req, res);
         expect.assertions(1);
-        return result.then(data => {
+        return result.then((data) => {
             return expect(res.statusCode).toBe(500);
         });
     });
@@ -107,8 +107,8 @@ describe('Login controller', () => {
             [
                 {
                     id: APPLICATION_TYPES.LoginService,
-                    instance: mockLoginService
-                }
+                    instance: mockLoginService,
+                },
             ]
         );
         mockLoginService.loginUser.mockImplementation(() => {
@@ -116,13 +116,13 @@ describe('Login controller', () => {
         });
         const req = new mockReq({
             body: {
-                email: 'test3'
-            }
+                email: 'test3',
+            },
         });
         const res = new mockRes();
         const result = controller.postLogin(req, res);
         expect.assertions(1);
-        return result.then(data => {
+        return result.then((data) => {
             return expect(res.statusCode).toBe(401);
         });
     });
@@ -135,19 +135,19 @@ describe('Login controller', () => {
             [
                 {
                     id: APPLICATION_TYPES.LoginService,
-                    instance: mockLoginService
-                }
+                    instance: mockLoginService,
+                },
             ]
         );
         const req = new mockReq({
             body: {
-                email: 'test4'
-            }
+                email: 'test4',
+            },
         });
         const res = new mockRes();
         const result = controller.postLogin(req, res);
         expect.assertions(1);
-        return result.then(data => {
+        return result.then((data) => {
             return expect(res.statusCode).toBe(200);
         });
     });

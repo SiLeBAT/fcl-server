@@ -14,13 +14,13 @@ import { MongooseInstitutionModel } from './mongoose.model';
 class MongooseDataStore implements DataStore {
     constructor(connecionString: string) {
         mongoose.connect(connecionString).then(
-            db => {
+            (db) => {
                 logger.info('Connected to DB', {
-                    connectionString: connecionString
+                    connectionString: connecionString,
                 });
                 return db;
             },
-            error => {
+            (error) => {
                 throw new Error(
                     `Unable to connect to DB. connectionString=${connecionString} error=${error}`
                 );
@@ -34,7 +34,7 @@ class MongooseDataStore implements DataStore {
             .then(() => {
                 logger.info('Successfully closed DB');
             })
-            .catch(error => {
+            .catch((error) => {
                 throw new Error(`Unable to close DB. error=${error}`);
             });
     }
@@ -42,7 +42,7 @@ class MongooseDataStore implements DataStore {
     drop(collection: string) {
         const drop = mongoose.connection.collection(collection).drop();
         if (drop) {
-            drop.catch(error => {
+            drop.catch((error) => {
                 throw new Error(`Unable to close DB. error=${error}`);
             });
         }

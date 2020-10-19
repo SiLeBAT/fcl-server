@@ -5,7 +5,7 @@ export { UserNotFoundError } from './persistence/model/domain.error';
 export { createRepository } from './persistence/data-store/mongoose/mongoose.repository';
 export {
     createDataStore,
-    mapCollectionToRepository
+    mapCollectionToRepository,
 } from './persistence/data-store/mongoose/mongoose';
 export { DataStore } from './persistence/model/data-store.model';
 

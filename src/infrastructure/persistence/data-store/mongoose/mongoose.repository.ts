@@ -3,7 +3,7 @@ import {
     Model,
     Types,
     MongooseFilterQuery,
-    CreateQuery
+    CreateQuery,
 } from 'mongoose';
 import { injectable } from 'inversify';
 
@@ -56,7 +56,7 @@ export class MongooseRepositoryBase<T extends Document> {
                 { _id: this._toObjectId(_id) } as MongooseFilterQuery<T>,
                 {
                     ...attr,
-                    ...{ updated: Date.now() }
+                    ...{ updated: Date.now() },
                     // tslint:disable-next-line:no-any
                 } as any
             )

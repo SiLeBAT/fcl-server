@@ -2,7 +2,7 @@ import {
     PasswordService,
     RecoveryData,
     ResetSuccessNotificationPayload,
-    ResetRequestNotificationPayload
+    ResetRequestNotificationPayload,
 } from '../model/login.model';
 import { TokenType } from './../domain/enums';
 import { User, UserToken, UserService } from './../model/user.model';
@@ -10,7 +10,7 @@ import { NotificationType } from '../../core/domain/enums';
 import {
     NotificationService,
     EmailNotificationMeta,
-    Notification
+    Notification,
 } from '../../core/model/notification.model';
 import { TokenService } from '../model/token.model';
 import { ConfigurationService } from '../../core/model/configuration.model';
@@ -92,12 +92,12 @@ export class DefaultPasswordService implements PasswordService {
                 operating_system: recoveryData.host,
                 user_agent: recoveryData.userAgent,
                 support_contact: this.supportContact,
-                appName: this.appName
+                appName: this.appName,
             },
             meta: this.notificationService.createEmailNotificationMetaData(
                 user.email,
                 `Setzen Sie Ihr ${this.appName}-Konto Passwort zurück.`
-            )
+            ),
         };
     }
 
@@ -111,12 +111,12 @@ export class DefaultPasswordService implements PasswordService {
                 api_url: this.apiUrl,
                 email: user.email,
                 action_url: this.apiUrl + '/users/login',
-                appName: this.appName
+                appName: this.appName,
             },
             meta: this.notificationService.createEmailNotificationMetaData(
                 user.email,
                 `Passwort für ${this.appName}-Konto erfolgreich zurückgesetzt.`
-            )
+            ),
         };
     }
 }

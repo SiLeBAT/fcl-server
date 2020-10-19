@@ -5,7 +5,7 @@ import {
     TokenRepository,
     User,
     TokenType,
-    UserToken
+    UserToken,
 } from './../../../app/ports';
 import { injectable, inject } from 'inversify';
 import { Model } from 'mongoose';
@@ -23,9 +23,11 @@ export class DefaultTokenRepository extends MongooseRepositoryBase<TokenModel>
         user: User,
         type: TokenType = TokenType.ACTIVATE
     ): Promise<boolean> {
-        return super._find({ user: user.uniqueId, type }, {}, {}).then(docs => {
-            return docs.length > 0;
-        });
+        return super
+            ._find({ user: user.uniqueId, type }, {}, {})
+            .then((docs) => {
+                return docs.length > 0;
+            });
     }
     deleteTokenForUser(
         user: User,
@@ -40,9 +42,9 @@ export class DefaultTokenRepository extends MongooseRepositoryBase<TokenModel>
         const newToken = new this.model({
             token: token.token,
             type: token.type,
-            user: token.userId
+            user: token.userId,
         });
-        return super._create(newToken).then(res => newToken);
+        return super._create(newToken).then((res) => newToken);
     }
     getUserTokenByJWT(token: string): Promise<UserToken> {
         return super._findOne({ token: token }).then((model: TokenModel) => {
@@ -54,7 +56,7 @@ export class DefaultTokenRepository extends MongooseRepositoryBase<TokenModel>
             return {
                 token: model.token,
                 type: model.type,
-                userId: model.user
+                userId: model.user,
             };
         });
     }

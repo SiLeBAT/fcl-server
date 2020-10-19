@@ -12,5 +12,5 @@ export const APPLICATION_TYPES = {
 
     InstituteRepository: Symbol.for('InstituteRepository'),
     UserRepository: Symbol.for('UserRepository'),
-    TokenRepository: Symbol.for('TokenRepository')
+    TokenRepository: Symbol.for('TokenRepository'),
 };

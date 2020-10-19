@@ -13,7 +13,7 @@ import {
     MailService,
     MailConfiguration,
     EmailData,
-    MailOptions
+    MailOptions,
 } from './mail.model';
 import { MAIL_TYPES } from './mail.types';
 
@@ -103,7 +103,7 @@ export class DefaultMailService implements MailService {
                     break;
                 default:
                     logger.warn('Unknown notification type', {
-                        notification: data.type
+                        notification: data.type,
                     });
             }
             if (templateFile) {
@@ -111,8 +111,8 @@ export class DefaultMailService implements MailService {
                     ...data.meta,
                     ...{
                         from: this.mailConfiguration.fromAddress,
-                        replyTo: this.mailConfiguration.replyToAddress
-                    }
+                        replyTo: this.mailConfiguration.replyToAddress,
+                    },
                 });
             }
         };
@@ -133,15 +133,15 @@ export class DefaultMailService implements MailService {
             host: this.host,
             port: this.port,
             tls: {
-                rejectUnauthorized: false
-            }
+                rejectUnauthorized: false,
+            },
         });
 
         const mailOptions = {
             ...options,
             ...{
-                html: result
-            }
+                html: result,
+            },
         };
 
         try {
@@ -153,7 +153,7 @@ export class DefaultMailService implements MailService {
                     return error;
                 } else {
                     logger.info('Email sent', {
-                        subject: mailOptions.subject
+                        subject: mailOptions.subject,
                     });
                     logger.verbose(JSON.stringify(info));
                     return info;

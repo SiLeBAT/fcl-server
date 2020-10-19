@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import {
     MongooseUserModel,
     MongooseTokenModel,
-    MongooseInstitutionModel
+    MongooseInstitutionModel,
 } from './data-store/mongoose/mongoose.model';
 import { UserModel } from './data-store/mongoose/schemas/user.schema';
 import { TokenModel } from './data-store/mongoose/schemas/resetToken.schema';
@@ -12,7 +12,7 @@ import { InstitutionModel } from './data-store/mongoose/schemas/institution.sche
 import {
     InstituteRepository,
     UserRepository,
-    TokenRepository
+    TokenRepository,
 } from '../../app/ports';
 import { MongooseInstituteRepository } from './repositories/institute.repository';
 import { DefaultUserRepository } from './repositories/user.repository';

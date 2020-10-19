@@ -20,12 +20,12 @@ describe('Login User Use Case', () => {
                 jobRecipient: 'test',
                 login: {
                     threshold: 0,
-                    secondsDelay: 0
+                    secondsDelay: 0,
                 },
                 apiUrl: 'test',
                 supportContact: 'test',
                 jwtSecret: 'test',
-                gdprDate: 'test'
+                gdprDate: 'test',
             }),
             mockPersistenceContainerModule
         );
@@ -40,7 +40,7 @@ describe('Login User Use Case', () => {
             password: 'test',
             userAgent: 'test',
             host: 'test',
-            gdprDate: 'test'
+            gdprDate: 'test',
         };
         const result = service.loginUser(credentials);
         // tslint:disable-next-line: no-floating-promises
@@ -58,12 +58,12 @@ describe('Login User Use Case', () => {
             [
                 {
                     id: APPLICATION_TYPES.TokenService,
-                    instance: mockTokenService
+                    instance: mockTokenService,
                 },
                 {
                     id: APPLICATION_TYPES.UserService,
-                    instance: mockUserService
-                }
+                    instance: mockUserService,
+                },
             ]
         );
         mockUserService.getUserByEmail = jest.fn(() =>
@@ -75,11 +75,11 @@ describe('Login User Use Case', () => {
             password: 'test',
             userAgent: 'test',
             host: 'test',
-            gdprDate: 'test'
+            gdprDate: 'test',
         };
         const result = service.loginUser(credentials);
         expect.assertions(1);
-        return result.then(data => expect(data.user).toEqual(mockUser));
+        return result.then((data) => expect(data.user).toEqual(mockUser));
     });
 
     it('should be return a login fail because unauthorized', () => {
@@ -93,12 +93,12 @@ describe('Login User Use Case', () => {
             [
                 {
                     id: APPLICATION_TYPES.TokenService,
-                    instance: mockTokenService
+                    instance: mockTokenService,
                 },
                 {
                     id: APPLICATION_TYPES.UserService,
-                    instance: mockUserService
-                }
+                    instance: mockUserService,
+                },
             ]
         );
         mockUserService.getUserByEmail = jest.fn(() =>
@@ -109,14 +109,14 @@ describe('Login User Use Case', () => {
             password: 'test',
             userAgent: 'test',
             host: 'test',
-            gdprDate: 'test'
+            gdprDate: 'test',
         };
 
         const result = service.loginUser(credentials);
         expect.assertions(1);
         return result.then(
-            data => expect(data).toBe(false),
-            err => {
+            (data) => expect(data).toBe(false),
+            (err) => {
                 return expect(err).toBeTruthy();
             }
         );
@@ -130,8 +130,8 @@ describe('Login User Use Case', () => {
             [
                 {
                     id: APPLICATION_TYPES.RegistrationService,
-                    instance: mockActivationService
-                }
+                    instance: mockActivationService,
+                },
             ]
         );
         mockActivationService.prepareUserForVerification = jest.fn(() =>
@@ -147,15 +147,15 @@ describe('Login User Use Case', () => {
             password: 'test',
             userAgent: 'test',
             host: 'test',
-            gdprDate: 'test'
+            gdprDate: 'test',
         };
         const result = service.loginUser(credentials);
         expect.assertions(1);
         return result.then(
-            data => {
+            (data) => {
                 return true;
             },
-            err => {
+            (err) => {
                 return expect(err).toBeTruthy();
             }
         );
@@ -169,8 +169,8 @@ describe('Login User Use Case', () => {
             [
                 {
                     id: APPLICATION_TYPES.RegistrationService,
-                    instance: mockActivationService
-                }
+                    instance: mockActivationService,
+                },
             ]
         );
         mockActivationService.prepareUserForVerification = jest.fn(() =>
@@ -186,15 +186,15 @@ describe('Login User Use Case', () => {
             password: 'test',
             userAgent: 'test',
             host: 'test',
-            gdprDate: 'test'
+            gdprDate: 'test',
         };
         const result = service.loginUser(credentials);
         expect.assertions(1);
         return result.then(
-            data => {
+            (data) => {
                 return true;
             },
-            err => {
+            (err) => {
                 return expect(err).toBeTruthy();
             }
         );
@@ -208,8 +208,8 @@ describe('Login User Use Case', () => {
             [
                 {
                     id: APPLICATION_TYPES.RegistrationService,
-                    instance: mockActivationService
-                }
+                    instance: mockActivationService,
+                },
             ]
         );
         mockActivationService.prepareUserForVerification = jest.fn(() =>
@@ -225,15 +225,15 @@ describe('Login User Use Case', () => {
             password: 'test',
             userAgent: 'test',
             host: 'test',
-            gdprDate: 'test'
+            gdprDate: 'test',
         };
         const result = service.loginUser(credentials);
         expect.assertions(1);
         return result.then(
-            data => {
+            (data) => {
                 return true;
             },
-            err => {
+            (err) => {
                 return expect(err).toBeTruthy();
             }
         );

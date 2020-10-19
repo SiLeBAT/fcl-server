@@ -5,7 +5,7 @@ import {
     TokenPayload,
     AdminTokenPayload,
     TokenRepository,
-    NewsletterTokenPayload
+    NewsletterTokenPayload,
 } from '../model/token.model';
 import { User, UserToken } from '../model/user.model';
 import { TokenType } from '../domain/enums';
@@ -29,30 +29,30 @@ export class DefaultTokenService implements TokenService {
 
     generateToken(userId: string): string {
         const payload: TokenPayload = {
-            sub: userId
+            sub: userId,
         };
         return sign(payload, this.jwtSecret, {
-            expiresIn: this.expirationTime
+            expiresIn: this.expirationTime,
         });
     }
 
     generateAdminToken(id: string): string {
         const payload: AdminTokenPayload = {
             sub: id,
-            admin: true
+            admin: true,
         };
         return sign(payload, this.jwtSecret, {
-            expiresIn: this.adminExpirationTime
+            expiresIn: this.adminExpirationTime,
         });
     }
 
     generateNewsletterToken(id: string): string {
         const payload: NewsletterTokenPayload = {
             sub: id,
-            newsletter: true
+            newsletter: true,
         };
         return sign(payload, this.jwtSecret, {
-            expiresIn: this.expirationTime
+            expiresIn: this.expirationTime,
         });
     }
 
@@ -72,7 +72,7 @@ export class DefaultTokenService implements TokenService {
         return this.tokenRepository.saveToken({
             token,
             type,
-            userId
+            userId,
         });
     }
     getUserTokenByJWT(token: string): Promise<UserToken> {

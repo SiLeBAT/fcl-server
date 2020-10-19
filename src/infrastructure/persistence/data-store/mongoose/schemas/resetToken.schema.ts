@@ -12,27 +12,27 @@ export interface TokenModel extends mongoose.Document, UserToken {
 export const tokenSchema = new Schema({
     token: {
         type: String,
-        required: true
+        required: true,
     },
     type: {
         type: String,
-        required: true
+        required: true,
     },
     created: {
         type: Date,
         default: Date.now,
-        required: true
+        required: true,
     },
     updated: {
         type: Date,
         default: Date.now,
-        required: true
+        required: true,
     },
     user: {
         type: Schema.Types.ObjectId,
-        ref: 'User'
-    }
-}).pre('save', function(next) {
+        ref: 'User',
+    },
+}).pre('save', function (next) {
     if (this) {
         let doc = this as TokenModel;
         let now = new Date();

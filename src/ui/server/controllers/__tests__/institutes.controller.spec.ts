@@ -23,19 +23,19 @@ describe('Institution controller', () => {
                 publicAPIDoc: {},
                 jwtSecret: 'test',
                 logLevel: 'info',
-                supportContact: 'test'
+                supportContact: 'test',
             }),
             getApplicationContainerModule({
                 appName: 'test',
                 jobRecipient: 'test',
                 login: {
                     threshold: 0,
-                    secondsDelay: 0
+                    secondsDelay: 0,
                 },
                 apiUrl: 'test',
                 supportContact: 'test',
                 jwtSecret: 'test',
-                gdprDate: 'test'
+                gdprDate: 'test',
             }),
             mockPersistenceContainerModule
         );
@@ -47,16 +47,16 @@ describe('Institution controller', () => {
         container = null;
     });
 
-    it('should respond with list of institutes', function() {
+    it('should respond with list of institutes', function () {
         const req = new mockReq({
             method: 'GET',
             headers: {
-                'content-type': 'application/json'
-            }
+                'content-type': 'application/json',
+            },
         });
         const res = new mockRes();
         expect.assertions(2);
-        return controller.getInstitutes(req, res).then(success => {
+        return controller.getInstitutes(req, res).then((success) => {
             expect(res.statusCode).toBe(200);
             const body = res._getJSON();
             expect(body).toHaveProperty('institutes');

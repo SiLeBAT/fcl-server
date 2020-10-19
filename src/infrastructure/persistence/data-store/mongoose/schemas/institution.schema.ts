@@ -17,48 +17,48 @@ export interface InstitutionModel extends Document {
 export const institutionSchema = new Schema({
     state_short: {
         type: String,
-        required: true
+        required: true,
     },
     name1: {
         type: String,
-        required: true
+        required: true,
     },
     name2: {
-        type: String
+        type: String,
     },
     location: {
         type: String,
-        required: true
+        required: true,
     },
     phone: {
         type: String,
-        required: true
+        required: true,
     },
     fax: {
-        type: String
+        type: String,
     },
     zip: {
-        type: String
+        type: String,
     },
     city: {
-        type: String
+        type: String,
     },
     email: [
         {
-            type: String
-        }
+            type: String,
+        },
     ],
     created: {
         type: Date,
         default: Date.now,
-        required: true
+        required: true,
     },
     updated: {
         type: Date,
         default: Date.now,
-        required: true
-    }
-}).pre('save', function(next) {
+        required: true,
+    },
+}).pre('save', function (next) {
     if (this) {
         let doc = this as InstitutionModel;
         let now = new Date();

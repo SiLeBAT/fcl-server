@@ -14,8 +14,8 @@ import { genericUser } from '../__mocks__/user.service';
 
 jest.mock('./../../domain/user.entity', () => ({
     createUser: jest.fn(() => ({
-        updatePassword: jest.fn()
-    }))
+        updatePassword: jest.fn(),
+    })),
 }));
 
 describe('Prepare User for Activation Use Case', () => {
@@ -31,12 +31,12 @@ describe('Prepare User for Activation Use Case', () => {
                 jobRecipient: 'test',
                 login: {
                     threshold: 0,
-                    secondsDelay: 0
+                    secondsDelay: 0,
                 },
                 apiUrl: 'test',
                 supportContact: 'test',
                 jwtSecret: 'test',
-                gdprDate: 'test'
+                gdprDate: 'test',
             }),
             mockPersistenceContainerModule
         );
@@ -47,7 +47,7 @@ describe('Prepare User for Activation Use Case', () => {
         recoveryData = {
             email: 'test',
             userAgent: 'test',
-            host: 'test'
+            host: 'test',
         };
 
         (createUser as jest.Mock).mockClear();
@@ -68,14 +68,14 @@ describe('Prepare User for Activation Use Case', () => {
             [
                 {
                     id: APPLICATION_TYPES.TokenService,
-                    instance: mockTokenService
-                }
+                    instance: mockTokenService,
+                },
             ]
         );
         expect.assertions(1);
         return service
             .prepareUserForVerification(user, recoveryData)
-            .then(result =>
+            .then((result) =>
                 expect(mockTokenService.hasTokenForUser.mock.calls.length).toBe(
                     1
                 )
@@ -90,14 +90,14 @@ describe('Prepare User for Activation Use Case', () => {
             [
                 {
                     id: APPLICATION_TYPES.TokenService,
-                    instance: mockTokenService
-                }
+                    instance: mockTokenService,
+                },
             ]
         );
         expect.assertions(1);
         return service
             .prepareUserForVerification(user, recoveryData)
-            .then(result =>
+            .then((result) =>
                 expect(
                     mockTokenService.deleteTokenForUser.mock.calls.length
                 ).toBe(1)
@@ -111,8 +111,8 @@ describe('Prepare User for Activation Use Case', () => {
             [
                 {
                     id: APPLICATION_TYPES.TokenService,
-                    instance: mockTokenService
-                }
+                    instance: mockTokenService,
+                },
             ]
         );
         mockTokenService.hasTokenForUser = jest.fn(() =>
@@ -121,7 +121,7 @@ describe('Prepare User for Activation Use Case', () => {
         expect.assertions(1);
         return service
             .prepareUserForVerification(user, recoveryData)
-            .then(result =>
+            .then((result) =>
                 expect(
                     mockTokenService.deleteTokenForUser.mock.calls.length
                 ).toBe(0)
@@ -135,14 +135,14 @@ describe('Prepare User for Activation Use Case', () => {
             [
                 {
                     id: APPLICATION_TYPES.TokenService,
-                    instance: mockTokenService
-                }
+                    instance: mockTokenService,
+                },
             ]
         );
         expect.assertions(1);
         return service
             .prepareUserForVerification(user, recoveryData)
-            .then(result =>
+            .then((result) =>
                 expect(mockTokenService.generateToken.mock.calls.length).toBe(1)
             );
     });
@@ -154,14 +154,14 @@ describe('Prepare User for Activation Use Case', () => {
             [
                 {
                     id: APPLICATION_TYPES.TokenService,
-                    instance: mockTokenService
-                }
+                    instance: mockTokenService,
+                },
             ]
         );
         expect.assertions(1);
         return service
             .prepareUserForVerification(user, recoveryData)
-            .then(result =>
+            .then((result) =>
                 expect(mockTokenService.saveToken.mock.calls.length).toBe(1)
             );
     });
@@ -174,18 +174,18 @@ describe('Prepare User for Activation Use Case', () => {
             [
                 {
                     id: APPLICATION_TYPES.TokenService,
-                    instance: mockTokenService
+                    instance: mockTokenService,
                 },
                 {
                     id: APPLICATION_TYPES.NotificationService,
-                    instance: mockNotificationService
-                }
+                    instance: mockNotificationService,
+                },
             ]
         );
         expect.assertions(1);
         return service
             .prepareUserForVerification(user, recoveryData)
-            .then(result =>
+            .then((result) =>
                 expect(
                     mockNotificationService.sendNotification.mock.calls.length
                 ).toBe(1)

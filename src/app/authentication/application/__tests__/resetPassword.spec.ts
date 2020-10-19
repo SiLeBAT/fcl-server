@@ -22,12 +22,12 @@ describe('Reset Password Use Case', () => {
                 jobRecipient: 'test',
                 login: {
                     threshold: 0,
-                    secondsDelay: 0
+                    secondsDelay: 0,
                 },
                 apiUrl: 'test',
                 supportContact: 'test',
                 jwtSecret: 'test',
-                gdprDate: 'test'
+                gdprDate: 'test',
             }),
             mockPersistenceContainerModule
         );
@@ -59,23 +59,23 @@ describe('Reset Password Use Case', () => {
             [
                 {
                     id: APPLICATION_TYPES.TokenService,
-                    instance: mockTokenService
+                    instance: mockTokenService,
                 },
                 {
                     id: APPLICATION_TYPES.UserService,
-                    instance: mockUserService
-                }
+                    instance: mockUserService,
+                },
             ]
         );
 
         expect.assertions(1);
         const updatePassword = jest.fn();
         (mockUserService.getUserById as jest.Mock).mockReturnValueOnce({
-            updatePassword
+            updatePassword,
         });
         return service
             .resetPassword(token, password)
-            .then(result => expect(updatePassword.mock.calls.length).toBe(1));
+            .then((result) => expect(updatePassword.mock.calls.length).toBe(1));
     });
     it('should call the user Repository to update the user', () => {
         const mockTokenService = getMockTokenService();
@@ -87,18 +87,18 @@ describe('Reset Password Use Case', () => {
             [
                 {
                     id: APPLICATION_TYPES.TokenService,
-                    instance: mockTokenService
+                    instance: mockTokenService,
                 },
                 {
                     id: APPLICATION_TYPES.UserService,
-                    instance: mockUserService
-                }
+                    instance: mockUserService,
+                },
             ]
         );
         expect.assertions(1);
         return service
             .resetPassword(token, password)
-            .then(result =>
+            .then((result) =>
                 expect(
                     (mockUserService.updateUser as jest.Mock).mock.calls.length
                 ).toBe(1)
@@ -112,14 +112,14 @@ describe('Reset Password Use Case', () => {
             [
                 {
                     id: APPLICATION_TYPES.TokenService,
-                    instance: mockTokenService
-                }
+                    instance: mockTokenService,
+                },
             ]
         );
         expect.assertions(1);
         return service
             .resetPassword(token, password)
-            .then(result =>
+            .then((result) =>
                 expect(
                     (mockTokenService.deleteTokenForUser as jest.Mock).mock
                         .calls.length
@@ -136,18 +136,18 @@ describe('Reset Password Use Case', () => {
             [
                 {
                     id: APPLICATION_TYPES.TokenService,
-                    instance: mockTokenService
+                    instance: mockTokenService,
                 },
                 {
                     id: APPLICATION_TYPES.NotificationService,
-                    instance: mockNotificationService
-                }
+                    instance: mockNotificationService,
+                },
             ]
         );
         expect.assertions(1);
         return service
             .resetPassword(token, password)
-            .then(result =>
+            .then((result) =>
                 expect(
                     (mockNotificationService.sendNotification as jest.Mock).mock
                         .calls.length
@@ -165,16 +165,16 @@ describe('Reset Password Use Case', () => {
             [
                 {
                     id: APPLICATION_TYPES.TokenService,
-                    instance: mockTokenService
+                    instance: mockTokenService,
                 },
                 {
                     id: APPLICATION_TYPES.NotificationService,
-                    instance: mockNotificationService
+                    instance: mockNotificationService,
                 },
                 {
                     id: APPLICATION_TYPES.UserService,
-                    instance: mockUserService
-                }
+                    instance: mockUserService,
+                },
             ]
         );
         mockUserService.getUserById = jest.fn(() => {
@@ -182,12 +182,12 @@ describe('Reset Password Use Case', () => {
         });
         expect.assertions(1);
         return service.resetPassword(token, password).then(
-            result =>
+            (result) =>
                 expect(
                     (mockNotificationService.sendNotification as jest.Mock).mock
                         .calls.length
                 ).toBe(0),
-            err => expect(err).toBeTruthy()
+            (err) => expect(err).toBeTruthy()
         );
     });
 });

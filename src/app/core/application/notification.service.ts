@@ -4,7 +4,7 @@ import {
     NotificationService,
     NotificationMeta,
     EmailNotificationMeta,
-    Attachment
+    Attachment,
 } from '../model/notification.model';
 import { injectable } from 'inversify';
 import { logger } from '../../../aspects';
@@ -43,7 +43,7 @@ export class DefaultNotificationService implements NotificationService {
             to,
             subject,
             cc,
-            attachments
+            attachments,
         };
     }
 }

@@ -36,9 +36,9 @@ export class Logger {
             format: winston.format.combine(
                 winston.format.colorize(),
                 winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-                winston.format.printf(info => Logger.mapLogMessage(info))
+                winston.format.printf((info) => Logger.mapLogMessage(info))
             ),
-            transports: [new winston.transports.Console()]
+            transports: [new winston.transports.Console()],
         });
     }
 

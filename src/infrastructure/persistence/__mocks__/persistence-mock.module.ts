@@ -2,7 +2,7 @@ import { ContainerModule, interfaces } from 'inversify';
 import {
     InstituteRepository,
     UserRepository,
-    TokenRepository
+    TokenRepository,
 } from '../../../app/ports';
 import { APPLICATION_TYPES } from '../../../app/application.types';
 import { getMockInstituteRepository } from './institute.repository';

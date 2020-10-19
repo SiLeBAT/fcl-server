@@ -8,12 +8,12 @@ import {
     AdminActivationNotificationPayload,
     AdminActivationReminderPayload,
     AlreadyRegisteredUserNotificationPayload,
-    RequestNewsletterAgreementNotificationPayload
+    RequestNewsletterAgreementNotificationPayload,
 } from '../model/registration.model';
 import {
     NotificationService,
     Notification,
-    EmailNotificationMeta
+    EmailNotificationMeta,
 } from '../../core/model/notification.model';
 import { NotificationType } from '../../core/domain/enums';
 import { createUser } from '../domain/user.entity';
@@ -154,7 +154,7 @@ export class DefaultRegistrationService implements RegistrationService {
         const recoveryData: RecoveryData = {
             userAgent: credentials.userAgent,
             email: user.email,
-            host: credentials.host
+            host: credentials.host,
         };
 
         if (instituteIsUnknown) {
@@ -332,12 +332,12 @@ export class DefaultRegistrationService implements RegistrationService {
                 operating_system: recoveryData.host,
                 user_agent: recoveryData.userAgent,
                 support_contact: this.supportContact,
-                appName: this.appName
+                appName: this.appName,
             },
             meta: this.notificationService.createEmailNotificationMetaData(
                 user.email,
                 `Aktivieren Sie Ihr Konto für ${this.appName} `
-            )
+            ),
         };
     }
 
@@ -362,12 +362,12 @@ export class DefaultRegistrationService implements RegistrationService {
                 email: user.email,
                 institution: user.institution.name,
                 location: user.institution.addendum,
-                appName: this.appName
+                appName: this.appName,
             },
             meta: this.notificationService.createEmailNotificationMetaData(
                 this.supportContact,
                 `Aktivieren Sie das ${this.appName} Konto für ${fullName}`
-            )
+            ),
         };
     }
 
@@ -391,12 +391,12 @@ export class DefaultRegistrationService implements RegistrationService {
                 operating_system: recoveryData.host,
                 user_agent: recoveryData.userAgent,
                 support_contact: this.supportContact,
-                appName: this.appName
+                appName: this.appName,
             },
             meta: this.notificationService.createEmailNotificationMetaData(
                 user.email,
                 `Agreement for newsletter subscription for ${this.appName} `
-            )
+            ),
         };
     }
 
@@ -416,12 +416,12 @@ export class DefaultRegistrationService implements RegistrationService {
                 api_url: this.apiUrl,
                 email: user.email,
                 institution: institution,
-                appName: this.appName
+                appName: this.appName,
             },
             meta: this.notificationService.createEmailNotificationMetaData(
                 this.supportContact,
                 `Aktivierungsanfrage für das ${this.appName} Konto von ${fullName} mit nicht registriertem Institut`
-            )
+            ),
         };
     }
 
@@ -435,12 +435,12 @@ export class DefaultRegistrationService implements RegistrationService {
 
             payload: {
                 name: fullName,
-                appName: this.appName
+                appName: this.appName,
             },
             meta: this.notificationService.createEmailNotificationMetaData(
                 user.email,
                 `Admin Aktivierung Ihres ${this.appName} Kontos`
-            )
+            ),
         };
     }
 
@@ -453,12 +453,12 @@ export class DefaultRegistrationService implements RegistrationService {
             type: NotificationType.NOTIFICATION_NOT_ADMIN_ACTIVATED,
             payload: {
                 name: fullName,
-                appName: this.appName
+                appName: this.appName,
             },
             meta: this.notificationService.createEmailNotificationMetaData(
                 user.email,
                 `Noch keine Admin Aktivierung Ihres ${this.appName} Kontos`
-            )
+            ),
         };
     }
 
@@ -474,12 +474,12 @@ export class DefaultRegistrationService implements RegistrationService {
                 email: user.email,
                 institution: user.institution.name,
                 location: user.institution.addendum,
-                appName: this.appName
+                appName: this.appName,
             },
             meta: this.notificationService.createEmailNotificationMetaData(
                 this.supportContact,
                 `Erinnerung: Bitte aktivieren Sie das ${this.appName} Konto für ${fullName}`
-            )
+            ),
         };
     }
 
@@ -496,12 +496,12 @@ export class DefaultRegistrationService implements RegistrationService {
             payload: {
                 name: fullName,
                 action_url: this.apiUrl + '/users/recovery',
-                appName: this.appName
+                appName: this.appName,
             },
             meta: this.notificationService.createEmailNotificationMetaData(
                 credentials.email,
                 `Ihre Registrierung für ein ${this.appName} Konto`
-            )
+            ),
         };
     }
 }

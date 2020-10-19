@@ -1,7 +1,7 @@
 import {
     InstituteRepository,
     Institute,
-    createInstitution
+    createInstitution,
 } from '../../../app/ports';
 import { mapModelToInstitution } from './data-mappers';
 import { InstitutionModel } from '../data-store/mongoose/schemas/institution.schema';
@@ -26,8 +26,8 @@ export class MongooseInstituteRepository
     }
 
     retrieve(): Promise<Institute[]> {
-        return super._retrieve().then(modelArray => {
-            return modelArray.map(m => mapModelToInstitution(m));
+        return super._retrieve().then((modelArray) => {
+            return modelArray.map((m) => mapModelToInstitution(m));
         });
     }
 
@@ -38,11 +38,11 @@ export class MongooseInstituteRepository
             city: institution.city,
             zip: institution.zip,
             phone: institution.phone,
-            fax: institution.fax
+            fax: institution.fax,
         });
         return super
             ._create(newInstitution)
-            .then(model => createInstitution(model._id.toHexString()));
+            .then((model) => createInstitution(model._id.toHexString()));
     }
 
     findByInstituteName(name: string): Promise<Institute> {
@@ -60,7 +60,7 @@ export class MongooseInstituteRepository
             zip: '12345',
             phone: '',
             fax: '',
-            email: []
+            email: [],
         };
     }
 }

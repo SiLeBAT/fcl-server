@@ -7,7 +7,7 @@ export const genericInstitute = {
     zip: 'test',
     phone: 'test',
     fax: 'test',
-    email: []
+    email: [],
 };
 
 export function getMockInstituteService() {
@@ -15,6 +15,6 @@ export function getMockInstituteService() {
         getInstituteById: jest.fn(() => Promise.resolve(genericInstitute)),
         getInstituteByName: jest.fn(() => Promise.resolve(genericInstitute)),
         retrieveInstitutes: jest.fn(() => Promise.resolve([genericInstitute])),
-        createInstitute: jest.fn()
+        createInstitute: jest.fn(),
     };
 }

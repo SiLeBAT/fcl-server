@@ -25,7 +25,7 @@ export abstract class AbstractController implements Controller {
     protected clientError(response: Response) {
         const dto: DefaultServerErrorDTO = {
             code: SERVER_ERROR_CODE.INPUT_ERROR,
-            message: 'Malformed request'
+            message: 'Malformed request',
         };
         return this.jsonResponse(response, 400, dto);
     }
@@ -36,7 +36,7 @@ export abstract class AbstractController implements Controller {
     ) {
         const dto: DefaultServerErrorDTO = {
             code: SERVER_ERROR_CODE.UNKNOWN_ERROR,
-            message
+            message,
         };
         this.jsonResponse(response, 500, dto);
     }

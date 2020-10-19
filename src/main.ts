@@ -6,12 +6,12 @@ import {
     getPersistenceContainerModule,
     MailService,
     getMailContainerModule,
-    MAIL_TYPES
+    MAIL_TYPES,
 } from './infrastructure/ports';
 import {
     createApplication,
     FclApplication,
-    getApplicationContainerModule
+    getApplicationContainerModule,
 } from './app/ports';
 import {
     SystemConfigurationService,
@@ -20,19 +20,19 @@ import {
     ServerConfiguration,
     MailConfiguration,
     AppConfiguration,
-    DataStoreConfiguration
+    DataStoreConfiguration,
 } from './main.model';
 
 export class DefaultConfigurationService implements SystemConfigurationService {
     private loginConfigurationDefaults: LoginConfiguration = {
         threshold: 5,
-        secondsDelay: 300
+        secondsDelay: 300,
     };
 
     private generalConfigurationDefaults: GeneralConfiguration = {
         logLevel: 'info',
         supportContact: '',
-        jwtSecret: ''
+        jwtSecret: '',
     };
 
     getServerConfiguration(): ServerConfiguration {
@@ -53,7 +53,7 @@ export class DefaultConfigurationService implements SystemConfigurationService {
         if (!config.has('application.login')) {
             appConfiguration.login = {
                 threshold: this.loginConfigurationDefaults.threshold,
-                secondsDelay: this.loginConfigurationDefaults.secondsDelay
+                secondsDelay: this.loginConfigurationDefaults.secondsDelay,
             };
         }
 
@@ -76,7 +76,7 @@ export class DefaultConfigurationService implements SystemConfigurationService {
                 logLevel: this.generalConfigurationDefaults.logLevel,
                 supportContact: this.generalConfigurationDefaults
                     .supportContact,
-                jwtSecret: this.generalConfigurationDefaults.jwtSecret
+                jwtSecret: this.generalConfigurationDefaults.jwtSecret,
             };
         }
 
@@ -104,14 +104,14 @@ async function init() {
         getApplicationContainerModule({
             ...appConfiguration,
             supportContact: generalConfig.supportContact,
-            jwtSecret: generalConfig.jwtSecret
+            jwtSecret: generalConfig.jwtSecret,
         }),
         getPersistenceContainerModule(),
         getServerContainerModule({
             ...serverConfig,
             jwtSecret: generalConfig.jwtSecret,
             logLevel: generalConfig.logLevel,
-            supportContact: generalConfig.supportContact
+            supportContact: generalConfig.supportContact,
         }),
         getMailContainerModule(mailConfiguration)
     );
@@ -126,13 +126,13 @@ async function init() {
     const server = createServer(container);
     server.startServer();
 
-    process.on('uncaughtException', error => {
+    process.on('uncaughtException', (error) => {
         logger.error(`Uncaught Exception. error=${error}`);
         process.exit(1);
     });
 }
 
-init().catch(error => {
+init().catch((error) => {
     logger.error(`Unable to initialise application. error=${error}`);
     throw error;
 });

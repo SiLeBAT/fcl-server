@@ -10,6 +10,6 @@ export function getMockUserRepository(): UserRepository {
         findByUsername: jest.fn(() => Promise.resolve(genericUser)),
         hasUserWithEmail: jest.fn(() => Promise.resolve(false)),
         createUser: jest.fn(() => Promise.resolve(genericUser)),
-        updateUser: jest.fn(() => Promise.resolve(genericUser))
+        updateUser: jest.fn(() => Promise.resolve(genericUser)),
     };
 }

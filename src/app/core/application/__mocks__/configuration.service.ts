@@ -1,6 +1,6 @@
 import {
     ConfigurationService,
-    ApplicationConfiguration
+    ApplicationConfiguration,
 } from '../../model/configuration.model';
 
 class MockConfigurationService implements ConfigurationService {
@@ -8,14 +8,14 @@ class MockConfigurationService implements ConfigurationService {
         return {
             login: {
                 threshold: 5,
-                secondsDelay: 300
+                secondsDelay: 300,
             },
             appName: 'Mock',
             jobRecipient: 'test@test.com',
             supportContact: 'test',
             jwtSecret: 'test',
             apiUrl: 'test',
-            gdprDate: 'test'
+            gdprDate: 'test',
         };
     }
 }

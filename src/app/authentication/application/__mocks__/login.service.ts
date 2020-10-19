@@ -5,8 +5,8 @@ export function getMockLoginService() {
         loginUser: jest.fn(() =>
             Promise.resolve({
                 user: genericUser,
-                token: 'token'
+                token: 'token',
             })
-        )
+        ),
     };
 }

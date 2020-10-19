@@ -4,7 +4,7 @@ import {
     InstitutesController,
     UsersController,
     VersionRootController,
-    TokensController
+    TokensController,
 } from './model/controller.model';
 import SERVER_TYPES from './server.types';
 import { DefaultSystemInfoController } from './controllers/info.controller';

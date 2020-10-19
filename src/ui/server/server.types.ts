@@ -6,7 +6,7 @@ const SERVER_TYPES = {
     VersionRootController: Symbol.for('VersionRootController'),
     APIDocsController: Symbol.for('APIDocsController'),
     SwaggerMW: Symbol.for('SwaggerMW'),
-    TokensController: Symbol.for('TokensController')
+    TokensController: Symbol.for('TokensController'),
 };
 
 export default SERVER_TYPES;

@@ -13,6 +13,6 @@ export function createApplication(container: Container) {
     return {
         addNotificationHandler: (handler: Function) => {
             notificationService.addHandler(handler);
-        }
+        },
     };
 }

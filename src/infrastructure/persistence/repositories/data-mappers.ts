@@ -2,7 +2,7 @@ import {
     Institute,
     createInstitution,
     createUser,
-    User
+    User,
 } from '../../../app/ports';
 import { InstitutionModel } from '../data-store/mongoose/schemas/institution.schema';
 import { UserModel } from '../data-store/mongoose/schemas/user.schema';
@@ -19,8 +19,8 @@ function mapModelToInstitution(i: InstitutionModel): Institute {
             zip: i.zip,
             phone: i.phone,
             fax: i.fax,
-            email: i.email
-        }
+            email: i.email,
+        },
     };
 }
 
@@ -39,7 +39,7 @@ function mapModelToUser(model: UserModel): User {
             zip: '12345',
             phone: '',
             fax: '',
-            email: []
+            email: [],
         },
         model.password,
         model.dataProtectionAgreed,

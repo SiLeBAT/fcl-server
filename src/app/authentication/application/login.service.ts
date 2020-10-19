@@ -2,7 +2,7 @@ import * as moment from 'moment';
 import {
     LoginService,
     UserLoginInformation,
-    LoginResponse
+    LoginResponse,
 } from '../model/login.model';
 import { RegistrationService } from '../model/registration.model';
 import { User, UserService } from '../model/user.model';
@@ -11,7 +11,7 @@ import { ConfigurationService } from '../../core/model/configuration.model';
 import {
     AuthorizationError,
     UserNotActivatedError,
-    UserNotVerifiedError
+    UserNotVerifiedError,
 } from './../domain/domain.error';
 import { injectable, inject } from 'inversify';
 import { APPLICATION_TYPES } from './../../application.types';
@@ -45,14 +45,14 @@ export class DefaultLoginService implements LoginService {
                 .prepareUserForVerification(user, {
                     userAgent: credentials.userAgent as string,
                     email: user.email,
-                    host: credentials.host as string
+                    host: credentials.host as string,
                 })
                 .then(() => {
                     throw new UserNotVerifiedError(
                         `User not verified. user=${user.email}`
                     );
                 })
-                .catch(error => {
+                .catch((error) => {
                     throw error;
                 });
         }
@@ -104,7 +104,7 @@ export class DefaultLoginService implements LoginService {
             return {
                 user: user,
                 token: this.tokenService.generateToken(user.uniqueId),
-                gdprAgreementRequested: gdprAgreementRequested
+                gdprAgreementRequested: gdprAgreementRequested,
             };
         }
 
@@ -132,7 +132,7 @@ export class DefaultLoginService implements LoginService {
             return {
                 user: user,
                 token: confirmationRequest.token,
-                gdprAgreementRequested: gdprAgreementRequested
+                gdprAgreementRequested: gdprAgreementRequested,
             };
         }
 

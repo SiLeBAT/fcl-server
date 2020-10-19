@@ -16,7 +16,7 @@ describe('User class', () => {
                 city: 'test',
                 phone: 'test',
                 fax: 'test',
-                email: []
+                email: [],
             },
             'test',
             true,

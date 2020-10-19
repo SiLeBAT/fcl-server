@@ -2,7 +2,7 @@ import * as path from 'path';
 import * as express from 'express';
 import * as helmet from 'helmet';
 import * as compression from 'compression';
-import * as bodyParser from 'body-parser';
+// import * as bodyParser from 'body-parser';
 import * as cors from 'cors';
 import * as morgan from 'morgan';
 import * as swaggerUi from 'swagger-ui-express';
@@ -43,18 +43,18 @@ export class DefaultAppServer implements AppServer {
         const serverConfig = container.get<AppServerConfiguration>(
             SERVER_TYPES.AppServerConfiguration
         );
-        this.server.setConfig(app => {
+        this.server.setConfig((app) => {
             app.use(helmet());
             app.use(compression());
             app.set('port', serverConfig.port);
             app.set('logger', logger);
 
             // tslint:disable-next-line: deprecation
-            app.use(bodyParser.json({ limit: '50mb' }));
+            app.use(express.json({ limit: '50mb' }));
             app.use(
                 // tslint:disable-next-line: deprecation
-                bodyParser.urlencoded({
-                    extended: false
+                express.urlencoded({
+                    extended: false,
                 })
             );
 
@@ -67,7 +67,7 @@ export class DefaultAppServer implements AppServer {
                 res.setHeader('Pragma', 'no-cache');
                 res.setHeader('X-XSS-Protection', '1; mode=block');
                 res.setHeader('X-Content-Type-Options', 'nosniff');
-                return next();
+                next();
             });
 
             app.use(cors());
@@ -78,8 +78,8 @@ export class DefaultAppServer implements AppServer {
             app.use(
                 '/api-docs' + ROUTE.VERSION,
                 swaggerUi.serve,
-                swaggerUi.setup(null, {
-                    swaggerUrl: ROUTE.VERSION
+                swaggerUi.setup(undefined, {
+                    swaggerUrl: ROUTE.VERSION,
                 })
             );
             app.use(
@@ -88,7 +88,7 @@ export class DefaultAppServer implements AppServer {
             );
         });
 
-        this.server.setErrorConfig(app => {
+        this.server.setErrorConfig((app) => {
             app.use(
                 (
                     // tslint:disable-next-line
@@ -104,7 +104,7 @@ export class DefaultAppServer implements AppServer {
                         res.status(401)
                             .send({
                                 code: SERVER_ERROR_CODE.AUTHORIZATION_ERROR,
-                                message: err.message
+                                message: err.message,
                             })
                             .end();
                     }

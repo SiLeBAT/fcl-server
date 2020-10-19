@@ -3,7 +3,7 @@ import { UserRepository, createUser, User } from '../../../app/ports';
 import { mapModelToUser } from './data-mappers';
 import {
     UserModel,
-    UserModelUpdateResponse
+    UserModelUpdateResponse,
 } from '../data-store/mongoose/schemas/user.schema';
 import { MongooseRepositoryBase } from '../data-store/mongoose/mongoose.repository';
 import { UserNotFoundError, UserUpdateError } from '../model/domain.error';
@@ -29,7 +29,7 @@ export class DefaultUserRepository extends MongooseRepositoryBase<UserModel>
                 }
                 return mapModelToUser(userModel);
             })
-            .catch(error => {
+            .catch((error) => {
                 throw error;
             });
     }
@@ -95,12 +95,12 @@ export class DefaultUserRepository extends MongooseRepositoryBase<UserModel>
             dataProtectionDate: user.dataProtectionDate,
             newsRegAgreed: user.newsRegAgreed,
             newsMailAgreed: user.newsMailAgreed,
-            newsDate: user.newsDate
+            newsDate: user.newsDate,
         });
 
         return super
             ._create(newUser)
-            .then(model =>
+            .then((model) =>
                 createUser(
                     model._id.toHexString(),
                     user.email,
@@ -117,7 +117,7 @@ export class DefaultUserRepository extends MongooseRepositoryBase<UserModel>
                     model.adminEnabled
                 )
             )
-            .catch(error => {
+            .catch((error) => {
                 throw error;
             });
     }
@@ -137,7 +137,7 @@ export class DefaultUserRepository extends MongooseRepositoryBase<UserModel>
                 dataProtectionDate: user.dataProtectionDate,
                 newsRegAgreed: user.newsRegAgreed,
                 newsMailAgreed: user.newsMailAgreed,
-                newsDate: user.newsDate
+                newsDate: user.newsDate,
             })
             .then((response: UserModelUpdateResponse) => {
                 if (!response.ok) {
@@ -147,7 +147,7 @@ export class DefaultUserRepository extends MongooseRepositoryBase<UserModel>
                 }
                 return this.findByUserId(user.uniqueId);
             })
-            .catch(error => {
+            .catch((error) => {
                 throw error;
             });
     }

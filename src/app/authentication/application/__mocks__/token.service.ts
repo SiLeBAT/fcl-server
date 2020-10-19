@@ -7,7 +7,7 @@ export function getMockTokenService() {
             Promise.resolve({
                 token: 'test',
                 type: TokenType.ACTIVATE,
-                userId: 'test'
+                userId: 'test',
             })
         ),
         generateAdminToken: jest.fn(),
@@ -17,10 +17,10 @@ export function getMockTokenService() {
             Promise.resolve({
                 token: 'test',
                 type: TokenType.ACTIVATE,
-                userId: 'test'
+                userId: 'test',
             })
         ),
         deleteTokenForUser: jest.fn(() => Promise.resolve(true)),
-        hasTokenForUser: jest.fn(() => Promise.resolve(true))
+        hasTokenForUser: jest.fn(() => Promise.resolve(true)),
     };
 }

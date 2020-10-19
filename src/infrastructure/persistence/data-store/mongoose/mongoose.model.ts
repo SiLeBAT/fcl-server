@@ -2,7 +2,7 @@ import * as mongoose from 'mongoose';
 
 import {
     institutionSchema,
-    InstitutionModel
+    InstitutionModel,
 } from './schemas/institution.schema';
 
 import { tokenSchema, TokenModel } from './schemas/resetToken.schema';

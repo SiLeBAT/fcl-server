@@ -29,77 +29,77 @@ export interface UserModel extends Document {
 export const userSchema = new Schema({
     firstName: {
         type: String,
-        required: true
+        required: true,
     },
     lastName: {
         type: String,
-        required: true
+        required: true,
     },
     email: {
         type: String,
         required: true,
         unique: true,
-        uniqueCaseInsensitive: true
+        uniqueCaseInsensitive: true,
     },
     password: {
         type: String,
-        required: true
+        required: true,
     },
     enabled: {
         type: Boolean,
         default: false,
-        required: true
+        required: true,
     },
     adminEnabled: {
         type: Boolean,
         default: false,
-        required: true
+        required: true,
     },
     numAttempt: {
         type: Number,
         default: 0,
-        required: true
+        required: true,
     },
     lastAttempt: {
         type: Number,
         default: Date.now(),
-        required: true
+        required: true,
     },
     institution: {
         type: Schema.Types.ObjectId,
-        ref: 'Institution'
+        ref: 'Institution',
     },
     dataProtectionAgreed: {
         type: Boolean,
-        required: true
+        required: true,
     },
     dataProtectionDate: {
         type: Date,
-        required: true
+        required: true,
     },
     newsRegAgreed: {
         type: Boolean,
-        required: true
+        required: true,
     },
     newsMailAgreed: {
         type: Boolean,
-        required: true
+        required: true,
     },
     newsDate: {
         type: Date,
-        required: true
+        required: true,
     },
     created: {
         type: Date,
         default: Date.now,
-        required: true
+        required: true,
     },
     updated: {
         type: Date,
         default: Date.now,
-        required: true
-    }
-}).pre('save', function(next) {
+        required: true,
+    },
+}).pre('save', function (next) {
     if (this) {
         let doc = this as UserModel;
         let now = new Date();

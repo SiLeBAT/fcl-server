@@ -5,7 +5,7 @@ import { TokenRefreshConfirmationResponseDTO } from '../model/response.model';
 import {
     TokenPort,
     TokenPayload,
-    AuthorizationError
+    AuthorizationError,
 } from '../../../app/ports';
 import { AbstractController } from './abstract.controller';
 import { JsonWebTokenError } from 'jsonwebtoken';
@@ -14,14 +14,14 @@ import {
     controller,
     request,
     response,
-    httpPost
+    httpPost,
 } from 'inversify-express-utils';
 import { inject } from 'inversify';
 import { SERVER_ERROR_CODE, ROUTE } from '../model/enums';
 
 import { APPLICATION_TYPES } from './../../../app/application.types';
 enum TOKENS_ROUTE {
-    ROOT = '/tokens'
+    ROOT = '/tokens',
 }
 @controller(ROUTE.VERSION + TOKENS_ROUTE.ROOT)
 export class DefaultTokensController extends AbstractController
@@ -48,7 +48,7 @@ export class DefaultTokensController extends AbstractController
             const token = this.tokenService.generateToken(payload.sub);
             const dto: TokenRefreshConfirmationResponseDTO = {
                 refresh: true,
-                token: token
+                token: token,
             };
             logger.info(
                 `${this.constructor.name}.${this.postTokens.name}, Response sent`
@@ -69,7 +69,7 @@ export class DefaultTokensController extends AbstractController
         ) {
             const dto = {
                 message: error.message,
-                code: SERVER_ERROR_CODE.AUTHORIZATION_ERROR
+                code: SERVER_ERROR_CODE.AUTHORIZATION_ERROR,
             };
             this.unauthorized(res, dto);
         } else {
