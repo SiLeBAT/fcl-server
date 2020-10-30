@@ -5,7 +5,8 @@
   "server": {
       "port": "FCL_NODE_PORT",
       "jwtSecret": "FCL_JWT_SECRET",
-      "apiUrl": "FCL_API_URL"
+      "apiUrl": "FCL_API_URL",
+      "apiRoot": "FCL_API_ROOT"
   },
   "dataStore": {
       "connectionString": "FCL_DB_CONNECTION"
