@@ -1,0 +1,17 @@
+{
+    "extends": ["tslint-config-standard", "tslint-config-prettier"],
+    "rules": {
+        "no-any": true,
+        "semicolon": [
+            true,
+            "always"
+        ],
+        "adjacent-overload-signatures": true,
+        "member-access": [
+            true,
+            "no-public"
+        ],
+        "no-console": [true],
+        "no-debugger": true
+    }
+}
