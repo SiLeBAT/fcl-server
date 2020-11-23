@@ -40,6 +40,7 @@ import {
 } from 'inversify-express-utils';
 import { inject } from 'inversify';
 import { APPLICATION_TYPES } from './../../../app/application.types';
+import { UserNotFoundError } from '../../../infrastructure/persistence/model/domain.error';
 
 enum USERS_ROUTE {
     ROOT = '/users',
@@ -72,8 +73,14 @@ export class DefaultUsersController extends AbstractController
         logger.info(
             `${this.constructor.name}.${this.putResetPasswordRequest.name}, Request received`
         );
+
+        const resetRequest: ResetRequestDTO = req.body;
+        const dto: PasswordResetRequestResponseDTO = {
+            passwordResetRequest: true,
+            email: resetRequest.email,
+        };
+
         try {
-            const resetRequest: ResetRequestDTO = req.body;
             if (!resetRequest.email) {
                 throw new MalformedRequestError(
                     'Email for password reset not supplied'
@@ -84,10 +91,6 @@ export class DefaultUsersController extends AbstractController
                 host: req.headers['host'] as string,
                 userAgent: req.headers['user-agent'] as string,
             });
-            const dto: PasswordResetRequestResponseDTO = {
-                passwordResetRequest: true,
-                email: resetRequest.email,
-            };
             logger.info(
                 `${this.constructor.name}.${this.putResetPasswordRequest.name}, Response sent`
             );
@@ -96,6 +99,12 @@ export class DefaultUsersController extends AbstractController
             logger.info(
                 `${this.constructor.name}.${this.putResetPasswordRequest.name} has thrown an error. ${error}`
             );
+            if (error instanceof UserNotFoundError) {
+                logger.info(
+                    `${this.constructor.name}.${this.putResetPasswordRequest.name}, Response sent`
+                );
+                this.ok(res, dto);
+            }
             this.handleError(res, error);
         }
     }
