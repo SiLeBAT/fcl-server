@@ -11,7 +11,6 @@ import { getServerContainerModule } from '../../server.module';
 import { mockPersistenceContainerModule } from '../../../../infrastructure/persistence/__mocks__/persistence-mock.module';
 import SERVER_TYPES from '../../server.types';
 import { rebindMocks } from '../../../../__mocks__/util';
-import { RegistrationService } from '../../../../app/authentication/model/registration.model';
 import { getMockLoginService } from '../../../../app/authentication/application/__mocks__/login.service';
 import { APPLICATION_TYPES } from '../../../../app/application.types';
 
