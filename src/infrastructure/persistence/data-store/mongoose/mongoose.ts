@@ -13,19 +13,25 @@ import { MongooseInstitutionModel } from './mongoose.model';
 
 class MongooseDataStore implements DataStore {
     constructor(connecionString: string) {
-        mongoose.connect(connecionString).then(
-            (db) => {
-                logger.info('Connected to DB', {
-                    connectionString: connecionString,
-                });
-                return db;
-            },
-            (error) => {
-                throw new Error(
-                    `Unable to connect to DB. connectionString=${connecionString} error=${error}`
-                );
-            }
-        );
+        mongoose
+            .connect(connecionString, {
+                useCreateIndex: true,
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+            })
+            .then(
+                (db) => {
+                    logger.info('Connected to DB', {
+                        connectionString: connecionString,
+                    });
+                    return db;
+                },
+                (error) => {
+                    throw new Error(
+                        `Unable to connect to DB. connectionString=${connecionString} error=${error}`
+                    );
+                }
+            );
     }
 
     close() {

@@ -96,6 +96,8 @@ async function init() {
     const appConfiguration: AppConfiguration = configurationService.getApplicationConfiguration();
     const mailConfiguration: MailConfiguration = configurationService.getMailConfiguration();
 
+    logger.info(`Starting Application. appName=${appConfiguration.appName}`);
+
     createDataStore(dataStoreConfig.connectionString);
 
     const container = getContainer({ defaultScope: 'Singleton' });
