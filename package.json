@@ -4,8 +4,10 @@
   "license": "MIT",
   "scripts": {
     "start": "node ./lib/main.js",
-    "serve": "npx nodemon -e ts --exec \"npm run build && npm run test && node ./lib/main.js\"",
-    "debug": "npx nodemon -e ts --exec \"npm run build && node --inspect-brk ./lib/main.js\"",
+    "serve": "npx nodemon -e ts --exec \"npm run serve:pipe\"",
+    "debug": "npx nodemon -e ts --exec \"npm run debug:pipe\"",
+    "serve:pipe": "npm run build && npm run test && node ./lib/main.js",
+    "debug:pipe": "npm run build && node --inspect-brk ./lib/main.js",
     "cp:view": "npx copyfiles -u 1 ./src/**/views/**/* ./lib",
     "cp:json": "npx copyfiles -u 1 ./src/**/*.json ./lib",
     "cp:scripts": "npx copyfiles -u 1 ./src/**/*.sh ./lib",
