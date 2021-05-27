@@ -1,6 +1,6 @@
 {
   "application": {
-      "appName": "Portal",
+      "appName": "fcl-Portal",
       "jobRecipient": "",
       "login": {
           "threshold": 0,

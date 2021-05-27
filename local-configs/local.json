@@ -1,0 +1,32 @@
+{
+  "application": {
+    "appName": "fcl-Portal",
+    "jobRecipient": "",
+    "login": {
+      "threshold": 5,
+      "secondsDelay": 600
+    },
+    "apiUrl": "http://localhost:4200",
+    "gdprDate": "June 02, 2020"
+  },
+  "server": {
+    "port": 3000,
+    "publicAPIDoc": {
+        "/info": ["get"],
+        "/users/login": ["post"],
+        "/tokens": ["post"]
+    }
+  },
+  "dataStore": {
+    "connectionString": "mongodb://localhost:27017/fcl"
+  },
+  "mail": {
+    "fromAddress": "",
+    "replyToAddress": ""
+  },
+  "general": {
+    "supportContact": "",
+    "logLevel": "trace",
+    "jwtSecret": "localSecret"
+  }
+}

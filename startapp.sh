@@ -11,4 +11,4 @@ BASE_NAME=`basename $LOG_FILE .log`
 DIR_NAME=`dirname $LOG_FILE`
 ADMIN_LOG=$DIR_NAME/$BASE_NAME-admin.log
 
-NODE_ENV=$FCL_NODE_ENV HOST=$FCL_HOST FCL_API_ROOT=$FCL_API_ROOT forever -l $LOG_FILE -a start ./lib/main.js
+NODE_ENV=$FCL_NODE_ENV HOST=$FCL_HOST forever -l $LOG_FILE -a start ./lib/main.js

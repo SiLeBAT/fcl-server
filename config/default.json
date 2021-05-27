@@ -1,6 +1,6 @@
 {
     "application": {
-        "appName": "Portal",
+        "appName": "fcl-Portal",
         "jobRecipient": "",
         "login": {
             "threshold": 5,
@@ -12,11 +12,13 @@
     "server": {
         "port": 3000,
         "publicAPIDoc": {
-
+            "/info": ["get"],
+            "/users/login": ["post"],
+            "/tokens": ["post"]    
         }
     },
     "dataStore": {
-        "connectionString": "mongodb://localhost/datadevdb"
+        "connectionString": "mongodb://localhost/27017"
     },
     "mail": {
         "fromAddress": "",

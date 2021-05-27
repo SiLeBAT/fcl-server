@@ -1,18 +1,21 @@
 {
   "application": {
-      "jobRecipient": "FCL_JOB_RECIPIENT"
+      "jobRecipient": "FCL_JOB_RECIPIENT",
+      "apiUrl": "FCL_API_URL"
   },
   "server": {
-      "port": "FCL_NODE_PORT",
-      "jwtSecret": "FCL_JWT_SECRET",
-      "apiUrl": "FCL_API_URL",
-      "apiRoot": "FCL_API_ROOT"
+      "port": "FCL_NODE_PORT"
   },
   "dataStore": {
       "connectionString": "FCL_DB_CONNECTION"
   },
+  "mail": {
+    "fromAddress": "FCL_MAIL_FROM",
+    "replyToAddress": "FCL_MAIL_REPLY"
+},
   "general": {
       "supportContact": "FCL_SUPPORT_CONTACT",
-      "logLevel": "FCL_LOG_LEVEL"
+      "logLevel": "FCL_LOG_LEVEL",
+      "jwtSecret": "FCL_JWT_SECRET"
   }
 }
