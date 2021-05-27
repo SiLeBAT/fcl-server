@@ -1,7 +1,7 @@
 // core
 // npm
-import * as mongoose from 'mongoose';
-import * as Promise from 'bluebird';
+import mongoose from 'mongoose';
+import Promise from 'bluebird';
 // local
 import { logger } from './../../../../aspects';
 import { createRepository } from './mongoose.repository';

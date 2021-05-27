@@ -1,6 +1,6 @@
 /// <reference types='jest' />
 
-import * as mockRes from 'mock-express-response';
+import mockRes from 'mock-express-response';
 import { SystemInfoController } from '../../model/controller.model';
 import { getServerContainerModule } from '../../server.module';
 import { Container } from 'inversify';

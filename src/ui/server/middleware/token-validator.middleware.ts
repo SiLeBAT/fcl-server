@@ -1,4 +1,4 @@
-import * as jwt from 'express-jwt';
+import jwt from 'express-jwt';
 import { ROUTE } from '../model/enums';
 
 function validateToken(secret: string) {

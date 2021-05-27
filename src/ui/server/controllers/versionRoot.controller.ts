@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import { logger } from '../../../aspects';
 import { VersionRootController } from '../model/controller.model';
 import { ROUTE } from '../model/enums';

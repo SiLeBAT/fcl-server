@@ -3,7 +3,7 @@
 // the mongoose version had to be increased from version 5.10.19 to 5.12.8 to fix a moderate vulnerability
 // types were extracted from @types/mongoose 5.10.5
 
-import * as mongodb from 'mongodb';
+import mongodb from 'mongodb';
 import { FilterQuery } from 'mongoose';
 
 // the next definition is different to @types/mongoose 5.10.5

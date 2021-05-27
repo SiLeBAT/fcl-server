@@ -1,11 +1,10 @@
-import * as path from 'path';
-import * as express from 'express';
-import * as helmet from 'helmet';
-import * as compression from 'compression';
-// import * as bodyParser from 'body-parser';
-import * as cors from 'cors';
-import * as morgan from 'morgan';
-import * as swaggerUi from 'swagger-ui-express';
+import path from 'path';
+import express from 'express';
+import helmet from 'helmet';
+import compression from 'compression';
+import cors from 'cors';
+import morgan from 'morgan';
+import swaggerUi from 'swagger-ui-express';
 import { InversifyExpressServer } from 'inversify-express-utils';
 
 // local

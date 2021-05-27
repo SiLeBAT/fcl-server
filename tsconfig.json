@@ -6,7 +6,7 @@
         "moduleResolution":"Node",
         "outDir": "lib",
         "sourceMap": true,
-        // "esModuleInterop": true,
+        "esModuleInterop": true,
         "removeComments": true,
         "forceConsistentCasingInFileNames": true,
         "experimentalDecorators": true,

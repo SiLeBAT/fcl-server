@@ -1,6 +1,6 @@
 import { getContainer } from '../../../../aspects/container/container';
-import * as mockReq from 'mock-express-request';
-import * as mockRes from 'mock-express-response';
+import mockReq from 'mock-express-request';
+import mockRes from 'mock-express-response';
 import {
     AuthorizationError,
     getApplicationContainerModule,
