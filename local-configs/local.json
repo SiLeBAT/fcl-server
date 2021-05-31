@@ -6,7 +6,7 @@
       "threshold": 5,
       "secondsDelay": 600
     },
-    "apiUrl": "http://localhost:4200",
+    "clientUrl": "http://localhost:4200",
     "gdprDate": "June 02, 2020"
   },
   "server": {

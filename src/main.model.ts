@@ -20,7 +20,7 @@ export interface AppConfiguration {
     appName: string;
     jobRecipient: string;
     login: LoginConfiguration;
-    apiUrl: string;
+    clientUrl: string;
     gdprDate: string;
 }
 

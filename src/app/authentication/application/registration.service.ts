@@ -31,7 +31,7 @@ import { UserAlreadyExistsError } from '../domain/domain.error';
 @injectable()
 export class DefaultRegistrationService implements RegistrationService {
     private appName: string;
-    private apiUrl: string;
+    private clientUrl: string;
     private supportContact: string;
 
     constructor(
@@ -46,7 +46,7 @@ export class DefaultRegistrationService implements RegistrationService {
         private instituteService: InstituteService
     ) {
         this.appName = this.configurationService.getApplicationConfiguration().appName;
-        this.apiUrl = this.configurationService.getApplicationConfiguration().apiUrl;
+        this.clientUrl = this.configurationService.getApplicationConfiguration().clientUrl;
         this.supportContact = this.configurationService.getApplicationConfiguration().supportContact;
     }
 
@@ -327,8 +327,8 @@ export class DefaultRegistrationService implements RegistrationService {
             payload: {
                 name: user.firstName + ' ' + user.lastName,
                 action_url:
-                    this.apiUrl + '/users/activate/' + activationToken.token,
-                api_url: this.apiUrl,
+                    this.clientUrl + '/users/activate/' + activationToken.token,
+                client_url: this.clientUrl,
                 operating_system: recoveryData.host,
                 user_agent: recoveryData.userAgent,
                 support_contact: this.supportContact,
@@ -355,10 +355,10 @@ export class DefaultRegistrationService implements RegistrationService {
             payload: {
                 name: fullName,
                 action_url:
-                    this.apiUrl +
+                    this.clientUrl +
                     '/users/adminactivate/' +
                     adminActivationToken.token,
-                api_url: this.apiUrl,
+                client_url: this.clientUrl,
                 email: user.email,
                 institution: user.institution.name,
                 location: user.institution.addendum,
@@ -384,10 +384,10 @@ export class DefaultRegistrationService implements RegistrationService {
             payload: {
                 name: user.firstName + ' ' + user.lastName,
                 action_url:
-                    this.apiUrl +
+                    this.clientUrl +
                     '/users/newsactivate/' +
                     newsletterAgreementToken.token,
-                api_url: this.apiUrl,
+                client_url: this.clientUrl,
                 operating_system: recoveryData.host,
                 user_agent: recoveryData.userAgent,
                 support_contact: this.supportContact,
@@ -413,7 +413,7 @@ export class DefaultRegistrationService implements RegistrationService {
             type: NotificationType.REQUEST_UNKNOWN_INSTITUTE,
             payload: {
                 name: fullName,
-                api_url: this.apiUrl,
+                client_url: this.clientUrl,
                 email: user.email,
                 institution: institution,
                 appName: this.appName,
@@ -495,7 +495,7 @@ export class DefaultRegistrationService implements RegistrationService {
             type: NotificationType.NOTIFICATION_ALREADY_REGISTERED,
             payload: {
                 name: fullName,
-                action_url: this.apiUrl + '/users/recovery',
+                action_url: this.clientUrl + '/users/recovery',
                 appName: this.appName,
             },
             meta: this.notificationService.createEmailNotificationMetaData(

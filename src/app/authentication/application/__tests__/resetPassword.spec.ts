@@ -24,7 +24,7 @@ describe('Reset Password Use Case', () => {
                     threshold: 0,
                     secondsDelay: 0,
                 },
-                apiUrl: 'test',
+                clientUrl: 'test',
                 supportContact: 'test',
                 jwtSecret: 'test',
                 gdprDate: 'test',

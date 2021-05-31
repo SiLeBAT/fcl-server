@@ -6,7 +6,7 @@
           "threshold": 0,
           "secondsDelay": 0
         },
-        "apiUrl": "",
+        "clientUrl": "",
         "gdprDate": ""
   },
   "server": {
