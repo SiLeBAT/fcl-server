@@ -11,6 +11,7 @@
   },
   "server": {
     "port": 3000,
+    "apiRoot": "/api",
     "publicAPIDoc": {
         "/info": ["get"],
         "/users/login": ["post"],

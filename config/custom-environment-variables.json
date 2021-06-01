@@ -4,7 +4,8 @@
       "clientUrl": "FCL_CLIENT_URL"
   },
   "server": {
-      "port": "FCL_NODE_PORT"
+      "port": "FCL_NODE_PORT",
+      "apiRoot": "FCL_API_ROOT"
   },
   "dataStore": {
       "connectionString": "FCL_DB_CONNECTION"

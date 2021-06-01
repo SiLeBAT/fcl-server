@@ -27,7 +27,7 @@ import {
     NewsConfirmationResponseDTO,
 } from '../model/response.model';
 import { MalformedRequestError } from '../model/domain.error';
-import { SERVER_ERROR_CODE, ROUTE } from '../model/enums';
+import { SERVER_ERROR_CODE, API_VERSION } from '../model/enums';
 import { JsonWebTokenError } from 'jsonwebtoken';
 import {
     controller,
@@ -53,7 +53,7 @@ enum USERS_ROUTE {
     GDPR_AGREEMENT = '/gdpr-agreement',
     NEWS_CONFIRMATION = '/news-confirmation',
 }
-@controller(ROUTE.VERSION + USERS_ROUTE.ROOT)
+@controller(API_VERSION.V1 + USERS_ROUTE.ROOT)
 export class DefaultUsersController extends AbstractController
     implements UsersController {
     constructor(

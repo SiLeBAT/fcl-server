@@ -2,6 +2,7 @@ import { APIDocConfig } from './ui/server/ports';
 
 export interface ServerConfiguration {
     port: number;
+    apiRoot: string;
     publicAPIDoc: APIDocConfig;
 }
 

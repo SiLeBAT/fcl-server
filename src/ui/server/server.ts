@@ -8,7 +8,7 @@ import { InversifyExpressServer } from 'inversify-express-utils';
 import { logger } from './../../aspects';
 import { validateToken } from './middleware/token-validator.middleware';
 import { Logger } from '../../aspects/logging';
-import { SERVER_ERROR_CODE, ROUTE } from './model/enums';
+import { SERVER_ERROR_CODE, API_VERSION } from './model/enums';
 import { AppServerConfiguration } from './model/server.model';
 import { injectable, Container } from 'inversify';
 import SERVER_TYPES from './server.types';
@@ -35,10 +35,13 @@ export class DefaultAppServer implements AppServer {
     }
 
     private initialize(container: Container) {
-        this.server = new InversifyExpressServer(container);
         const serverConfig = container.get<AppServerConfiguration>(
             SERVER_TYPES.AppServerConfiguration
         );
+        this.server = new InversifyExpressServer(container, null, {
+            rootPath: serverConfig.apiRoot,
+        });
+
         this.server.setConfig((app) => {
             app.set('port', serverConfig.port);
             app.set('logger', logger);
@@ -87,16 +90,19 @@ export class DefaultAppServer implements AppServer {
             app.use(express.static(path.join(__dirname, this.publicDir)));
 
             app.use(
-                '/api-docs' + ROUTE.VERSION,
+                serverConfig.apiRoot + '/docs' + API_VERSION.V1,
                 swaggerUi.serve,
                 swaggerUi.setup(undefined, {
-                    swaggerUrl: ROUTE.VERSION,
+                    swaggerUrl: serverConfig.apiRoot + API_VERSION.V1,
                 })
             );
 
             app.use(
-                ROUTE.VERSION + '/*',
-                validateToken(serverConfig.jwtSecret)
+                serverConfig.apiRoot + API_VERSION.V1 + '/*',
+                validateToken(
+                    serverConfig.apiRoot + API_VERSION.V1,
+                    serverConfig.jwtSecret
+                )
             );
         });
 

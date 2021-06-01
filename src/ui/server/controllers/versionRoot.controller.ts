@@ -2,7 +2,7 @@ import { Response } from 'express';
 import _ from 'lodash';
 import { logger } from '../../../aspects';
 import { VersionRootController } from '../model/controller.model';
-import { ROUTE } from '../model/enums';
+import { API_VERSION } from '../model/enums';
 import { AbstractController } from './abstract.controller';
 import { AppServerConfiguration } from '../model/server.model';
 import { controller, response, httpGet } from 'inversify-express-utils';
@@ -13,7 +13,7 @@ const openAPI = require('./../doc/openapi_v1.json');
 // tslint:disable-next-line: no-any
 declare type APIDefinition = any;
 
-@controller(ROUTE.VERSION)
+@controller(API_VERSION.V1)
 export class DefaultVersionRootController extends AbstractController
     implements VersionRootController {
     private publicAPI: APIDefinition;
