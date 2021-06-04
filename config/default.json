@@ -1,22 +1,25 @@
 {
     "application": {
-        "appName": "Portal",
+        "appName": "fcl-Portal",
         "jobRecipient": "",
         "login": {
             "threshold": 5,
             "secondsDelay": 600
         },
-        "apiUrl": "",
+        "clientUrl": "",
         "gdprDate": ""
     },
     "server": {
         "port": 3000,
+        "apiRoot": "/api",
         "publicAPIDoc": {
-
+            "/info": ["get"],
+            "/users/login": ["post"],
+            "/tokens": ["post"]    
         }
     },
     "dataStore": {
-        "connectionString": "mongodb://localhost/datadevdb"
+        "connectionString": "mongodb://localhost/27017"
     },
     "mail": {
         "fromAddress": "",

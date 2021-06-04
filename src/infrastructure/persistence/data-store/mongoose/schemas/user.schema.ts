@@ -1,6 +1,6 @@
 import { Schema, Document } from 'mongoose';
 import { ObjectId } from 'bson';
-import * as mongooseUniqueValidator from 'mongoose-unique-validator';
+import mongooseUniqueValidator from 'mongoose-unique-validator';
 import { MongooseUpdateResponse } from '../mongoose.repository';
 import { InstitutionModel } from './institution.schema';
 

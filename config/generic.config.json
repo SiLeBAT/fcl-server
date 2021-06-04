@@ -1,19 +1,18 @@
 {
   "application": {
-      "appName": "Portal",
+      "appName": "fcl-Portal",
       "jobRecipient": "",
       "login": {
           "threshold": 0,
           "secondsDelay": 0
         },
-        "apiUrl": "",
+        "clientUrl": "",
         "gdprDate": ""
   },
   "server": {
       "port": 3000,
-      "publicAPIDoc": {
-
-      }
+      "apiRoot": "",
+      "publicAPIDoc": { }
   },
   "dataStore": {
       "connectionString": ""

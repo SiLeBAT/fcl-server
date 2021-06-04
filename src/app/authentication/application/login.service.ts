@@ -1,4 +1,4 @@
-import * as moment from 'moment';
+import moment from 'moment';
 import {
     LoginService,
     UserLoginInformation,
@@ -15,8 +15,8 @@ import {
 } from './../domain/domain.error';
 import { injectable, inject } from 'inversify';
 import { APPLICATION_TYPES } from './../../application.types';
-import { logger } from '../../../aspects';
 import { GDPRConfirmationRequestDTO } from '../../../ui/server/model/request.model';
+
 @injectable()
 export class DefaultLoginService implements LoginService {
     private threshold: number;

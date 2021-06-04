@@ -36,7 +36,7 @@ export interface PasswordService extends PasswordPort {}
 
 interface BaseResetNotificationPayload {
     name: string;
-    api_url: string;
+    client_url: string;
     action_url: string;
     appName: string;
 }

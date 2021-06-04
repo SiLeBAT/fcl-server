@@ -1,9 +1,9 @@
 // core
 
 // npm
-import * as handlebars from 'handlebars';
-import * as nodemailer from 'nodemailer';
-import * as readFilePromise from 'fs-readfile-promise';
+import handlebars from 'handlebars';
+import nodemailer from 'nodemailer';
+import readFilePromise from 'fs-readfile-promise';
 
 // local
 import { logger } from './../../aspects';

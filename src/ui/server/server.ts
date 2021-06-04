@@ -1,18 +1,14 @@
-import * as path from 'path';
-import * as express from 'express';
-import * as helmet from 'helmet';
-import * as compression from 'compression';
-// import * as bodyParser from 'body-parser';
-import * as cors from 'cors';
-import * as morgan from 'morgan';
-import * as swaggerUi from 'swagger-ui-express';
+import path from 'path';
+import express from 'express';
+import helmet from 'helmet';
+import compression from 'compression';
+import morgan from 'morgan';
+import swaggerUi from 'swagger-ui-express';
 import { InversifyExpressServer } from 'inversify-express-utils';
-
-// local
 import { logger } from './../../aspects';
 import { validateToken } from './middleware/token-validator.middleware';
 import { Logger } from '../../aspects/logging';
-import { SERVER_ERROR_CODE, ROUTE } from './model/enums';
+import { SERVER_ERROR_CODE, API_VERSION } from './model/enums';
 import { AppServerConfiguration } from './model/server.model';
 import { injectable, Container } from 'inversify';
 import SERVER_TYPES from './server.types';
@@ -28,7 +24,7 @@ export class DefaultAppServer implements AppServer {
     private publicDir = 'public';
 
     constructor(container: Container) {
-        this.initialise(container);
+        this.initialize(container);
     }
 
     startServer() {
@@ -38,53 +34,75 @@ export class DefaultAppServer implements AppServer {
         );
     }
 
-    private initialise(container: Container) {
-        this.server = new InversifyExpressServer(container);
+    private initialize(container: Container) {
         const serverConfig = container.get<AppServerConfiguration>(
             SERVER_TYPES.AppServerConfiguration
         );
+        this.server = new InversifyExpressServer(container, null, {
+            rootPath: serverConfig.apiRoot,
+        });
+
         this.server.setConfig((app) => {
-            app.use(helmet());
-            app.use(compression());
             app.set('port', serverConfig.port);
             app.set('logger', logger);
 
-            // tslint:disable-next-line: deprecation
-            app.use(express.json({ limit: '50mb' }));
+            app.disable('x-powered-by');
+
+            // Common security headers
             app.use(
-                // tslint:disable-next-line: deprecation
-                express.urlencoded({
-                    extended: false,
+                helmet({
+                    frameguard: {
+                        action: 'deny',
+                    },
+                    contentSecurityPolicy: {
+                        useDefaults: true,
+                        directives: {
+                            'script-src': ["'self'", "'unsafe-eval'"],
+                            'img-src': [
+                                "'self'",
+                                'data:',
+                                '*.openstreetmap.org',
+                                '*.wmflabs.org',
+                            ],
+                        },
+                    },
                 })
             );
 
             app.use((req, res, next) => {
-                res.setHeader('X-Frame-Options', 'deny');
+                // TODO: Cache should be enabled for public content download
                 res.setHeader(
                     'Cache-Control',
-                    'no-cache, no-store, must-revalidate'
+                    'no-store, must-revalidate, max-age=0'
                 );
-                res.setHeader('Pragma', 'no-cache');
+                // deprecated (helmet sets it to "0")
                 res.setHeader('X-XSS-Protection', '1; mode=block');
-                res.setHeader('X-Content-Type-Options', 'nosniff');
                 next();
             });
 
-            app.use(cors());
+            app.use(compression());
+            app.use(express.json({ limit: '50mb' }));
+
             app.use(
                 morgan(Logger.mapLevelToMorganFormat(serverConfig.logLevel))
             );
+
             app.use(express.static(path.join(__dirname, this.publicDir)));
+
             app.use(
-                '/api-docs' + ROUTE.VERSION,
+                serverConfig.apiRoot + '/docs' + API_VERSION.V1,
                 swaggerUi.serve,
                 swaggerUi.setup(undefined, {
-                    swaggerUrl: ROUTE.VERSION,
+                    swaggerUrl: serverConfig.apiRoot + API_VERSION.V1,
                 })
             );
+
             app.use(
-                ROUTE.VERSION + '/*',
-                validateToken(serverConfig.jwtSecret)
+                serverConfig.apiRoot + API_VERSION.V1 + '/*',
+                validateToken(
+                    serverConfig.apiRoot + API_VERSION.V1,
+                    serverConfig.jwtSecret
+                )
             );
         });
 

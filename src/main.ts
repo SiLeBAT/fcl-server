@@ -1,4 +1,4 @@
-import * as config from 'config';
+import config from 'config';
 import { logger, getContainer } from './aspects';
 import { createServer, getServerContainerModule } from './ui/server/ports';
 import {
@@ -95,6 +95,8 @@ async function init() {
     const dataStoreConfig: DataStoreConfiguration = configurationService.getDataStoreConfiguration();
     const appConfiguration: AppConfiguration = configurationService.getApplicationConfiguration();
     const mailConfiguration: MailConfiguration = configurationService.getMailConfiguration();
+
+    logger.info(`Starting Application. appName=${appConfiguration.appName}`);
 
     createDataStore(dataStoreConfig.connectionString);
 

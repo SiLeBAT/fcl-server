@@ -1,5 +1,4 @@
-import { logger } from '../../../aspects';
-import * as argon2 from 'argon2';
+import argon2 from 'argon2';
 import { User, UserCredentials } from '../model/user.model';
 import { Institute } from '../model/institute.model';
 

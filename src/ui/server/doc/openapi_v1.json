@@ -14,7 +14,7 @@
   },
   "servers": [
     {
-      "url": "https://fcl-portal.bfr.berlin/v1"
+      "url": "https://fcl-portal.bfr.berlin/api/v1"
     }
   ],
   "tags": [
