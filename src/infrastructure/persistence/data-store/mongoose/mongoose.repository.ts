@@ -1,10 +1,10 @@
-import {
-    Document,
-    Model,
-    Types,
-    MongooseFilterQuery,
-    CreateQuery,
-} from 'mongoose';
+import { Document, Model, Types } from 'mongoose';
+
+// the following 2 imports should have been provided by mongoose
+// however, types in @types/mongoose/index.d.ts (5.10.5) do not match types in mongoose/index.d.ts anymore
+// the mongoose version had to be increased from version 5.10.19 to 5.12.8 to fix a moderate vulnerability
+import { CreateQuery, MongooseFilterQuery } from './missing-mongoose-types';
+
 import { injectable } from 'inversify';
 
 interface UpdateResponse {}
@@ -52,7 +52,7 @@ export class MongooseRepositoryBase<T extends Document> {
         attr: ModelAttributes
     ): Promise<MongooseUpdateResponse> {
         return this._model
-            .update(
+            .updateOne(
                 { _id: this._toObjectId(_id) } as MongooseFilterQuery<T>,
                 {
                     ...attr,
