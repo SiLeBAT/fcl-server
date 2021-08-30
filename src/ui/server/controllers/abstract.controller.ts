@@ -30,6 +30,10 @@ export abstract class AbstractController implements Controller {
         return this.jsonResponse(response, 400, dto);
     }
 
+    protected invalidUserInput<T>(response: Response, dto: T) {
+        return this.jsonResponse(response, 422, dto);
+    }
+
     protected fail(
         response: Response,
         message: string = 'An unknown error occured'

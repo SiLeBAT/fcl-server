@@ -28,3 +28,10 @@ export class UserAlreadyExistsError extends ApplicationDomainError {
         super(...args);
     }
 }
+
+export class UserRegistrationInputError extends ApplicationDomainError {
+    // tslint:disable-next-line: no-any
+    constructor(...args: any[]) {
+        super(...args);
+    }
+}

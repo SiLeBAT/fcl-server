@@ -26,10 +26,17 @@ import { ConfigurationService } from '../../core/model/configuration.model';
 import { InstituteService } from '../model/institute.model';
 import { injectable, inject } from 'inversify';
 import { APPLICATION_TYPES } from './../../application.types';
-import { UserAlreadyExistsError } from '../domain/domain.error';
+import {
+    UserRegistrationInputError,
+    UserAlreadyExistsError,
+} from '../domain/domain.error';
 
 @injectable()
 export class DefaultRegistrationService implements RegistrationService {
+    private static readonly EMAIL_REGEXP = /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    private static readonly NAME_REGEXP = /^[^<>]*$/;
+    private static readonly MINIMUM_PASSWORD_LENGTH = 8;
+
     private appName: string;
     private apiUrl: string;
     private supportContact: string;
@@ -106,6 +113,38 @@ export class DefaultRegistrationService implements RegistrationService {
         return userName;
     }
 
+    private isEmptyString(value: string): boolean {
+        return !value;
+    }
+
+    private isEmailValid(email: string): boolean {
+        return (
+            !this.isEmptyString(email) &&
+            DefaultRegistrationService.EMAIL_REGEXP.test(email)
+        );
+    }
+
+    private isValidName(name: string): boolean {
+        return (
+            !this.isEmptyString(name) &&
+            DefaultRegistrationService.NAME_REGEXP.test(name)
+        );
+    }
+
+    private isUserRegistrationInputValid(
+        credentials: UserRegistration
+    ): boolean {
+        return (
+            credentials.dataProtectionAgreed &&
+            this.isValidName(credentials.firstName) &&
+            this.isValidName(credentials.lastName) &&
+            !this.isEmptyString(credentials.email) &&
+            this.isEmailValid(credentials.email) &&
+            String(credentials.password).length >=
+                DefaultRegistrationService.MINIMUM_PASSWORD_LENGTH
+        );
+    }
+
     async registerUser(credentials: UserRegistration): Promise<void> {
         let instituteIsUnknown = false;
         const result = await this.userService.hasUserWithEmail(
@@ -115,6 +154,12 @@ export class DefaultRegistrationService implements RegistrationService {
             this.handleAlreadyRegisteredUser(credentials);
             throw new UserAlreadyExistsError(
                 'Registration failed. User already exists'
+            );
+        }
+
+        if (!this.isUserRegistrationInputValid(credentials)) {
+            throw new UserRegistrationInputError(
+                'Registration failed. User registration input is invalid.'
             );
         }
 

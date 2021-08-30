@@ -5,6 +5,7 @@ import {
     UserLoginInformation,
     LoginResponse,
     AuthorizationError,
+    UserRegistrationInputError,
     LoginPort,
     RegistrationPort,
     UserRegistration,
@@ -318,6 +319,12 @@ export class DefaultUsersController extends AbstractController
     private handleError(res: Response, error: Error) {
         if (error instanceof MalformedRequestError) {
             this.clientError(res);
+        } else if (error instanceof UserRegistrationInputError) {
+            const dto = {
+                code: SERVER_ERROR_CODE.INVALID_INPUT,
+                message: 'Client provided invalid user input. ' + error.message,
+            };
+            this.invalidUserInput(res, dto);
         } else if (error instanceof JsonWebTokenError) {
             const dto = {
                 code: SERVER_ERROR_CODE.AUTHORIZATION_ERROR,

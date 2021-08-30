@@ -45,10 +45,10 @@ describe('Register User Use Case', () => {
         credentials = {
             firstName: 'test',
             lastName: 'test',
-            email: 'test',
-            password: 'test',
+            email: 'test@test.test',
+            password: 'testtest',
             institution: 'test',
-            dataProtectionAgreed: false,
+            dataProtectionAgreed: true,
             newsRegAgreed: false,
             newsMailAgreed: false,
             userAgent: 'test',
@@ -62,6 +62,30 @@ describe('Register User Use Case', () => {
         const result = service.registerUser(credentials);
         // tslint:disable-next-line: no-floating-promises
         expect(result).toBeInstanceOf(Promise);
+    });
+
+    it('should reject user registration with invalid first name', () => {
+        credentials.firstName = '<>';
+
+        expect.assertions(1);
+        return service.registerUser(credentials).then(
+            (result) => {},
+            (err) => {
+                return expect(err).toBeTruthy();
+            }
+        );
+    });
+
+    it('should reject user registration with invalid last name', () => {
+        credentials.lastName = '<>';
+
+        expect.assertions(1);
+        return service.registerUser(credentials).then(
+            (result) => {},
+            (err) => {
+                return expect(err).toBeTruthy();
+            }
+        );
     });
 
     it('should throw an error because institute does not exist', () => {
