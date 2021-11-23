@@ -1,6 +1,7 @@
+import { ROUTE } from './ui/server/model/enums';
 import * as config from 'config';
 import { logger, getContainer } from './aspects';
-import { createServer, getServerContainerModule } from './ui/server/ports';
+import { getServerContainerModule, validateToken } from './ui/server/ports';
 import {
     createDataStore,
     getPersistenceContainerModule,
@@ -22,6 +23,10 @@ import {
     AppConfiguration,
     DataStoreConfiguration,
 } from './main.model';
+import {
+    createServer,
+    ServerConfiguration as ExpressServerConfiguration,
+} from '@SiLeBAT/fg43-ne-server';
 
 export class DefaultConfigurationService implements SystemConfigurationService {
     private loginConfigurationDefaults: LoginConfiguration = {
@@ -123,7 +128,24 @@ async function init() {
         mailService.getMailHandler().bind(mailService)
     );
 
-    const server = createServer(container);
+    const expressServerConfiguration: ExpressServerConfiguration = {
+        container,
+        tokenValidation: {
+            validator: validateToken,
+            jwtSecret: generalConfig.jwtSecret,
+        },
+        api: {
+            root: appConfiguration.apiUrl,
+            port: serverConfig.port,
+            version: ROUTE.VERSION,
+            docPath: '/api-docs',
+        },
+        logging: {
+            logger,
+            logLevel: generalConfig.logLevel,
+        },
+    };
+    const server = createServer(expressServerConfiguration);
     server.startServer();
 
     process.on('uncaughtException', (error) => {
