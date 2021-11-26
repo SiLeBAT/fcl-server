@@ -34,7 +34,7 @@
   },
   "private": true,
   "dependencies": {
-    "@SiLeBAT/fg43-ne-server": "^1.0.0",
+    "@SiLeBAT/fg43-ne-server": "^1.0.1",
     "argon2": "^0.26.2",
     "bluebird": "~3.7.2",
     "compression": "~1.7.4",
