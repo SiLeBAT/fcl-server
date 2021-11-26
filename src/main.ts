@@ -1,4 +1,5 @@
 import { ROUTE } from './ui/server/model/enums';
+import * as path from 'path';
 import * as config from 'config';
 import { logger, getContainer } from './aspects';
 import { getServerContainerModule, validateToken } from './ui/server/ports';
@@ -144,6 +145,7 @@ async function init() {
             logger,
             logLevel: generalConfig.logLevel,
         },
+        publicDir: path.join(__dirname + '/ui/server/public'),
     };
     const server = createServer(expressServerConfiguration);
     server.startServer();
