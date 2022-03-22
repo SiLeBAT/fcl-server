@@ -35,7 +35,7 @@ export class DefaultTokenRepository extends MongooseRepositoryBase<TokenModel>
     ): Promise<boolean> {
         return super
             ._findOne({ user: user.uniqueId, type })
-            .then((token: TokenModel) => !!super._delete(token._id));
+            .then((token: TokenModel | null) => token === null || !!super._delete(token._id));
     }
 
     saveToken(token: UserToken): Promise<UserToken> {
@@ -47,17 +47,19 @@ export class DefaultTokenRepository extends MongooseRepositoryBase<TokenModel>
         return super._create(newToken).then((res) => newToken);
     }
     getUserTokenByJWT(token: string): Promise<UserToken> {
-        return super._findOne({ token: token }).then((model: TokenModel) => {
-            if (!model) {
-                throw new JsonWebTokenError(
-                    `No UserToken for JWT Token. token=${token}`
-                );
-            }
-            return {
-                token: model.token,
-                type: model.type,
-                userId: model.user,
-            };
-        });
+        return super
+            ._findOne({ token: token })
+            .then((model: TokenModel | null) => {
+                if (!model) {
+                    throw new JsonWebTokenError(
+                        `No UserToken for JWT Token. token=${token}`
+                    );
+                }
+                return {
+                    token: model.token,
+                    type: model.type,
+                    userId: model.user,
+                };
+            });
     }
 }
