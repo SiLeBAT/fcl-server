@@ -1,13 +1,9 @@
-import { Schema, Document } from 'mongoose';
-import { ObjectId } from 'bson';
+import { Schema, Document, Types } from 'mongoose';
 import * as mongooseUniqueValidator from 'mongoose-unique-validator';
-import { MongooseUpdateResponse } from '../mongoose.repository';
 import { InstitutionModel } from './institution.schema';
 
-export interface UserModelUpdateResponse extends MongooseUpdateResponse {}
-
 export interface UserModel extends Document {
-    _id: ObjectId;
+    _id: Types.ObjectId;
     password: string;
     email: string;
     firstName: string;

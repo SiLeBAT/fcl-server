@@ -1,96 +1,67 @@
-import { Document, Model, Types } from 'mongoose';
-
-// the following 2 imports should have been provided by mongoose
-// however, types in @types/mongoose/index.d.ts (5.10.5) do not match types in mongoose/index.d.ts anymore
-// the mongoose version had to be increased from version 5.10.19 to 5.12.8 to fix a moderate vulnerability
-import { CreateQuery, MongooseFilterQuery } from './missing-mongoose-types';
-
+import { Model, Types } from 'mongoose';
 import { injectable } from 'inversify';
-
-interface UpdateResponse {}
-export interface MongooseUpdateResponse extends UpdateResponse {
-    ok: number;
-}
-
-interface ModelAttributes {}
-interface Read<T> {
-    retrieve: () => Promise<T[]>;
-    findById: (id: string) => Promise<T | null>;
-    findOne(cond?: Object): Promise<T | null>;
-    find(cond: Object, fields: Object, options: Object): Promise<T[]>;
-}
-
-interface Write<T> {
-    create: (item: T) => Promise<T>;
-    update: (
-        _id: string,
-        attributes: ModelAttributes
-    ) => Promise<UpdateResponse>;
-    delete: (_id: string) => Promise<T>;
-}
-
-export interface RepositoryBase<T> extends Read<T>, Write<T> {}
+import { CommonDocument } from './common.model';
 
 @injectable()
-export class MongooseRepositoryBase<T extends Document> {
+export class MongooseRepositoryBase<T extends CommonDocument> {
     private _model: Model<T>;
 
     constructor(schemaModel: Model<T>) {
         this._model = schemaModel;
     }
 
-    protected _create(item: T) {
-        return this._model.create(item as CreateQuery<T>);
+    protected async _create(item: T): Promise<T> {
+        return this._model.create(item);
     }
 
-    protected _retrieve() {
+    protected async _retrieve(): Promise<T[]> {
         return this._model.find({}).exec();
     }
 
-    protected _update(
-        _id: string,
-        attr: ModelAttributes
-    ): Promise<MongooseUpdateResponse> {
+    protected async _retrievePopulatedWith(populate: string[]): Promise<T[]> {
+        let query = this._model.find({});
+        populate.forEach((p) => {
+            query = query.populate(p);
+        });
+        return query.exec();
+    }
+
+    protected async _update(_id: string, attr: Partial<T>): Promise<T | null> {
         return this._model
-            .updateOne(
-                { _id: this._toObjectId(_id) } as MongooseFilterQuery<T>,
-                {
-                    ...attr,
-                    ...{ updated: Date.now() },
-                    // tslint:disable-next-line:no-any
-                } as any
+            .findByIdAndUpdate(
+                this._toObjectId(_id),
+                { ...attr, updated: Date.now() },
+                { useFindAndModify: false }
             )
             .exec();
     }
 
-    protected _delete(_id: string) {
-        return this._model
-            .remove({ _id: _id } as MongooseFilterQuery<T>)
-            .exec();
+    protected async _delete(_id: string): Promise<T | null> {
+        return this._model.findByIdAndRemove(_id).exec();
     }
 
-    protected _findById(_id: string) {
+    protected async _findById(_id: string): Promise<T | null> {
         return this._model.findById(_id).exec();
     }
 
-    protected _findOne(cond?: Object) {
-        return this._model.findOne(cond as MongooseFilterQuery<T>).exec();
+    protected async _findOne(cond: {}): Promise<T | null> {
+        return this._model.findOne(cond).exec();
     }
 
-    protected _find(
-        cond?: Object,
+    protected async _find(
+        cond: {},
         fields?: Object,
         options?: Object
     ): Promise<T[]> {
-        return this._model.find(cond as MongooseFilterQuery<T>, options).exec();
+        return this._model.find(cond, options).exec();
     }
 
     private _toObjectId(_id: string): Types.ObjectId {
-        return Types.ObjectId.createFromHexString(_id);
+        return new Types.ObjectId(_id);
     }
 }
 
-function createRepository<T extends Document>(schema: Model<T>) {
+function createRepository<T extends CommonDocument>(schema: Model<T>) {
     return new MongooseRepositoryBase(schema);
 }
 
