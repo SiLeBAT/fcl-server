@@ -42,12 +42,12 @@ describe('Verify User Use Case', () => {
         container = null;
     });
     it('should return a promise', () => {
-        const result = service.verifyUser(token);
+        const result = service.verifyUser(token).catch(() => {});
         // tslint:disable-next-line: no-floating-promises
         expect(result).toBeInstanceOf(Promise);
     });
 
-    it('should call token repository to retrieve userId', () => {
+    it('should call token repository to retrieve userId', async () => {
         const mockTokenService = getMockTokenService();
         service = rebindMocks<RegistrationService>(
             container,
@@ -68,7 +68,7 @@ describe('Verify User Use Case', () => {
                 ).toBe(1)
             );
     });
-    it('should verify the token against the retrieved userId', () => {
+    it('should verify the token against the retrieved userId', async () => {
         const mockTokenService = getMockTokenService();
         service = rebindMocks<RegistrationService>(
             container,
@@ -89,7 +89,7 @@ describe('Verify User Use Case', () => {
                 ).toBe(1)
             );
     });
-    it('should verify the user', () => {
+    it('should verify the user', async () => {
         const mockUserService = getMockUserService();
         const mockTokenService = getMockTokenService();
         service = rebindMocks<RegistrationService>(
@@ -116,7 +116,7 @@ describe('Verify User Use Case', () => {
             .verifyUser(token)
             .then((result) => expect(isVerified.mock.calls.length).toBe(1));
     });
-    it('should call the user Repository to update the user', () => {
+    it('should call the user Repository to update the user', async () => {
         const mockUserService = getMockUserService();
         const mockTokenService = getMockTokenService();
         service = rebindMocks<RegistrationService>(
@@ -142,7 +142,7 @@ describe('Verify User Use Case', () => {
                 ).toBe(1)
             );
     });
-    it('should call the token Repository to delete the token', () => {
+    it('should call the token Repository to delete the token', async () => {
         const mockTokenService = getMockTokenService();
         service = rebindMocks<RegistrationService>(
             container,

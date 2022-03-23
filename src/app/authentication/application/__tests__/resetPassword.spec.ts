@@ -43,13 +43,13 @@ describe('Reset Password Use Case', () => {
         container = null;
     });
 
-    it('should return a promise', () => {
-        const result = service.resetPassword(token, password);
+    it('should return a promise', async () => {
+        const result = service.resetPassword(token, password).catch(() => {});
         // tslint:disable-next-line: no-floating-promises
         expect(result).toBeInstanceOf(Promise);
     });
 
-    it('should update the user password', () => {
+    it('should update the user password', async () => {
         const mockTokenService = getMockTokenService();
         const mockUserService = getMockUserService();
 
@@ -77,7 +77,8 @@ describe('Reset Password Use Case', () => {
             .resetPassword(token, password)
             .then((result) => expect(updatePassword.mock.calls.length).toBe(1));
     });
-    it('should call the user Repository to update the user', () => {
+
+    it('should call the user Repository to update the user', async () => {
         const mockTokenService = getMockTokenService();
         const mockUserService = getMockUserService();
 
@@ -104,7 +105,8 @@ describe('Reset Password Use Case', () => {
                 ).toBe(1)
             );
     });
-    it('should call the token Repository to delete the token', () => {
+
+    it('should call the token Repository to delete the token', async () => {
         const mockTokenService = getMockTokenService();
         service = rebindMocks<PasswordService>(
             container,
@@ -126,7 +128,7 @@ describe('Reset Password Use Case', () => {
                 ).toBe(1)
             );
     });
-    it('should call the notification Service with a new notification', () => {
+    it('should call the notification Service with a new notification', async () => {
         const mockTokenService = getMockTokenService();
         const mockNotificationService = getMockNotificationService();
 
@@ -154,6 +156,7 @@ describe('Reset Password Use Case', () => {
                 ).toBe(1)
             );
     });
+
     it('should be throw an error because user is faulty', () => {
         const mockTokenService = getMockTokenService();
         const mockNotificationService = getMockNotificationService();
