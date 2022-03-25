@@ -2,7 +2,7 @@ export interface ApplicationConfiguration {
     appName: string;
     jobRecipient: string;
     login: LoginConfiguration;
-    apiUrl: string;
+    clientUrl: string;
     supportContact: string;
     jwtSecret: string;
     gdprDate: string;
