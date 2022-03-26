@@ -136,7 +136,7 @@ async function init() {
             jwtSecret: generalConfig.jwtSecret,
         },
         api: {
-            root: appConfiguration.apiUrl,
+            root: serverConfig.apiRoot,
             port: serverConfig.port,
             version: ROUTE.VERSION,
             docPath: '/api-docs',

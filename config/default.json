@@ -6,11 +6,12 @@
             "threshold": 5,
             "secondsDelay": 600
         },
-        "apiUrl": "",
+        "clientUrl": "",
         "gdprDate": ""
     },
     "server": {
         "port": 3000,
+        "apiRoot": "",
         "publicAPIDoc": {
 
         }
@@ -27,4 +28,4 @@
         "logLevel": "trace",
         "jwtSecret": "0"
     }
-}
+  }
