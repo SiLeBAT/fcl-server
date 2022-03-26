@@ -14,7 +14,7 @@ class MockConfigurationService implements ConfigurationService {
             jobRecipient: 'test@test.com',
             supportContact: 'test',
             jwtSecret: 'test',
-            apiUrl: 'test',
+            clientUrl: 'test',
             gdprDate: 'test',
         };
     }
