@@ -146,6 +146,13 @@ async function init() {
             logLevel: generalConfig.logLevel,
         },
         publicDir: path.join(__dirname + '/ui/server/public'),
+        contentSecurityPolicyDirectives: {
+            'img-src': [
+                "'self'",
+                "*.openstreetmap.org",
+                "data:"
+            ]
+        }
     };
     const server = createServer(expressServerConfiguration);
     server.startServer();
