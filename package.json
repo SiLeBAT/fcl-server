@@ -34,7 +34,7 @@
   },
   "private": true,
   "dependencies": {
-    "@SiLeBAT/fg43-ne-server": "^1.0.3",
+    "@SiLeBAT/fg43-ne-server": "^1.1.0",
     "argon2": "0.28.5",
     "bluebird": "~3.7.2",
     "compression": "~1.7.4",
@@ -49,7 +49,7 @@
     "inversify-express-utils": "~6.3.2",
     "jsonwebtoken": "~8.5.1",
     "lodash": "~4.17.21",
-    "moment": "~2.29.1",
+    "moment": "~2.29.2",
     "mongoose": "~6.2.8",
     "mongoose-unique-validator": "~3.0.0",
     "morgan": "~1.10.0",
