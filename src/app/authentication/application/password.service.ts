@@ -4,7 +4,7 @@ import {
     ResetSuccessNotificationPayload,
     ResetRequestNotificationPayload,
 } from '../model/login.model';
-import { TokenType } from './../domain/enums';
+import { TokenType, UserValidationErrorCode } from './../domain/enums';
 import { User, UserToken, UserService } from './../model/user.model';
 import { NotificationType } from '../../core/domain/enums';
 import {
@@ -16,8 +16,16 @@ import { TokenService } from '../model/token.model';
 import { ConfigurationService } from '../../core/model/configuration.model';
 import { injectable, inject } from 'inversify';
 import { APPLICATION_TYPES } from './../../application.types';
+import { ValidationError, InvalidInputDataError } from '../../ports';
+
 @injectable()
 export class DefaultPasswordService implements PasswordService {
+    private static readonly MINIMUM_PASSWORD_LENGTH = 10;
+    private static readonly CONTAINS_UCASE_UNICODE_LETTERS_REGEXP = /^.*\p{Lu}+.*$/u;
+    private static readonly CONTAINS_LCASE_UNICODE_LETTERS_REGEXP = /^.*\p{Ll}+.*$/u;
+    private static readonly CONTAINS_DIGIT_REGEXP = /^.*\d+.*$/;
+    private static readonly CONTAINS_SPECIAL_CHAR_REGEXP = /^.*[^\d\p{L}]+.*$/u;
+
     private appName: string;
     private clientUrl: string;
     private supportContact: string;
@@ -62,11 +70,40 @@ export class DefaultPasswordService implements PasswordService {
         );
     }
 
+    validatePassword(password: string): ValidationError[] {
+        const errors: ValidationError[] = [];
+        if ((password || '') === '') {
+            errors.push({
+                code: UserValidationErrorCode.MISSING_PWD,
+                message: 'Required field'
+            });
+        } else if (
+            String(password).length < DefaultPasswordService.MINIMUM_PASSWORD_LENGTH ||
+            !DefaultPasswordService.CONTAINS_UCASE_UNICODE_LETTERS_REGEXP.test(password) ||
+            !DefaultPasswordService.CONTAINS_LCASE_UNICODE_LETTERS_REGEXP.test(password) ||
+            !DefaultPasswordService.CONTAINS_DIGIT_REGEXP.test(password) ||
+            !DefaultPasswordService.CONTAINS_SPECIAL_CHAR_REGEXP.test(password)
+        ) {
+            errors.push({
+                code: UserValidationErrorCode.INVALID_PWD,
+                message: `Your password must be at least ${ DefaultPasswordService.MINIMUM_PASSWORD_LENGTH } ` +
+                    `characters long, contain at least one number and one special character and have a mixture of ` +
+                    `uppercase and lowercase letters.`
+            });
+        }
+
+        return errors;
+    }
+
     async resetPassword(token: string, password: string): Promise<void> {
         const userToken = await this.tokenService.getUserTokenByJWT(token);
         const userId = userToken.userId;
         this.tokenService.verifyTokenWithUser(token, String(userId));
         const user = await this.userService.getUserById(userId);
+        const validationErrors = this.validatePassword(password);
+        if (validationErrors.length > 0) {
+            throw new InvalidInputDataError(validationErrors, 'Password reset failed. Password is not valid.');
+        }
         await user.updatePassword(password);
         await this.userService.updateUser(user);
         await this.tokenService.deleteTokenForUser(user, TokenType.RESET);

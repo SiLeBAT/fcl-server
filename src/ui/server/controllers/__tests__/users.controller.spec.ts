@@ -28,6 +28,7 @@ describe('Login controller', () => {
                 jwtSecret: 'test',
                 logLevel: 'info',
                 supportContact: 'test',
+                apiRoot: 'test'
             }),
             getApplicationContainerModule({
                 appName: 'test',

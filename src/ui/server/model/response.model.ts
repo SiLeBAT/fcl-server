@@ -1,3 +1,7 @@
+import { ValidationError } from "../../../app/ports";
+
+export type ValidationErrorDTO = Readonly<ValidationError>;
+
 export interface RegistrationRequestResponseDTO {
     readonly registerRequest: boolean;
     readonly email: string;
@@ -36,6 +40,10 @@ export interface DefaultServerErrorDTO extends ErrorDTO {}
 
 export interface FailedLoginErrorDTO extends ErrorDTO {
     readonly waitTime?: number;
+}
+
+export interface InvalidDataErrorDTO extends ErrorDTO {
+    readonly errors: ValidationErrorDTO[];
 }
 
 export interface TokenizedUserDTO {
