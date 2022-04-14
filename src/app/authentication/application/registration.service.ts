@@ -127,7 +127,7 @@ export class DefaultRegistrationService implements RegistrationService {
 
         const validationErrors = this.validateUserRegistrationInformation(credentials);
         if (validationErrors.length > 0) {
-            throw new InvalidInputDataError(validationErrors, 'Registration failed. Registration data are invalid.');
+            throw new InvalidInputDataError(validationErrors, 'The registration failed. The registration data is invalid.');
         }
 
         let inst;

@@ -24,8 +24,7 @@ describe('Institution controller', () => {
                 publicAPIDoc: {},
                 jwtSecret: 'test',
                 logLevel: 'info',
-                supportContact: 'test',
-                apiRoot: 'test'
+                supportContact: 'test'
             }),
             getApplicationContainerModule({
                 appName: 'test',
