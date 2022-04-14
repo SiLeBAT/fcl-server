@@ -102,7 +102,7 @@ export class DefaultPasswordService implements PasswordService {
         const user = await this.userService.getUserById(userId);
         const validationErrors = this.validatePassword(password);
         if (validationErrors.length > 0) {
-            throw new InvalidInputDataError(validationErrors, 'Password reset failed. Password is not valid.');
+            throw new InvalidInputDataError(validationErrors, 'The password reset failed. The password is not valid.');
         }
         await user.updatePassword(password);
         await this.userService.updateUser(user);
