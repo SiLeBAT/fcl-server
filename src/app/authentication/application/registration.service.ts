@@ -17,25 +17,24 @@ import {
 } from '../../core/model/notification.model';
 import { NotificationType } from '../../core/domain/enums';
 import { createUser } from '../domain/user.entity';
-import { RecoveryData } from '../model/login.model';
+import { PasswordService, RecoveryData } from '../model/login.model';
 import { User, UserToken, UserService } from '../model/user.model';
-import { TokenType } from '../domain/enums';
+import { TokenType, UserValidationErrorCode } from '../domain/enums';
 import { createInstitution } from '../domain/institute.entity';
 import { TokenService } from '../model/token.model';
 import { ConfigurationService } from '../../core/model/configuration.model';
 import { InstituteService } from '../model/institute.model';
 import { injectable, inject } from 'inversify';
 import { APPLICATION_TYPES } from './../../application.types';
-import {
-    UserRegistrationInputError,
-    UserAlreadyExistsError,
-} from '../domain/domain.error';
+import { UserAlreadyExistsError } from '../domain/domain.error';
+import { InvalidInputDataError, ValidationError } from '../../ports';
 
 @injectable()
 export class DefaultRegistrationService implements RegistrationService {
-    private static readonly EMAIL_REGEXP = /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-    private static readonly NAME_REGEXP = /^[^<>]*$/;
-    private static readonly MINIMUM_PASSWORD_LENGTH = 8;
+    private static readonly VALID_EMAIL_REGEXP = /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    private static readonly VALID_NAME_REGEXP = /^[^<>]*$/;
+    private static readonly INVALID_NAME_MESSAGE = 'Characters \'<\' and \'>\' are not allowed.';
+    private static readonly MISSING_VALUE_MESSAGE = 'Required field';
 
     private appName: string;
     private clientUrl: string;
@@ -49,6 +48,7 @@ export class DefaultRegistrationService implements RegistrationService {
         @inject(APPLICATION_TYPES.ConfigurationService)
         private configurationService: ConfigurationService,
         @inject(APPLICATION_TYPES.UserService) private userService: UserService,
+        @inject(APPLICATION_TYPES.PasswordService) private passwordService: PasswordService,
         @inject(APPLICATION_TYPES.InstituteService)
         private instituteService: InstituteService
     ) {
@@ -113,38 +113,6 @@ export class DefaultRegistrationService implements RegistrationService {
         return userName;
     }
 
-    private isEmptyString(value: string): boolean {
-        return !value;
-    }
-
-    private isEmailValid(email: string): boolean {
-        return (
-            !this.isEmptyString(email) &&
-            DefaultRegistrationService.EMAIL_REGEXP.test(email)
-        );
-    }
-
-    private isValidName(name: string): boolean {
-        return (
-            !this.isEmptyString(name) &&
-            DefaultRegistrationService.NAME_REGEXP.test(name)
-        );
-    }
-
-    private isUserRegistrationInputValid(
-        credentials: UserRegistration
-    ): boolean {
-        return (
-            credentials.dataProtectionAgreed &&
-            this.isValidName(credentials.firstName) &&
-            this.isValidName(credentials.lastName) &&
-            !this.isEmptyString(credentials.email) &&
-            this.isEmailValid(credentials.email) &&
-            String(credentials.password).length >=
-                DefaultRegistrationService.MINIMUM_PASSWORD_LENGTH
-        );
-    }
-
     async registerUser(credentials: UserRegistration): Promise<void> {
         let instituteIsUnknown = false;
         const result = await this.userService.hasUserWithEmail(
@@ -157,10 +125,9 @@ export class DefaultRegistrationService implements RegistrationService {
             );
         }
 
-        if (!this.isUserRegistrationInputValid(credentials)) {
-            throw new UserRegistrationInputError(
-                'Registration failed. User registration input is invalid.'
-            );
+        const validationErrors = this.validateUserRegistrationInformation(credentials);
+        if (validationErrors.length > 0) {
+            throw new InvalidInputDataError(validationErrors, 'Registration failed. Registration data are invalid.');
         }
 
         let inst;
@@ -262,6 +229,65 @@ export class DefaultRegistrationService implements RegistrationService {
         return this.notificationService.sendNotification(
             requestAdminActivationReminder
         );
+    }
+
+    private isEmptyString(value: string): boolean {
+        return !value;
+    }
+
+    private validateEmail(email: string): ValidationError[] {
+        const errors: ValidationError[] = [];
+
+        if (this.isEmptyString(email)) {
+            errors.push({ code: UserValidationErrorCode.MISSING_EMAIL, message: DefaultRegistrationService.MISSING_VALUE_MESSAGE });
+        } else
+        if (!DefaultRegistrationService.VALID_EMAIL_REGEXP.test(email)) {
+            errors.push({ code: UserValidationErrorCode.INVALID_EMAIL, message: 'Not a valid email'});
+        }
+
+        return errors;
+    }
+
+    private validateFirstName(name: string): ValidationError[] {
+        const errors: ValidationError[] = [];
+        if (this.isEmptyString(name)) {
+            errors.push({ code: UserValidationErrorCode.MISSING_FIRSTNAME, message: DefaultRegistrationService.MISSING_VALUE_MESSAGE });
+        } else if (!DefaultRegistrationService.VALID_NAME_REGEXP.test(name)) {
+            errors.push({
+                code: UserValidationErrorCode.INVALID_FIRSTNAME,
+                message: DefaultRegistrationService.INVALID_NAME_MESSAGE
+            });
+        }
+
+        return errors;
+    }
+
+    private validateLastName(name: string): ValidationError[] {
+        const errors: ValidationError[] = [];
+        if (this.isEmptyString(name)) {
+            errors.push({ code: UserValidationErrorCode.MISSING_LASTNAME, message: DefaultRegistrationService.MISSING_VALUE_MESSAGE });
+        } else if (!DefaultRegistrationService.VALID_NAME_REGEXP.test(name)) {
+            errors.push({
+                code: UserValidationErrorCode.INVALID_LASTNAME,
+                message: DefaultRegistrationService.INVALID_NAME_MESSAGE
+            });
+        }
+
+        return errors;
+    }
+
+    private validateUserRegistrationInformation(credentials: UserRegistration): ValidationError[] {
+        const errors = ([] as ValidationError[]).concat(
+            this.validateFirstName(credentials.firstName), // .map(e => ({ ...e, fieldName: 'firstName' })),
+            this.validateLastName(credentials.lastName), // .map(e => ({ ...e, fieldName: 'lastName' })),
+            this.validateEmail(credentials.email),
+            this.passwordService.validatePassword(credentials.password),
+            credentials.dataProtectionAgreed ? [] : [{
+                code: UserValidationErrorCode.INVALID_GDPRA,
+                message: 'Agreement to data protection is missing.',
+            }]
+        );
+        return errors;
     }
 
     private async prepareUserForAdminActivation(user: User): Promise<void> {

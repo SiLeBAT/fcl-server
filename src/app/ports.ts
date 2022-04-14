@@ -10,8 +10,9 @@ export {
     NotificationPort,
 } from './core/model/notification.model';
 export { ConfigurationService } from './core/model/configuration.model';
-
 export { NotificationType } from './core/domain/enums';
+export { InvalidInputDataError } from './core/domain/domain.error';
+export { ValidationError } from './core/model/error.model';
 
 /**
  * authentication exports
@@ -47,8 +48,7 @@ export { createInstitution } from './authentication/domain/institute.entity';
 export { createUser } from './authentication/domain/user.entity';
 
 export {
-    AuthorizationError,
-    UserRegistrationInputError,
+    AuthorizationError
 } from './authentication/domain/domain.error';
 
 export {

@@ -5,10 +5,10 @@ import {
     UserLoginInformation,
     LoginResponse,
     AuthorizationError,
-    UserRegistrationInputError,
     LoginPort,
     RegistrationPort,
     UserRegistration,
+    InvalidInputDataError,
 } from '../../../app/ports';
 import { UsersController } from '../model/controller.model';
 import { AbstractController } from './abstract.controller';
@@ -26,6 +26,7 @@ import {
     ActivationResponseDTO,
     RegistrationRequestResponseDTO,
     NewsConfirmationResponseDTO,
+    InvalidDataErrorDTO,
 } from '../model/response.model';
 import { MalformedRequestError } from '../model/domain.error';
 import { SERVER_ERROR_CODE, ROUTE } from '../model/enums';
@@ -272,7 +273,7 @@ export class DefaultUsersController extends AbstractController
             await this.registrationService.registerUser(credentials);
             const dto: RegistrationRequestResponseDTO = {
                 registerRequest: true,
-                email: credentials.email,
+                email: credentials.email
             };
 
             logger.info(
@@ -319,10 +320,11 @@ export class DefaultUsersController extends AbstractController
     private handleError(res: Response, error: Error) {
         if (error instanceof MalformedRequestError) {
             this.clientError(res);
-        } else if (error instanceof UserRegistrationInputError) {
-            const dto = {
+        } else if (error instanceof InvalidInputDataError) {
+            const dto: InvalidDataErrorDTO = {
                 code: SERVER_ERROR_CODE.INVALID_INPUT,
-                message: 'Client provided invalid user input. ' + error.message,
+                message: error.message || 'Action could not be performed. Client provided invalid input.',
+                errors: error.validationErrors
             };
             this.invalidUserInput(res, dto);
         } else if (error instanceof JsonWebTokenError) {
