@@ -6,6 +6,7 @@ import { UserNotFoundError, UserUpdateError } from '../model/domain.error';
 import { injectable, inject } from 'inversify';
 import { Model } from 'mongoose';
 import { PERSISTENCE_TYPES } from '../persistence.types';
+import * as _ from 'lodash';
 
 @injectable()
 export class DefaultUserRepository extends MongooseRepositoryBase<UserModel>
@@ -30,57 +31,30 @@ export class DefaultUserRepository extends MongooseRepositoryBase<UserModel>
             });
     }
 
-    findByUsername(username: string) {
-        const nameRegex = new RegExp(username, 'i');
-
-        return (
-            super
-                ._findOne({ email: { $regex: nameRegex } })
-                .then((userModel: UserModel) => {
-                    if (!userModel) {
-                        throw new UserNotFoundError(
-                            `User not found. username=${username}`
-                        );
-                    }
-                    return mapModelToUser(userModel);
-                })
-                // tslint:disable-next-line:no-any
-                .catch((error: any) => {
-                    throw error;
-                })
-        );
+    async findByUsername(username: string) {
+        return this.getUserModelByUsername(username, false)
+            .then((userModel) => mapModelToUser(userModel))
+            // tslint:disable-next-line:no-any
+            .catch((error: any) => {
+                throw error;
+            });
     }
 
-    getPasswordForUser(username: string) {
-        const nameRegex = new RegExp(username, 'i');
-
-        return (
-            super
-                ._findOne({ email: { $regex: nameRegex } })
-                .then((userModel: UserModel) => {
-                    if (!userModel) {
-                        throw new UserNotFoundError(
-                            `User not found. username=${username}`
-                        );
-                    }
-                    return userModel.password;
-                })
-                // tslint:disable-next-line:no-any
-                .catch((error: any) => {
-                    throw error;
-                })
-        );
+    async getPasswordForUser(username: string) {
+        return this.getUserModelByUsername(username, false)
+            .then((userModel) => userModel.password)
+            // tslint:disable-next-line:no-any
+            .catch((error: any) => {
+                throw error;
+            });
     }
 
-    hasUserWithEmail(username: string) {
-        const nameRegex = new RegExp(username, 'i');
-
-        return super
-            ._findOne({ email: { $regex: nameRegex } })
-            .then((docs: UserModel) => !!docs);
+    async hasUserWithEmail(username: string) {
+        return this.getUserModelByUsername(username, true)
+            .then((userModel) => !!userModel);
     }
 
-    createUser(user: User) {
+    async createUser(user: User) {
         const newUser = new this.model({
             institution: user.institution.uniqueId,
             firstName: user.firstName,
@@ -118,7 +92,7 @@ export class DefaultUserRepository extends MongooseRepositoryBase<UserModel>
             });
     }
 
-    updateUser(user: User) {
+    async updateUser(user: User) {
         return super
             ._update(user.uniqueId, {
                 firstName: user.firstName,
@@ -145,6 +119,24 @@ export class DefaultUserRepository extends MongooseRepositoryBase<UserModel>
             })
             .catch((error) => {
                 throw error;
+            });
+    }
+
+    private createMatchEmailQueryCondition(email: string): Object {
+        const nameRegex = new RegExp('^' + _.escapeRegExp(email) + '$', 'i');
+
+        return { email: { $regex: nameRegex } };
+    }
+
+    private async getUserModelByUsername<T extends boolean>(username: string, allowNull: T): Promise<T extends false ? UserModel : (UserModel | null)> {
+        return super._findOne(this.createMatchEmailQueryCondition(username))
+            .then((userModel) => {
+                if (!userModel && !allowNull) {
+                    throw new UserNotFoundError(
+                        `User not found. username=${username}`
+                    );
+                }
+                return userModel as T extends false ? UserModel : (UserModel | null);
             });
     }
 }
