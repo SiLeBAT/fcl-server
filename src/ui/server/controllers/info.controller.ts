@@ -18,8 +18,10 @@ enum INFO_ROUTE {
     GDPR_DATE = '/gdpr-date',
 }
 @controller(ROUTE.VERSION + INFO_ROUTE.ROOT)
-export class DefaultSystemInfoController extends AbstractController
-    implements SystemInfoController {
+export class DefaultSystemInfoController
+    extends AbstractController
+    implements SystemInfoController
+{
     private supportContact = '';
     constructor(
         @inject(SERVER_TYPES.AppServerConfiguration)
@@ -65,8 +67,9 @@ export class DefaultSystemInfoController extends AbstractController
             `${this.constructor.name}.${this.getGDPRDate.name}, Request received`
         );
         try {
-            const gdprDate = this.configurationService.getApplicationConfiguration()
-                .gdprDate;
+            const gdprDate =
+                this.configurationService.getApplicationConfiguration()
+                    .gdprDate;
 
             logger.info(
                 `${this.constructor.name}.${this.getGDPRDate.name}, gdprDate: ${gdprDate}`

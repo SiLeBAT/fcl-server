@@ -38,7 +38,13 @@ describe('Reset Password Use Case', () => {
 
         token = 'test';
         validPassword = 'testtest@T1';
-        invalidPasswords = ['toShort1!', 'withoutDigit!', 'withoutucaseletter1!', 'WITHOUTLCASELETTER1!', 'withoutSymbol1'];
+        invalidPasswords = [
+            'toShort1!',
+            'withoutDigit!',
+            'withoutucaseletter1!',
+            'WITHOUTLCASELETTER1!',
+            'withoutSymbol1',
+        ];
     });
 
     afterEach(() => {
@@ -46,7 +52,9 @@ describe('Reset Password Use Case', () => {
     });
 
     it('should return a promise', async () => {
-        const result = service.resetPassword(token, validPassword).catch(() => {});
+        const result = service
+            .resetPassword(token, validPassword)
+            .catch(() => {});
         // tslint:disable-next-line: no-floating-promises
         expect(result).toBeInstanceOf(Promise);
     });
@@ -105,11 +113,9 @@ describe('Reset Password Use Case', () => {
             updatePassword,
         });
         for (const pw of invalidPasswords) {
-            await service
-                .resetPassword(token, pw)
-                .catch((err) => {
-                    return expect(err).toBeTruthy();
-                });
+            await service.resetPassword(token, pw).catch((err) => {
+                return expect(err).toBeTruthy();
+            });
         }
     });
 

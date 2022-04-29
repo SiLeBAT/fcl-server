@@ -1,4 +1,4 @@
-import { ValidationError } from "../../../app/ports";
+import { ValidationError } from '../../../app/ports';
 
 export type ValidationErrorDTO = Readonly<ValidationError>;
 

@@ -31,9 +31,11 @@ import { InvalidInputDataError, ValidationError } from '../../ports';
 
 @injectable()
 export class DefaultRegistrationService implements RegistrationService {
-    private static readonly VALID_EMAIL_REGEXP = /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    private static readonly VALID_EMAIL_REGEXP =
+        /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
     private static readonly VALID_NAME_REGEXP = /^[^<>]*$/;
-    private static readonly INVALID_NAME_MESSAGE = 'Characters \'<\' and \'>\' are not allowed.';
+    private static readonly INVALID_NAME_MESSAGE =
+        "Characters '<' and '>' are not allowed.";
     private static readonly MISSING_VALUE_MESSAGE = 'Required field';
 
     private appName: string;
@@ -48,13 +50,17 @@ export class DefaultRegistrationService implements RegistrationService {
         @inject(APPLICATION_TYPES.ConfigurationService)
         private configurationService: ConfigurationService,
         @inject(APPLICATION_TYPES.UserService) private userService: UserService,
-        @inject(APPLICATION_TYPES.PasswordService) private passwordService: PasswordService,
+        @inject(APPLICATION_TYPES.PasswordService)
+        private passwordService: PasswordService,
         @inject(APPLICATION_TYPES.InstituteService)
         private instituteService: InstituteService
     ) {
-        this.appName = this.configurationService.getApplicationConfiguration().appName;
-        this.clientUrl = this.configurationService.getApplicationConfiguration().clientUrl;
-        this.supportContact = this.configurationService.getApplicationConfiguration().supportContact;
+        this.appName =
+            this.configurationService.getApplicationConfiguration().appName;
+        this.clientUrl =
+            this.configurationService.getApplicationConfiguration().clientUrl;
+        this.supportContact =
+            this.configurationService.getApplicationConfiguration().supportContact;
     }
 
     async verifyUser(token: string): Promise<string> {
@@ -82,9 +88,8 @@ export class DefaultRegistrationService implements RegistrationService {
         user.isActivated(true);
         await this.userService.updateUser(user);
         await this.tokenService.deleteTokenForUser(user, TokenType.ADMIN);
-        const adminActivationNotification = this.createAdminActivationNotification(
-            user
-        );
+        const adminActivationNotification =
+            this.createAdminActivationNotification(user);
         this.notificationService.sendNotification(adminActivationNotification);
         const userName = user.firstName + ' ' + user.lastName;
         logger.verbose(
@@ -125,9 +130,13 @@ export class DefaultRegistrationService implements RegistrationService {
             );
         }
 
-        const validationErrors = this.validateUserRegistrationInformation(credentials);
+        const validationErrors =
+            this.validateUserRegistrationInformation(credentials);
         if (validationErrors.length > 0) {
-            throw new InvalidInputDataError(validationErrors, 'The registration failed. The registration data is invalid.');
+            throw new InvalidInputDataError(
+                validationErrors,
+                'The registration failed. The registration data is invalid.'
+            );
         }
 
         let inst;
@@ -170,10 +179,11 @@ export class DefaultRegistrationService implements RegistrationService {
         };
 
         if (instituteIsUnknown) {
-            const requestAdminActivationNotification = this.createRequestForUnknownInstituteNotification(
-                user,
-                credentials.institution
-            );
+            const requestAdminActivationNotification =
+                this.createRequestForUnknownInstituteNotification(
+                    user,
+                    credentials.institution
+                );
             this.notificationService.sendNotification(
                 requestAdminActivationNotification
             );
@@ -203,11 +213,12 @@ export class DefaultRegistrationService implements RegistrationService {
             user.uniqueId
         );
 
-        const requestActivationNotification = this.createRequestActivationNotification(
-            user,
-            recoveryData,
-            activationToken
-        );
+        const requestActivationNotification =
+            this.createRequestActivationNotification(
+                user,
+                recoveryData,
+                activationToken
+            );
 
         return this.notificationService.sendNotification(
             requestActivationNotification
@@ -215,16 +226,14 @@ export class DefaultRegistrationService implements RegistrationService {
     }
 
     handleNotActivatedUser(user: User): void {
-        const requestNotAdminActivatedNotification = this.createNotAdminActivatedNotification(
-            user
-        );
+        const requestNotAdminActivatedNotification =
+            this.createNotAdminActivatedNotification(user);
         this.notificationService.sendNotification(
             requestNotAdminActivatedNotification
         );
 
-        const requestAdminActivationReminder = this.createAdminActivationReminder(
-            user
-        );
+        const requestAdminActivationReminder =
+            this.createAdminActivationReminder(user);
 
         return this.notificationService.sendNotification(
             requestAdminActivationReminder
@@ -239,10 +248,15 @@ export class DefaultRegistrationService implements RegistrationService {
         const errors: ValidationError[] = [];
 
         if (this.isEmptyString(email)) {
-            errors.push({ code: UserValidationErrorCode.MISSING_EMAIL, message: DefaultRegistrationService.MISSING_VALUE_MESSAGE });
-        } else
-        if (!DefaultRegistrationService.VALID_EMAIL_REGEXP.test(email)) {
-            errors.push({ code: UserValidationErrorCode.INVALID_EMAIL, message: 'Not a valid email'});
+            errors.push({
+                code: UserValidationErrorCode.MISSING_EMAIL,
+                message: DefaultRegistrationService.MISSING_VALUE_MESSAGE,
+            });
+        } else if (!DefaultRegistrationService.VALID_EMAIL_REGEXP.test(email)) {
+            errors.push({
+                code: UserValidationErrorCode.INVALID_EMAIL,
+                message: 'Not a valid email',
+            });
         }
 
         return errors;
@@ -251,11 +265,14 @@ export class DefaultRegistrationService implements RegistrationService {
     private validateFirstName(name: string): ValidationError[] {
         const errors: ValidationError[] = [];
         if (this.isEmptyString(name)) {
-            errors.push({ code: UserValidationErrorCode.MISSING_FIRSTNAME, message: DefaultRegistrationService.MISSING_VALUE_MESSAGE });
+            errors.push({
+                code: UserValidationErrorCode.MISSING_FIRSTNAME,
+                message: DefaultRegistrationService.MISSING_VALUE_MESSAGE,
+            });
         } else if (!DefaultRegistrationService.VALID_NAME_REGEXP.test(name)) {
             errors.push({
                 code: UserValidationErrorCode.INVALID_FIRSTNAME,
-                message: DefaultRegistrationService.INVALID_NAME_MESSAGE
+                message: DefaultRegistrationService.INVALID_NAME_MESSAGE,
             });
         }
 
@@ -265,27 +282,36 @@ export class DefaultRegistrationService implements RegistrationService {
     private validateLastName(name: string): ValidationError[] {
         const errors: ValidationError[] = [];
         if (this.isEmptyString(name)) {
-            errors.push({ code: UserValidationErrorCode.MISSING_LASTNAME, message: DefaultRegistrationService.MISSING_VALUE_MESSAGE });
+            errors.push({
+                code: UserValidationErrorCode.MISSING_LASTNAME,
+                message: DefaultRegistrationService.MISSING_VALUE_MESSAGE,
+            });
         } else if (!DefaultRegistrationService.VALID_NAME_REGEXP.test(name)) {
             errors.push({
                 code: UserValidationErrorCode.INVALID_LASTNAME,
-                message: DefaultRegistrationService.INVALID_NAME_MESSAGE
+                message: DefaultRegistrationService.INVALID_NAME_MESSAGE,
             });
         }
 
         return errors;
     }
 
-    private validateUserRegistrationInformation(credentials: UserRegistration): ValidationError[] {
+    private validateUserRegistrationInformation(
+        credentials: UserRegistration
+    ): ValidationError[] {
         const errors = ([] as ValidationError[]).concat(
             this.validateFirstName(credentials.firstName), // .map(e => ({ ...e, fieldName: 'firstName' })),
             this.validateLastName(credentials.lastName), // .map(e => ({ ...e, fieldName: 'lastName' })),
             this.validateEmail(credentials.email),
             this.passwordService.validatePassword(credentials.password),
-            credentials.dataProtectionAgreed ? [] : [{
-                code: UserValidationErrorCode.INVALID_GDPRA,
-                message: 'Agreement to data protection is missing.',
-            }]
+            credentials.dataProtectionAgreed
+                ? []
+                : [
+                      {
+                          code: UserValidationErrorCode.INVALID_GDPRA,
+                          message: 'Agreement to data protection is missing.',
+                      },
+                  ]
         );
         return errors;
     }
@@ -307,10 +333,11 @@ export class DefaultRegistrationService implements RegistrationService {
             user.uniqueId
         );
 
-        const requestAdminActivationNotification = this.createRequestAdminActivationNotification(
-            user,
-            adminActivationToken
-        );
+        const requestAdminActivationNotification =
+            this.createRequestAdminActivationNotification(
+                user,
+                adminActivationToken
+            );
 
         return this.notificationService.sendNotification(
             requestAdminActivationNotification
@@ -342,11 +369,12 @@ export class DefaultRegistrationService implements RegistrationService {
             user.uniqueId
         );
 
-        const requestNewsletterAgreementNotification = this.createRequestNewsletterAgreementNotification(
-            user,
-            recoveryData,
-            newsletterAgreementToken
-        );
+        const requestNewsletterAgreementNotification =
+            this.createRequestNewsletterAgreementNotification(
+                user,
+                recoveryData,
+                newsletterAgreementToken
+            );
 
         return this.notificationService.sendNotification(
             requestNewsletterAgreementNotification
@@ -354,9 +382,8 @@ export class DefaultRegistrationService implements RegistrationService {
     }
 
     private handleAlreadyRegisteredUser(credentials: UserRegistration): void {
-        const userAlreadyRegisteredNotification = this.createAlreadyRegisteredUserNotification(
-            credentials
-        );
+        const userAlreadyRegisteredNotification =
+            this.createAlreadyRegisteredUserNotification(credentials);
         return this.notificationService.sendNotification(
             userAlreadyRegisteredNotification
         );
@@ -397,7 +424,8 @@ export class DefaultRegistrationService implements RegistrationService {
             type: NotificationType.REQUEST_ACTIVATION,
             payload: {
                 name: user.firstName + ' ' + user.lastName,
-                action_url: this.clientUrl + '/users/activate/' + activationToken.token,
+                action_url:
+                    this.clientUrl + '/users/activate/' + activationToken.token,
                 client_url: this.clientUrl,
                 operating_system: recoveryData.host,
                 user_agent: recoveryData.userAgent,
@@ -424,7 +452,10 @@ export class DefaultRegistrationService implements RegistrationService {
             type: NotificationType.REQUEST_ADMIN_ACTIVATION,
             payload: {
                 name: fullName,
-                action_url: this.clientUrl + '/users/adminactivate/' + adminActivationToken.token,
+                action_url:
+                    this.clientUrl +
+                    '/users/adminactivate/' +
+                    adminActivationToken.token,
                 client_url: this.clientUrl,
                 email: user.email,
                 institution: user.institution.name,
@@ -450,7 +481,10 @@ export class DefaultRegistrationService implements RegistrationService {
             type: NotificationType.NEWSLETTER_AGREEMENT,
             payload: {
                 name: user.firstName + ' ' + user.lastName,
-                action_url: this.clientUrl + '/users/newsactivate/' + newsletterAgreementToken.token,
+                action_url:
+                    this.clientUrl +
+                    '/users/newsactivate/' +
+                    newsletterAgreementToken.token,
                 client_url: this.clientUrl,
                 operating_system: recoveryData.host,
                 user_agent: recoveryData.userAgent,

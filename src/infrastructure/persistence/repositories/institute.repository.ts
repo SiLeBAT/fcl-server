@@ -13,7 +13,8 @@ import { PERSISTENCE_TYPES } from '../persistence.types';
 @injectable()
 export class MongooseInstituteRepository
     extends MongooseRepositoryBase<InstitutionModel>
-    implements InstituteRepository {
+    implements InstituteRepository
+{
     constructor(
         @inject(PERSISTENCE_TYPES.InstitutionModel)
         private model: Model<InstitutionModel>

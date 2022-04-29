@@ -23,7 +23,7 @@ describe('Info controller', () => {
                 publicAPIDoc: {},
                 jwtSecret: 'test',
                 logLevel: 'info',
-                supportContact: 'test'
+                supportContact: 'test',
             }),
             getApplicationContainerModule({
                 appName: 'test',

@@ -9,8 +9,10 @@ import { PERSISTENCE_TYPES } from '../persistence.types';
 import * as _ from 'lodash';
 
 @injectable()
-export class DefaultUserRepository extends MongooseRepositoryBase<UserModel>
-    implements UserRepository {
+export class DefaultUserRepository
+    extends MongooseRepositoryBase<UserModel>
+    implements UserRepository
+{
     constructor(
         @inject(PERSISTENCE_TYPES.UserModel) private model: Model<UserModel>
     ) {
@@ -32,26 +34,31 @@ export class DefaultUserRepository extends MongooseRepositoryBase<UserModel>
     }
 
     async findByUsername(username: string) {
-        return this.getUserModelByUsername(username, false)
-            .then((userModel) => mapModelToUser(userModel))
-            // tslint:disable-next-line:no-any
-            .catch((error: any) => {
-                throw error;
-            });
+        return (
+            this.getUserModelByUsername(username, false)
+                .then((userModel) => mapModelToUser(userModel))
+                // tslint:disable-next-line:no-any
+                .catch((error: any) => {
+                    throw error;
+                })
+        );
     }
 
     async getPasswordForUser(username: string) {
-        return this.getUserModelByUsername(username, false)
-            .then((userModel) => userModel.password)
-            // tslint:disable-next-line:no-any
-            .catch((error: any) => {
-                throw error;
-            });
+        return (
+            this.getUserModelByUsername(username, false)
+                .then((userModel) => userModel.password)
+                // tslint:disable-next-line:no-any
+                .catch((error: any) => {
+                    throw error;
+                })
+        );
     }
 
     async hasUserWithEmail(username: string) {
-        return this.getUserModelByUsername(username, true)
-            .then((userModel) => !!userModel);
+        return this.getUserModelByUsername(username, true).then(
+            (userModel) => !!userModel
+        );
     }
 
     async createUser(user: User) {
@@ -128,15 +135,21 @@ export class DefaultUserRepository extends MongooseRepositoryBase<UserModel>
         return { email: { $regex: nameRegex } };
     }
 
-    private async getUserModelByUsername<T extends boolean>(username: string, allowNull: T): Promise<T extends false ? UserModel : (UserModel | null)> {
-        return super._findOne(this.createMatchEmailQueryCondition(username))
+    private async getUserModelByUsername<T extends boolean>(
+        username: string,
+        allowNull: T
+    ): Promise<T extends false ? UserModel : UserModel | null> {
+        return super
+            ._findOne(this.createMatchEmailQueryCondition(username))
             .then((userModel) => {
                 if (!userModel && !allowNull) {
                     throw new UserNotFoundError(
                         `User not found. username=${username}`
                     );
                 }
-                return userModel as T extends false ? UserModel : (UserModel | null);
+                return userModel as T extends false
+                    ? UserModel
+                    : UserModel | null;
             });
     }
 }

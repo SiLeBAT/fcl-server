@@ -56,7 +56,13 @@ describe('Register User Use Case', () => {
             host: 'test',
         };
 
-        invalidPasswords = ['toShort1!', 'withoutDigit!', 'withoutucaseletter1!', 'WITHOUTLCASELETTER1!', 'withoutSymbol1'];
+        invalidPasswords = [
+            'toShort1!',
+            'withoutDigit!',
+            'withoutucaseletter1!',
+            'WITHOUTLCASELETTER1!',
+            'withoutSymbol1',
+        ];
 
         (createUser as jest.Mock).mockClear();
     });
@@ -94,19 +100,23 @@ describe('Register User Use Case', () => {
     it('should reject user registration with invalid passwords', async () => {
         expect.assertions(invalidPasswords.length);
         for (const pw of invalidPasswords) {
-            await service.registerUser({
-                ...credentials,
-                password: pw
-            }).catch((err) => expect(err).toBeTruthy());
+            await service
+                .registerUser({
+                    ...credentials,
+                    password: pw,
+                })
+                .catch((err) => expect(err).toBeTruthy());
         }
     });
 
     it('should reject user registration with missing data protection agreement', async () => {
         expect.assertions(1);
-        await service.registerUser({
-            ...credentials,
-            dataProtectionAgreed: false
-        }).catch((err) => expect(err).toBeTruthy());
+        await service
+            .registerUser({
+                ...credentials,
+                dataProtectionAgreed: false,
+            })
+            .catch((err) => expect(err).toBeTruthy());
     });
 
     it('should throw an error because institute does not exist', () => {

@@ -425,7 +425,7 @@
                 <tr>
                   <td class="content-cell">
                     <h1>Dear {{name}},</h1>
-					<p>The {{ appName }} administrator has just now activated your account. You can login now to the portal.</p>
+					<p>The {{ appName }} administrator has activated your account. Now, you can log in to the <a href="{{ client_url }}">{{ appName }}</a>.</p>
 					<br>
 					<p>The {{ appName }} team</p>
                   </td>
@@ -438,9 +438,9 @@
               <table class="email-footer" align="center" width="570" cellpadding="0" cellspacing="0">
                 <tr>
                   <td class="content-cell" align="center">
-                    <p class="sub align-center">&copy; 2018 {{ appName }}. All rights reserved.</p>
+                    <p class="sub align-center">&copy; {{ copyrightYear }} {{ appName }}. All rights reserved.</p>
                     <p class="sub align-center">
-                      BfR - Bundesinstitut für Risikobewertung
+                        BfR - German Federal Institute for Risk Assessment
                       <br>Max-Dohrn-Str. 8-10
                       <br>10589 Berlin
                     </p>
