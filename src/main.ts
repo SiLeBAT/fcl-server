@@ -64,11 +64,13 @@ export class DefaultConfigurationService implements SystemConfigurationService {
         }
 
         if (!config.has('application.login.threshold')) {
-            appConfiguration.login.threshold = this.loginConfigurationDefaults.threshold;
+            appConfiguration.login.threshold =
+                this.loginConfigurationDefaults.threshold;
         }
 
         if (!config.has('application.login.secondsDelay')) {
-            appConfiguration.login.secondsDelay = this.loginConfigurationDefaults.secondsDelay;
+            appConfiguration.login.secondsDelay =
+                this.loginConfigurationDefaults.secondsDelay;
         }
 
         return appConfiguration;
@@ -80,14 +82,15 @@ export class DefaultConfigurationService implements SystemConfigurationService {
         if (!config.has('general')) {
             generalConfiguration = {
                 logLevel: this.generalConfigurationDefaults.logLevel,
-                supportContact: this.generalConfigurationDefaults
-                    .supportContact,
+                supportContact:
+                    this.generalConfigurationDefaults.supportContact,
                 jwtSecret: this.generalConfigurationDefaults.jwtSecret,
             };
         }
 
         if (!config.has('general.logLevel')) {
-            generalConfiguration.logLevel = this.generalConfigurationDefaults.logLevel;
+            generalConfiguration.logLevel =
+                this.generalConfigurationDefaults.logLevel;
         }
 
         return generalConfiguration;
@@ -96,11 +99,16 @@ export class DefaultConfigurationService implements SystemConfigurationService {
 
 async function init() {
     const configurationService = new DefaultConfigurationService();
-    const serverConfig: ServerConfiguration = configurationService.getServerConfiguration();
-    const generalConfig: GeneralConfiguration = configurationService.getGeneralConfiguration();
-    const dataStoreConfig: DataStoreConfiguration = configurationService.getDataStoreConfiguration();
-    const appConfiguration: AppConfiguration = configurationService.getApplicationConfiguration();
-    const mailConfiguration: MailConfiguration = configurationService.getMailConfiguration();
+    const serverConfig: ServerConfiguration =
+        configurationService.getServerConfiguration();
+    const generalConfig: GeneralConfiguration =
+        configurationService.getGeneralConfiguration();
+    const dataStoreConfig: DataStoreConfiguration =
+        configurationService.getDataStoreConfiguration();
+    const appConfiguration: AppConfiguration =
+        configurationService.getApplicationConfiguration();
+    const mailConfiguration: MailConfiguration =
+        configurationService.getMailConfiguration();
 
     createDataStore(dataStoreConfig.connectionString);
 
@@ -147,12 +155,8 @@ async function init() {
         },
         publicDir: path.join(__dirname + '/ui/server/public'),
         contentSecurityPolicyDirectives: {
-            'img-src': [
-                "'self'",
-                "*.openstreetmap.org",
-                "data:"
-            ]
-        }
+            'img-src': ["'self'", '*.openstreetmap.org', 'data:'],
+        },
     };
     const server = createServer(expressServerConfiguration);
     server.startServer();

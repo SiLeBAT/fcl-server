@@ -1,4 +1,4 @@
-import { ValidationError } from "../model/error.model";
+import { ValidationError } from '../model/error.model';
 
 export class ApplicationDomainError extends Error {
     // tslint:disable-next-line

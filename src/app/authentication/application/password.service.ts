@@ -21,8 +21,10 @@ import { ValidationError, InvalidInputDataError } from '../../ports';
 @injectable()
 export class DefaultPasswordService implements PasswordService {
     private static readonly MINIMUM_PASSWORD_LENGTH = 10;
-    private static readonly CONTAINS_UCASE_UNICODE_LETTERS_REGEXP = /^.*\p{Lu}+.*$/u;
-    private static readonly CONTAINS_LCASE_UNICODE_LETTERS_REGEXP = /^.*\p{Ll}+.*$/u;
+    private static readonly CONTAINS_UCASE_UNICODE_LETTERS_REGEXP =
+        /^.*\p{Lu}+.*$/u;
+    private static readonly CONTAINS_LCASE_UNICODE_LETTERS_REGEXP =
+        /^.*\p{Ll}+.*$/u;
     private static readonly CONTAINS_DIGIT_REGEXP = /^.*\d+.*$/;
     private static readonly CONTAINS_SPECIAL_CHAR_REGEXP = /^.*[^\d\p{L}]+.*$/u;
 
@@ -39,9 +41,12 @@ export class DefaultPasswordService implements PasswordService {
         private configurationService: ConfigurationService,
         @inject(APPLICATION_TYPES.UserService) private userService: UserService
     ) {
-        this.appName = this.configurationService.getApplicationConfiguration().appName;
-        this.clientUrl = this.configurationService.getApplicationConfiguration().clientUrl;
-        this.supportContact = this.configurationService.getApplicationConfiguration().supportContact;
+        this.appName =
+            this.configurationService.getApplicationConfiguration().appName;
+        this.clientUrl =
+            this.configurationService.getApplicationConfiguration().clientUrl;
+        this.supportContact =
+            this.configurationService.getApplicationConfiguration().supportContact;
     }
     async requestPasswordReset(recoveryData: RecoveryData): Promise<void> {
         const user = await this.userService.getUserByEmail(recoveryData.email);
@@ -75,20 +80,26 @@ export class DefaultPasswordService implements PasswordService {
         if ((password || '') === '') {
             errors.push({
                 code: UserValidationErrorCode.MISSING_PWD,
-                message: 'Required field'
+                message: 'Required field',
             });
         } else if (
-            String(password).length < DefaultPasswordService.MINIMUM_PASSWORD_LENGTH ||
-            !DefaultPasswordService.CONTAINS_UCASE_UNICODE_LETTERS_REGEXP.test(password) ||
-            !DefaultPasswordService.CONTAINS_LCASE_UNICODE_LETTERS_REGEXP.test(password) ||
+            String(password).length <
+                DefaultPasswordService.MINIMUM_PASSWORD_LENGTH ||
+            !DefaultPasswordService.CONTAINS_UCASE_UNICODE_LETTERS_REGEXP.test(
+                password
+            ) ||
+            !DefaultPasswordService.CONTAINS_LCASE_UNICODE_LETTERS_REGEXP.test(
+                password
+            ) ||
             !DefaultPasswordService.CONTAINS_DIGIT_REGEXP.test(password) ||
             !DefaultPasswordService.CONTAINS_SPECIAL_CHAR_REGEXP.test(password)
         ) {
             errors.push({
                 code: UserValidationErrorCode.INVALID_PWD,
-                message: `Your password must be at least ${ DefaultPasswordService.MINIMUM_PASSWORD_LENGTH } ` +
+                message:
+                    `Your password must be at least ${DefaultPasswordService.MINIMUM_PASSWORD_LENGTH} ` +
                     `characters long, contain at least one number and one special character and have a mixture of ` +
-                    `uppercase and lowercase letters.`
+                    `uppercase and lowercase letters.`,
             });
         }
 
@@ -102,14 +113,16 @@ export class DefaultPasswordService implements PasswordService {
         const user = await this.userService.getUserById(userId);
         const validationErrors = this.validatePassword(password);
         if (validationErrors.length > 0) {
-            throw new InvalidInputDataError(validationErrors, 'The password reset failed. The password is not valid.');
+            throw new InvalidInputDataError(
+                validationErrors,
+                'The password reset failed. The password is not valid.'
+            );
         }
         await user.updatePassword(password);
         await this.userService.updateUser(user);
         await this.tokenService.deleteTokenForUser(user, TokenType.RESET);
-        const resetSuccessNotification = this.createResetSuccessNotification(
-            user
-        );
+        const resetSuccessNotification =
+            this.createResetSuccessNotification(user);
         return this.notificationService.sendNotification(
             resetSuccessNotification
         );

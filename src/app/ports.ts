@@ -47,9 +47,7 @@ export { createInstitution } from './authentication/domain/institute.entity';
 
 export { createUser } from './authentication/domain/user.entity';
 
-export {
-    AuthorizationError
-} from './authentication/domain/domain.error';
+export { AuthorizationError } from './authentication/domain/domain.error';
 
 export {
     TokenPort,

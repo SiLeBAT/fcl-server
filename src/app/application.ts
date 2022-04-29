@@ -7,9 +7,10 @@ export interface FclApplication {
 }
 
 export function createApplication(container: Container) {
-    const notificationService: NotificationService = container.get<
-        NotificationService
-    >(APPLICATION_TYPES.NotificationService);
+    const notificationService: NotificationService =
+        container.get<NotificationService>(
+            APPLICATION_TYPES.NotificationService
+        );
     return {
         addNotificationHandler: (handler: Function) => {
             notificationService.addHandler(handler);

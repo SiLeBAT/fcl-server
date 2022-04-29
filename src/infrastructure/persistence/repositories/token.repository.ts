@@ -12,8 +12,10 @@ import { Model } from 'mongoose';
 import { PERSISTENCE_TYPES } from '../persistence.types';
 
 @injectable()
-export class DefaultTokenRepository extends MongooseRepositoryBase<TokenModel>
-    implements TokenRepository {
+export class DefaultTokenRepository
+    extends MongooseRepositoryBase<TokenModel>
+    implements TokenRepository
+{
     constructor(
         @inject(PERSISTENCE_TYPES.TokenModel) private model: Model<TokenModel>
     ) {
@@ -35,7 +37,10 @@ export class DefaultTokenRepository extends MongooseRepositoryBase<TokenModel>
     ): Promise<boolean> {
         return super
             ._findOne({ user: user.uniqueId, type })
-            .then((token: TokenModel | null) => token === null || !!super._delete(token._id));
+            .then(
+                (token: TokenModel | null) =>
+                    token === null || !!super._delete(token._id)
+            );
     }
 
     saveToken(token: UserToken): Promise<UserToken> {
