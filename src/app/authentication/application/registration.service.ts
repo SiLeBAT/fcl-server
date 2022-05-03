@@ -534,6 +534,7 @@ export class DefaultRegistrationService implements RegistrationService {
             payload: {
                 name: fullName,
                 appName: this.appName,
+                client_url: this.clientUrl,
             },
             meta: this.notificationService.createEmailNotificationMetaData(
                 user.email,
@@ -552,6 +553,7 @@ export class DefaultRegistrationService implements RegistrationService {
             payload: {
                 name: fullName,
                 appName: this.appName,
+                client_url: this.clientUrl,
             },
             meta: this.notificationService.createEmailNotificationMetaData(
                 user.email,
@@ -573,6 +575,7 @@ export class DefaultRegistrationService implements RegistrationService {
                 institution: user.institution.name,
                 location: user.institution.addendum,
                 appName: this.appName,
+                client_url: this.clientUrl,
             },
             meta: this.notificationService.createEmailNotificationMetaData(
                 this.supportContact,
@@ -595,6 +598,7 @@ export class DefaultRegistrationService implements RegistrationService {
                 name: fullName,
                 action_url: this.clientUrl + '/users/recovery',
                 appName: this.appName,
+                client_url: this.clientUrl,
             },
             meta: this.notificationService.createEmailNotificationMetaData(
                 credentials.email,
