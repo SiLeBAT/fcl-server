@@ -19,11 +19,19 @@ export class MongooseRepositoryBase<T extends CommonDocument> {
     }
 
     protected async _retrievePopulatedWith(populate: string[]): Promise<T[]> {
-        let query = this._model.find({});
-        populate.forEach((p) => {
-            query = query.populate(p);
-        });
-        return query.exec();
+        // here query and pquery are used because
+        // query.populate(..) is not anymore assignable to query
+        // since last mongoose bump (6.2.8 to 6.6.0)
+        const query = this._model.find({});
+        if (populate.length > 0) {
+            let pquery = query.populate(populate[0]);
+            populate.slice(1).forEach((p) => {
+                pquery = pquery.populate(p);
+            });
+            return pquery.exec();
+        } else {
+            return query.exec();
+        }
     }
 
     protected async _update(_id: string, attr: Partial<T>): Promise<T | null> {
