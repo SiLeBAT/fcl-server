@@ -97,7 +97,9 @@ export const userSchema = new Schema({
     },
 }).pre('save', function (next) {
     if (this) {
-        let doc = this as UserModel;
+        // UserModel seems to be not anymore compatible
+        // with type of this since mongoose bump from 6.2.8 to 6.6.0
+        let doc = this as Pick<UserModel, 'created' | 'updated'>;
         let now = new Date();
         if (!doc.created) {
             doc.created = now;
