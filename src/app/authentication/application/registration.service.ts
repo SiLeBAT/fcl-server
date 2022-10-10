@@ -434,7 +434,7 @@ export class DefaultRegistrationService implements RegistrationService {
             },
             meta: this.notificationService.createEmailNotificationMetaData(
                 user.email,
-                `Aktivieren Sie Ihr Konto für ${this.appName} `
+                `Activate your ${this.appName} account`
             ),
         };
     }
@@ -538,7 +538,7 @@ export class DefaultRegistrationService implements RegistrationService {
             },
             meta: this.notificationService.createEmailNotificationMetaData(
                 user.email,
-                `Admin Aktivierung Ihres ${this.appName} Kontos`
+                `The ${this.appName} administrator has activated your account`
             ),
         };
     }
@@ -557,7 +557,7 @@ export class DefaultRegistrationService implements RegistrationService {
             },
             meta: this.notificationService.createEmailNotificationMetaData(
                 user.email,
-                `Noch keine Admin Aktivierung Ihres ${this.appName} Kontos`
+                `The ${this.appName} administrator has not yet activated your account`
             ),
         };
     }
@@ -602,7 +602,7 @@ export class DefaultRegistrationService implements RegistrationService {
             },
             meta: this.notificationService.createEmailNotificationMetaData(
                 credentials.email,
-                `Ihre Registrierung für ein ${this.appName} Konto`
+                `Your ${this.appName} registration`
             ),
         };
     }
