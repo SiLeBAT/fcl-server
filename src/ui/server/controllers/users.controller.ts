@@ -8,6 +8,7 @@ import {
     LoginPort,
     RegistrationPort,
     UserRegistration,
+    InvalidInputDataError,
 } from '../../../app/ports';
 import { UsersController } from '../model/controller.model';
 import { AbstractController } from './abstract.controller';
@@ -25,6 +26,7 @@ import {
     ActivationResponseDTO,
     RegistrationRequestResponseDTO,
     NewsConfirmationResponseDTO,
+    InvalidDataErrorDTO,
 } from '../model/response.model';
 import { MalformedRequestError } from '../model/domain.error';
 import { SERVER_ERROR_CODE, ROUTE } from '../model/enums';
@@ -54,8 +56,10 @@ enum USERS_ROUTE {
     NEWS_CONFIRMATION = '/news-confirmation',
 }
 @controller(ROUTE.VERSION + USERS_ROUTE.ROOT)
-export class DefaultUsersController extends AbstractController
-    implements UsersController {
+export class DefaultUsersController
+    extends AbstractController
+    implements UsersController
+{
     constructor(
         @inject(APPLICATION_TYPES.PasswordService)
         private passwordService: PasswordPort,
@@ -149,16 +153,14 @@ export class DefaultUsersController extends AbstractController
             `${this.constructor.name}.${this.postLogin.name}, Request received`
         );
         try {
-            const userLoginInfo: UserLoginInformation = this.mapRequestDTOToUserLoginInfo(
-                req
-            );
+            const userLoginInfo: UserLoginInformation =
+                this.mapRequestDTOToUserLoginInfo(req);
             const response: LoginResponse = await this.loginService.loginUser(
                 userLoginInfo
             );
 
-            const dto: TokenizedUserDTO = this.fromLoginResponseToResponseDTO(
-                response
-            );
+            const dto: TokenizedUserDTO =
+                this.fromLoginResponseToResponseDTO(response);
             logger.info(
                 `${this.constructor.name}.${this.postLogin.name}, Response sent`
             );
@@ -190,9 +192,8 @@ export class DefaultUsersController extends AbstractController
                 gdprConfirmationRequest
             );
 
-            const dto: TokenizedUserDTO = this.fromLoginResponseToResponseDTO(
-                response
-            );
+            const dto: TokenizedUserDTO =
+                this.fromLoginResponseToResponseDTO(response);
             logger.info(
                 `${this.constructor.name}.${this.putGDPRAgreement.name}, Response sent`
             );
@@ -264,9 +265,8 @@ export class DefaultUsersController extends AbstractController
         );
 
         try {
-            const credentials: UserRegistration = this.fromRequestToUserRegistration(
-                req
-            );
+            const credentials: UserRegistration =
+                this.fromRequestToUserRegistration(req);
 
             await this.registrationService.registerUser(credentials);
             const dto: RegistrationRequestResponseDTO = {
@@ -295,9 +295,10 @@ export class DefaultUsersController extends AbstractController
             `${this.constructor.name}.${this.patchNewsConfirmation.name}, Request received`
         );
         try {
-            const username = await this.registrationService.confirmNewsletterSubscription(
-                token
-            );
+            const username =
+                await this.registrationService.confirmNewsletterSubscription(
+                    token
+                );
 
             const dto: NewsConfirmationResponseDTO = {
                 newsconfirmation: true,
@@ -318,6 +319,15 @@ export class DefaultUsersController extends AbstractController
     private handleError(res: Response, error: Error) {
         if (error instanceof MalformedRequestError) {
             this.clientError(res);
+        } else if (error instanceof InvalidInputDataError) {
+            const dto: InvalidDataErrorDTO = {
+                code: SERVER_ERROR_CODE.INVALID_INPUT,
+                message:
+                    error.message ||
+                    'Action could not be performed. Client provided invalid input.',
+                errors: error.validationErrors,
+            };
+            this.invalidUserInput(res, dto);
         } else if (error instanceof JsonWebTokenError) {
             const dto = {
                 code: SERVER_ERROR_CODE.AUTHORIZATION_ERROR,

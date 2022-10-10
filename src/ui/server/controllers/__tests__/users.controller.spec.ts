@@ -11,7 +11,6 @@ import { getServerContainerModule } from '../../server.module';
 import { mockPersistenceContainerModule } from '../../../../infrastructure/persistence/__mocks__/persistence-mock.module';
 import SERVER_TYPES from '../../server.types';
 import { rebindMocks } from '../../../../__mocks__/util';
-import { RegistrationService } from '../../../../app/authentication/model/registration.model';
 import { getMockLoginService } from '../../../../app/authentication/application/__mocks__/login.service';
 import { APPLICATION_TYPES } from '../../../../app/application.types';
 
@@ -23,6 +22,7 @@ describe('Login controller', () => {
         container.load(
             getServerContainerModule({
                 port: 1,
+                apiRoot: '',
                 publicAPIDoc: {},
                 jwtSecret: 'test',
                 logLevel: 'info',
@@ -35,7 +35,7 @@ describe('Login controller', () => {
                     threshold: 0,
                     secondsDelay: 0,
                 },
-                apiUrl: 'test',
+                clientUrl: 'test',
                 supportContact: 'test',
                 jwtSecret: 'test',
                 gdprDate: 'test',
@@ -71,7 +71,7 @@ describe('Login controller', () => {
         // tslint:disable-next-line: no-floating-promises
         expect(result).toBeInstanceOf(Promise);
     });
-    it('should be return a 500 response', () => {
+    it('should be return a 500 response', async () => {
         const mockLoginService = getMockLoginService();
         controller = rebindMocks<UsersController>(
             container,
@@ -99,7 +99,7 @@ describe('Login controller', () => {
         });
     });
 
-    it('should be return a 401 response', () => {
+    it('should be return a 401 response', async () => {
         const mockLoginService = getMockLoginService();
         controller = rebindMocks<UsersController>(
             container,
@@ -127,7 +127,7 @@ describe('Login controller', () => {
         });
     });
 
-    it('should be return a 200 response', () => {
+    it('should be return a 200 response', async () => {
         const mockLoginService = getMockLoginService();
         controller = rebindMocks<UsersController>(
             container,

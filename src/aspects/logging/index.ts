@@ -35,7 +35,6 @@ export class Logger {
             level: Logger.mapLogLevels(logLevel),
             format: winston.format.combine(
                 winston.format.colorize(),
-                winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
                 winston.format.printf((info) => Logger.mapLogMessage(info))
             ),
             transports: [new winston.transports.Console()],
@@ -43,7 +42,7 @@ export class Logger {
     }
 
     static mapLogMessage(info: TransformableInfo): string {
-        let logMsg = `${info.timestamp} ${info.level} ${info.message}`;
+        let logMsg = `${info.level} ${info.message}`;
         logMsg =
             info.meta !== undefined
                 ? logMsg +
@@ -72,27 +71,6 @@ export class Logger {
                 return level;
             case 'debug':
                 return level;
-            default:
-                return 'info';
-        }
-    }
-
-    static mapLevelToMorganFormat(level: string): string {
-        switch (level) {
-            case 'trace':
-                return 'dev';
-            case 'info':
-                return 'combined';
-            case 'error':
-                return 'combined';
-            case 'verbose':
-                return 'dev';
-            case 'warn':
-                return 'combined';
-            case 'silly':
-                return 'dev';
-            case 'debug':
-                return 'dev';
             default:
                 return 'info';
         }

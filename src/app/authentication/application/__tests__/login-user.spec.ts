@@ -22,7 +22,7 @@ describe('Login User Use Case', () => {
                     threshold: 0,
                     secondsDelay: 0,
                 },
-                apiUrl: 'test',
+                clientUrl: 'test',
                 supportContact: 'test',
                 jwtSecret: 'test',
                 gdprDate: 'test',
@@ -42,12 +42,12 @@ describe('Login User Use Case', () => {
             host: 'test',
             gdprDate: 'test',
         };
-        const result = service.loginUser(credentials);
+        const result = service.loginUser(credentials).catch(() => {});
         // tslint:disable-next-line: no-floating-promises
         expect(result).toBeInstanceOf(Promise);
     });
 
-    it('should be return a login success', () => {
+    it('should be return a login success', async () => {
         const mockUser = { ...genericUser };
         mockUser.isAuthorized = jest.fn(() => Promise.resolve(true));
         const mockUserService = getMockUserService();

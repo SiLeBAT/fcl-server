@@ -124,7 +124,7 @@ export class DefaultMailService implements MailService {
         templateFile: string,
         options: MailOptions
     ) {
-        templateData.copyrightYear = new Date().getFullYear();
+        templateData.copyrightYear = '2018';
 
         let template = handlebars.compile(templateFile);
         let result = template(templateData);

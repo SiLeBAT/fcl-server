@@ -20,6 +20,7 @@ jest.mock('./../../domain/user.entity', () => ({
 describe('Register User Use Case', () => {
     let service: RegistrationService;
     let credentials: UserRegistration;
+    let invalidPasswords: string[];
     let container: Container | null;
     beforeEach(() => {
         container = getContainer();
@@ -31,7 +32,7 @@ describe('Register User Use Case', () => {
                     threshold: 0,
                     secondsDelay: 0,
                 },
-                apiUrl: 'test',
+                clientUrl: 'test',
                 supportContact: 'test',
                 jwtSecret: 'test',
                 gdprDate: 'test',
@@ -45,23 +46,77 @@ describe('Register User Use Case', () => {
         credentials = {
             firstName: 'test',
             lastName: 'test',
-            email: 'test',
-            password: 'test',
+            email: 'test@test.test',
+            password: 'testtestT@1!.',
             institution: 'test',
-            dataProtectionAgreed: false,
+            dataProtectionAgreed: true,
             newsRegAgreed: false,
             newsMailAgreed: false,
             userAgent: 'test',
             host: 'test',
         };
 
+        invalidPasswords = [
+            'toShort1!',
+            'withoutDigit!',
+            'withoutucaseletter1!',
+            'WITHOUTLCASELETTER1!',
+            'withoutSymbol1',
+        ];
+
         (createUser as jest.Mock).mockClear();
     });
 
     it('should return a promise', () => {
-        const result = service.registerUser(credentials);
+        const result = service.registerUser(credentials).catch();
         // tslint:disable-next-line: no-floating-promises
         expect(result).toBeInstanceOf(Promise);
+    });
+
+    it('should reject user registration with invalid first name', () => {
+        credentials.firstName = '<>';
+
+        expect.assertions(1);
+        return service.registerUser(credentials).then(
+            (result) => {},
+            (err) => {
+                return expect(err).toBeTruthy();
+            }
+        );
+    });
+
+    it('should reject user registration with invalid last name', () => {
+        credentials.lastName = '<>';
+
+        expect.assertions(1);
+        return service.registerUser(credentials).then(
+            (result) => {},
+            (err) => {
+                return expect(err).toBeTruthy();
+            }
+        );
+    });
+
+    it('should reject user registration with invalid passwords', async () => {
+        expect.assertions(invalidPasswords.length);
+        for (const pw of invalidPasswords) {
+            await service
+                .registerUser({
+                    ...credentials,
+                    password: pw,
+                })
+                .catch((err) => expect(err).toBeTruthy());
+        }
+    });
+
+    it('should reject user registration with missing data protection agreement', async () => {
+        expect.assertions(1);
+        await service
+            .registerUser({
+                ...credentials,
+                dataProtectionAgreed: false,
+            })
+            .catch((err) => expect(err).toBeTruthy());
     });
 
     it('should throw an error because institute does not exist', () => {
@@ -99,7 +154,7 @@ describe('Register User Use Case', () => {
                 expect((createUser as jest.Mock).mock.calls.length).toBe(1)
             );
     });
-    it('should update password for new user', () => {
+    it('should update password for new user', async () => {
         const updatePassword = jest.fn();
         (createUser as jest.Mock).mockReturnValueOnce({
             updatePassword,

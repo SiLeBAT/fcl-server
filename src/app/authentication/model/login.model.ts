@@ -1,5 +1,6 @@
 import { UserCredentials, User } from './user.model';
 import { GDPRConfirmationRequestDTO } from '../../../ui/server/model/request.model';
+import { ValidationError } from '../../ports';
 
 export interface UserLoginInformation extends UserCredentials {
     userAgent: string | string[] | undefined;
@@ -30,13 +31,14 @@ export interface RecoveryData {
 export interface PasswordPort {
     requestPasswordReset(recoveryData: RecoveryData): Promise<void>;
     resetPassword(token: string, password: string): Promise<void>;
+    validatePassword(password: string): ValidationError[];
 }
 
 export interface PasswordService extends PasswordPort {}
 
 interface BaseResetNotificationPayload {
     name: string;
-    api_url: string;
+    client_url: string;
     action_url: string;
     appName: string;
 }

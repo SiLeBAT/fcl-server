@@ -24,8 +24,10 @@ enum TOKENS_ROUTE {
     ROOT = '/tokens',
 }
 @controller(ROUTE.VERSION + TOKENS_ROUTE.ROOT)
-export class DefaultTokensController extends AbstractController
-    implements TokensController {
+export class DefaultTokensController
+    extends AbstractController
+    implements TokensController
+{
     constructor(
         @inject(APPLICATION_TYPES.TokenService) private tokenService: TokenPort
     ) {
@@ -42,9 +44,8 @@ export class DefaultTokensController extends AbstractController
             if (!oldToken) {
                 throw new AuthorizationError('Invalid token');
             }
-            const payload: TokenPayload = this.tokenService.verifyToken(
-                oldToken
-            );
+            const payload: TokenPayload =
+                this.tokenService.verifyToken(oldToken);
             const token = this.tokenService.generateToken(payload.sub);
             const dto: TokenRefreshConfirmationResponseDTO = {
                 refresh: true,

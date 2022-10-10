@@ -1,13 +1,9 @@
-import { Schema, Document } from 'mongoose';
-import { ObjectId } from 'bson';
+import { Schema, Document, Types } from 'mongoose';
 import * as mongooseUniqueValidator from 'mongoose-unique-validator';
-import { MongooseUpdateResponse } from '../mongoose.repository';
 import { InstitutionModel } from './institution.schema';
 
-export interface UserModelUpdateResponse extends MongooseUpdateResponse {}
-
 export interface UserModel extends Document {
-    _id: ObjectId;
+    _id: Types.ObjectId;
     password: string;
     email: string;
     firstName: string;
@@ -101,7 +97,9 @@ export const userSchema = new Schema({
     },
 }).pre('save', function (next) {
     if (this) {
-        let doc = this as UserModel;
+        // UserModel seems to be not anymore compatible
+        // with type of this since mongoose bump from 6.2.8 to 6.6.0
+        let doc = this as Pick<UserModel, 'created' | 'updated'>;
         let now = new Date();
         if (!doc.created) {
             doc.created = now;

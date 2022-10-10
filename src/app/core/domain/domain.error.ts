@@ -1,3 +1,5 @@
+import { ValidationError } from '../model/error.model';
+
 export class ApplicationDomainError extends Error {
     // tslint:disable-next-line
     constructor(...args: any[]) {
@@ -9,5 +11,11 @@ export class ApplicationDomainError extends Error {
 
         // Capturing stack trace, excluding constructor call from it.
         Error.captureStackTrace(this, this.constructor);
+    }
+}
+
+export class InvalidInputDataError extends ApplicationDomainError {
+    constructor(public validationErrors: ValidationError[], message: string) {
+        super(message);
     }
 }

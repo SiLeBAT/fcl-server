@@ -1,19 +1,18 @@
 import { UserRepository, createUser, User } from '../../../app/ports';
-
 import { mapModelToUser } from './data-mappers';
-import {
-    UserModel,
-    UserModelUpdateResponse,
-} from '../data-store/mongoose/schemas/user.schema';
+import { UserModel } from '../data-store/mongoose/schemas/user.schema';
 import { MongooseRepositoryBase } from '../data-store/mongoose/mongoose.repository';
 import { UserNotFoundError, UserUpdateError } from '../model/domain.error';
 import { injectable, inject } from 'inversify';
 import { Model } from 'mongoose';
 import { PERSISTENCE_TYPES } from '../persistence.types';
+import * as _ from 'lodash';
 
 @injectable()
-export class DefaultUserRepository extends MongooseRepositoryBase<UserModel>
-    implements UserRepository {
+export class DefaultUserRepository
+    extends MongooseRepositoryBase<UserModel>
+    implements UserRepository
+{
     constructor(
         @inject(PERSISTENCE_TYPES.UserModel) private model: Model<UserModel>
     ) {
@@ -34,20 +33,10 @@ export class DefaultUserRepository extends MongooseRepositoryBase<UserModel>
             });
     }
 
-    findByUsername(username: string) {
-        const nameRegex = new RegExp(username, 'i');
-
+    async findByUsername(username: string) {
         return (
-            super
-                ._findOne({ email: { $regex: nameRegex } })
-                .then((userModel: UserModel) => {
-                    if (!userModel) {
-                        throw new UserNotFoundError(
-                            `User not found. username=${username}`
-                        );
-                    }
-                    return mapModelToUser(userModel);
-                })
+            this.getUserModelByUsername(username, false)
+                .then((userModel) => mapModelToUser(userModel))
                 // tslint:disable-next-line:no-any
                 .catch((error: any) => {
                     throw error;
@@ -55,20 +44,10 @@ export class DefaultUserRepository extends MongooseRepositoryBase<UserModel>
         );
     }
 
-    getPasswordForUser(username: string) {
-        const nameRegex = new RegExp(username, 'i');
-
+    async getPasswordForUser(username: string) {
         return (
-            super
-                ._findOne({ email: { $regex: nameRegex } })
-                .then((userModel: UserModel) => {
-                    if (!userModel) {
-                        throw new UserNotFoundError(
-                            `User not found. username=${username}`
-                        );
-                    }
-                    return userModel.password;
-                })
+            this.getUserModelByUsername(username, false)
+                .then((userModel) => userModel.password)
                 // tslint:disable-next-line:no-any
                 .catch((error: any) => {
                     throw error;
@@ -76,15 +55,13 @@ export class DefaultUserRepository extends MongooseRepositoryBase<UserModel>
         );
     }
 
-    hasUserWithEmail(username: string) {
-        const nameRegex = new RegExp(username, 'i');
-
-        return super
-            ._findOne({ email: { $regex: nameRegex } })
-            .then((docs: UserModel) => !!docs);
+    async hasUserWithEmail(username: string) {
+        return this.getUserModelByUsername(username, true).then(
+            (userModel) => !!userModel
+        );
     }
 
-    createUser(user: User) {
+    async createUser(user: User) {
         const newUser = new this.model({
             institution: user.institution.uniqueId,
             firstName: user.firstName,
@@ -122,7 +99,7 @@ export class DefaultUserRepository extends MongooseRepositoryBase<UserModel>
             });
     }
 
-    updateUser(user: User) {
+    async updateUser(user: User) {
         return super
             ._update(user.uniqueId, {
                 firstName: user.firstName,
@@ -139,8 +116,8 @@ export class DefaultUserRepository extends MongooseRepositoryBase<UserModel>
                 newsMailAgreed: user.newsMailAgreed,
                 newsDate: user.newsDate,
             })
-            .then((response: UserModelUpdateResponse) => {
-                if (!response.ok) {
+            .then(async (response) => {
+                if (response === null) {
                     throw new UserUpdateError(
                         `Response not OK. Unable to update user. user=${user}`
                     );
@@ -149,6 +126,30 @@ export class DefaultUserRepository extends MongooseRepositoryBase<UserModel>
             })
             .catch((error) => {
                 throw error;
+            });
+    }
+
+    private createMatchEmailQueryCondition(email: string): Object {
+        const nameRegex = new RegExp('^' + _.escapeRegExp(email) + '$', 'i');
+
+        return { email: { $regex: nameRegex } };
+    }
+
+    private async getUserModelByUsername<T extends boolean>(
+        username: string,
+        allowNull: T
+    ): Promise<T extends false ? UserModel : UserModel | null> {
+        return super
+            ._findOne(this.createMatchEmailQueryCondition(username))
+            .then((userModel) => {
+                if (!userModel && !allowNull) {
+                    throw new UserNotFoundError(
+                        `User not found. username=${username}`
+                    );
+                }
+                return userModel as T extends false
+                    ? UserModel
+                    : UserModel | null;
             });
     }
 }
