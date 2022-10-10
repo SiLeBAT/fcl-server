@@ -146,7 +146,7 @@ export class DefaultPasswordService implements PasswordService {
             },
             meta: this.notificationService.createEmailNotificationMetaData(
                 user.email,
-                `Setzen Sie Ihr ${this.appName}-Konto Passwort zurück.`
+                `Reset the password for your ${this.appName} account`
             ),
         };
     }
@@ -165,7 +165,7 @@ export class DefaultPasswordService implements PasswordService {
             },
             meta: this.notificationService.createEmailNotificationMetaData(
                 user.email,
-                `Passwort für ${this.appName}-Konto erfolgreich zurückgesetzt.`
+                `The password for your ${this.appName} account was reset`
             ),
         };
     }
