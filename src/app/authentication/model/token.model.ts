@@ -28,13 +28,13 @@ export interface TokenService extends TokenPort {
         userId: string
     ): Promise<UserToken>;
     getUserTokenByJWT(token: string): Promise<UserToken>;
-    deleteTokenForUser(user: User, type?: TokenType): Promise<boolean>;
-    hasTokenForUser(user: User, type?: TokenType): Promise<boolean>;
+    deleteTokenForUser(user: User, type: TokenType): Promise<boolean>;
+    hasTokenForUser(user: User, type: TokenType): Promise<boolean>;
 }
 
 export interface TokenRepository {
-    hasTokenForUser(user: User, type?: TokenType): Promise<boolean>;
-    deleteTokenForUser(user: User, type?: TokenType): Promise<boolean>;
+    hasTokenForUser(user: User, type: TokenType): Promise<boolean>;
+    deleteTokenForUser(user: User, type: TokenType): Promise<boolean>;
     saveToken(token: UserToken): Promise<UserToken>;
     getUserTokenByJWT(token: string): Promise<UserToken>;
 }

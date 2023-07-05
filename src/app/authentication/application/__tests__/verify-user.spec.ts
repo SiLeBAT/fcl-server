@@ -8,6 +8,8 @@ import { mockPersistenceContainerModule } from '../../../../infrastructure/persi
 import { APPLICATION_TYPES } from '../../../application.types';
 import { rebindMocks } from '../../../../__mocks__/util';
 import { getApplicationContainerModule } from '../../../application.module';
+import { getMockUserTokenOfType } from '../../../../infrastructure/persistence/__mocks__/token.repository';
+import { TokenType } from '../../../ports';
 
 describe('Verify User Use Case', () => {
     let service: RegistrationService;
@@ -36,7 +38,7 @@ describe('Verify User Use Case', () => {
         );
         user = { ...genericUser };
 
-        token = 'test';
+        token = getMockUserTokenOfType(TokenType.VERIFY).token;
     });
     afterEach(() => {
         container = null;

@@ -27,6 +27,7 @@ import {
     RegistrationRequestResponseDTO,
     NewsConfirmationResponseDTO,
     InvalidDataErrorDTO,
+    DefaultServerErrorDTO,
 } from '../model/response.model';
 import { MalformedRequestError } from '../model/domain.error';
 import { SERVER_ERROR_CODE, ROUTE } from '../model/enums';
@@ -335,15 +336,15 @@ export class DefaultUsersController
             };
             this.unauthorized(res, dto);
         } else if (error instanceof AuthorizationError) {
-            let dto: FailedLoginErrorDTO = {
+            let dto: DefaultServerErrorDTO = {
                 code: SERVER_ERROR_CODE.AUTHENTICATION_ERROR,
                 message: 'Authentication failure',
             };
             if (error.timeToWait) {
-                dto = {
+                (dto as FailedLoginErrorDTO) = {
                     code: SERVER_ERROR_CODE.AUTHENTICATION_ERROR,
                     message: 'Too many failed login attempts',
-                    waitTime: error.timeToWait,
+                    waitTime: error.timeToWait
                 };
             }
             this.unauthorized(res, dto);

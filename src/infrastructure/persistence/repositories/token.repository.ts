@@ -21,19 +21,21 @@ export class DefaultTokenRepository
     ) {
         super(model);
     }
+
     hasTokenForUser(
         user: User,
-        type: TokenType = TokenType.ACTIVATE
+        type: TokenType
     ): Promise<boolean> {
         return super
             ._find({ user: user.uniqueId, type }, {}, {})
-            .then((docs) => {
-                return docs.length > 0;
-            });
+            .then(
+                (docs) => docs.length > 0
+            );
     }
+
     deleteTokenForUser(
         user: User,
-        type: TokenType = TokenType.ACTIVATE
+        type: TokenType
     ): Promise<boolean> {
         return super
             ._findOne({ user: user.uniqueId, type })
@@ -51,6 +53,7 @@ export class DefaultTokenRepository
         });
         return super._create(newToken).then((res) => newToken);
     }
+
     getUserTokenByJWT(token: string): Promise<UserToken> {
         return super
             ._findOne({ token: token })
@@ -62,8 +65,8 @@ export class DefaultTokenRepository
                 }
                 return {
                     token: model.token,
-                    type: model.type,
-                    userId: model.user,
+                    type: Number(model.type),
+                    userId: String(model.user),
                 };
             });
     }

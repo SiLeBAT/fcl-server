@@ -16,7 +16,7 @@ import { TokenService } from '../model/token.model';
 import { ConfigurationService } from '../../core/model/configuration.model';
 import { injectable, inject } from 'inversify';
 import { APPLICATION_TYPES } from './../../application.types';
-import { ValidationError, InvalidInputDataError } from '../../ports';
+import { ValidationError, InvalidInputDataError, AuthorizationError } from '../../ports';
 
 @injectable()
 export class DefaultPasswordService implements PasswordService {
@@ -108,9 +108,11 @@ export class DefaultPasswordService implements PasswordService {
 
     async resetPassword(token: string, password: string): Promise<void> {
         const userToken = await this.tokenService.getUserTokenByJWT(token);
-        const userId = userToken.userId;
-        this.tokenService.verifyTokenWithUser(token, String(userId));
-        const user = await this.userService.getUserById(userId);
+        this.tokenService.verifyTokenWithUser(token, userToken.userId);
+        if (userToken.type !== TokenType.RESET) {
+            throw new AuthorizationError(`Insufficient token privileges.`);
+        }
+        const user = await this.userService.getUserById(userToken.userId);
         const validationErrors = this.validatePassword(password);
         if (validationErrors.length > 0) {
             throw new InvalidInputDataError(
