@@ -82,14 +82,14 @@ export class DefaultTokenService implements TokenService {
 
     deleteTokenForUser(
         user: User,
-        type: TokenType = TokenType.ACTIVATE
+        type: TokenType
     ): Promise<boolean> {
         return this.tokenRepository.deleteTokenForUser(user, type);
     }
 
     hasTokenForUser(
         user: User,
-        type: TokenType = TokenType.ACTIVATE
+        type: TokenType
     ): Promise<boolean> {
         return this.tokenRepository.hasTokenForUser(user, type);
     }

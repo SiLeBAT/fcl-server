@@ -4,14 +4,16 @@ import { getMockTokenService } from '../__mocks__/token.service';
 import { getMockNotificationService } from '../../../core/application/__mocks__/notification.service';
 import { getMockUserService } from '../__mocks__/user.service';
 import { Container } from 'inversify';
-import { getApplicationContainerModule } from '../../../ports';
+import { TokenType, getApplicationContainerModule } from '../../../ports';
 import { mockPersistenceContainerModule } from '../../../../infrastructure/persistence/__mocks__/persistence-mock.module';
 import { APPLICATION_TYPES } from '../../../application.types';
 import { rebindMocks } from '../../../../__mocks__/util';
+import { getMockUserTokenNotOfType, getMockUserTokenOfType } from '../../../../infrastructure/persistence/__mocks__/token.repository';
 
 describe('Reset Password Use Case', () => {
     let service: PasswordService;
-    let token: string;
+    let resetToken: string;
+    let unprivilegedTokens: string[];
     let validPassword: string;
     let invalidPasswords: string[];
     let container: Container | null;
@@ -36,7 +38,8 @@ describe('Reset Password Use Case', () => {
             APPLICATION_TYPES.PasswordService
         );
 
-        token = 'test';
+        resetToken = getMockUserTokenOfType(TokenType.RESET).token;
+        unprivilegedTokens = getMockUserTokenNotOfType(TokenType.RESET).map(t => t.token);
         validPassword = 'testtest@T1';
         invalidPasswords = [
             'toShort1!',
@@ -53,7 +56,7 @@ describe('Reset Password Use Case', () => {
 
     it('should return a promise', async () => {
         const result = service
-            .resetPassword(token, validPassword)
+            .resetPassword(resetToken, validPassword)
             .catch(() => {});
         // tslint:disable-next-line: no-floating-promises
         expect(result).toBeInstanceOf(Promise);
@@ -84,8 +87,41 @@ describe('Reset Password Use Case', () => {
             updatePassword,
         });
         return service
-            .resetPassword(token, validPassword)
+            .resetPassword(resetToken, validPassword)
             .then((result) => expect(updatePassword.mock.calls.length).toBe(1));
+    });
+
+    it('should not update the user password with unprivileged tokens', async () => {
+        const mockTokenService = getMockTokenService();
+        const mockUserService = getMockUserService();
+
+        service = rebindMocks<PasswordService>(
+            container,
+            APPLICATION_TYPES.PasswordService,
+            [
+                {
+                    id: APPLICATION_TYPES.TokenService,
+                    instance: mockTokenService,
+                },
+                {
+                    id: APPLICATION_TYPES.UserService,
+                    instance: mockUserService,
+                },
+            ]
+        );
+
+        expect.assertions(unprivilegedTokens.length);
+        const updatePassword = jest.fn();
+        (mockUserService.getUserById as jest.Mock).mockReturnValueOnce({
+            updatePassword,
+        });
+        for (const token of unprivilegedTokens) {
+            await service
+                .resetPassword(token, validPassword)
+                .catch(
+                    (err) => expect(err).toBeTruthy()
+                );
+        }
     });
 
     it('should not update the user (invalid) password', async () => {
@@ -113,7 +149,7 @@ describe('Reset Password Use Case', () => {
             updatePassword,
         });
         for (const pw of invalidPasswords) {
-            await service.resetPassword(token, pw).catch((err) => {
+            await service.resetPassword(resetToken, pw).catch((err) => {
                 return expect(err).toBeTruthy();
             });
         }
@@ -139,7 +175,7 @@ describe('Reset Password Use Case', () => {
         );
         expect.assertions(1);
         return service
-            .resetPassword(token, validPassword)
+            .resetPassword(resetToken, validPassword)
             .then((result) =>
                 expect(
                     (mockUserService.updateUser as jest.Mock).mock.calls.length
@@ -161,7 +197,7 @@ describe('Reset Password Use Case', () => {
         );
         expect.assertions(1);
         return service
-            .resetPassword(token, validPassword)
+            .resetPassword(resetToken, validPassword)
             .then((result) =>
                 expect(
                     (mockTokenService.deleteTokenForUser as jest.Mock).mock
@@ -189,7 +225,7 @@ describe('Reset Password Use Case', () => {
         );
         expect.assertions(1);
         return service
-            .resetPassword(token, validPassword)
+            .resetPassword(resetToken, validPassword)
             .then((result) =>
                 expect(
                     (mockNotificationService.sendNotification as jest.Mock).mock
@@ -225,7 +261,7 @@ describe('Reset Password Use Case', () => {
             throw new Error();
         });
         expect.assertions(1);
-        return service.resetPassword(token, validPassword).then(
+        return service.resetPassword(resetToken, validPassword).then(
             (result) =>
                 expect(
                     (mockNotificationService.sendNotification as jest.Mock).mock

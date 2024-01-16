@@ -26,7 +26,7 @@ import { ConfigurationService } from '../../core/model/configuration.model';
 import { InstituteService } from '../model/institute.model';
 import { injectable, inject } from 'inversify';
 import { APPLICATION_TYPES } from './../../application.types';
-import { UserAlreadyExistsError } from '../domain/domain.error';
+import { AuthorizationError, UserAlreadyExistsError } from '../domain/domain.error';
 import { InvalidInputDataError, ValidationError } from '../../ports';
 
 @injectable()
@@ -65,12 +65,11 @@ export class DefaultRegistrationService implements RegistrationService {
 
     async verifyUser(token: string): Promise<string> {
         const userToken = await this.tokenService.getUserTokenByJWT(token);
-        const userId = userToken.userId;
-        this.tokenService.verifyTokenWithUser(token, String(userId));
-        const user = await this.userService.getUserById(userId);
+        this.tokenService.verifyTokenWithUser(token, userToken.userId);
+        const user = await this.userService.getUserById(userToken.userId);
         user.isVerified(true);
         await this.userService.updateUser(user);
-        await this.tokenService.deleteTokenForUser(user);
+        await this.tokenService.deleteTokenForUser(user, TokenType.VERIFY);
         await this.prepareUserForAdminActivation(user);
         logger.info(
             `${this.constructor.name}.${this.verifyUser.name}, User verification successful. token=${token}`
@@ -78,16 +77,16 @@ export class DefaultRegistrationService implements RegistrationService {
         return user.email;
     }
 
-    async activateUser(adminToken: string): Promise<string> {
-        const userAdminToken = await this.tokenService.getUserTokenByJWT(
-            adminToken
-        );
-        const userId = userAdminToken.userId;
-        this.tokenService.verifyTokenWithUser(adminToken, String(userId));
-        const user = await this.userService.getUserById(userId);
+    async activateUser(token: string): Promise<string> {
+        const userToken = await this.tokenService.getUserTokenByJWT(token);
+        this.tokenService.verifyTokenWithUser(token, userToken.userId);
+        if (userToken.type !== TokenType.ADMIN_ACTIVATE) {
+            throw new AuthorizationError(`Insufficient token privileges.`);
+        }
+        const user = await this.userService.getUserById(userToken.userId);
         user.isActivated(true);
         await this.userService.updateUser(user);
-        await this.tokenService.deleteTokenForUser(user, TokenType.ADMIN);
+        await this.tokenService.deleteTokenForUser(user, TokenType.ADMIN_ACTIVATE);
         const adminActivationNotification =
             this.createAdminActivationNotification(user);
         this.notificationService.sendNotification(adminActivationNotification);
@@ -200,16 +199,16 @@ export class DefaultRegistrationService implements RegistrationService {
         user: User,
         recoveryData: RecoveryData
     ): Promise<void> {
-        const hasOldToken = await this.tokenService.hasTokenForUser(user);
+        const hasOldToken = await this.tokenService.hasTokenForUser(user, TokenType.VERIFY);
         if (hasOldToken) {
-            await this.tokenService.deleteTokenForUser(user);
+            await this.tokenService.deleteTokenForUser(user, TokenType.VERIFY);
         }
 
         const token = this.tokenService.generateToken(user.uniqueId);
 
-        const activationToken = await this.tokenService.saveToken(
+        const verifyToken = await this.tokenService.saveToken(
             token,
-            TokenType.ACTIVATE,
+            TokenType.VERIFY,
             user.uniqueId
         );
 
@@ -217,7 +216,7 @@ export class DefaultRegistrationService implements RegistrationService {
             this.createRequestActivationNotification(
                 user,
                 recoveryData,
-                activationToken
+                verifyToken
             );
 
         return this.notificationService.sendNotification(
@@ -319,17 +318,17 @@ export class DefaultRegistrationService implements RegistrationService {
     private async prepareUserForAdminActivation(user: User): Promise<void> {
         const hasOldAdminToken = await this.tokenService.hasTokenForUser(
             user,
-            TokenType.ADMIN
+            TokenType.ADMIN_ACTIVATE
         );
         if (hasOldAdminToken) {
-            await this.tokenService.deleteTokenForUser(user, TokenType.ADMIN);
+            await this.tokenService.deleteTokenForUser(user, TokenType.ADMIN_ACTIVATE);
         }
 
         const adminToken = this.tokenService.generateAdminToken(user.uniqueId);
 
         const adminActivationToken = await this.tokenService.saveToken(
             adminToken,
-            TokenType.ADMIN,
+            TokenType.ADMIN_ACTIVATE,
             user.uniqueId
         );
 
@@ -434,7 +433,7 @@ export class DefaultRegistrationService implements RegistrationService {
             },
             meta: this.notificationService.createEmailNotificationMetaData(
                 user.email,
-                `Aktivieren Sie Ihr Konto für ${this.appName} `
+                `Activate your ${this.appName} account`
             ),
         };
     }
@@ -538,7 +537,7 @@ export class DefaultRegistrationService implements RegistrationService {
             },
             meta: this.notificationService.createEmailNotificationMetaData(
                 user.email,
-                `Admin Aktivierung Ihres ${this.appName} Kontos`
+                `The ${this.appName} administrator has activated your account`
             ),
         };
     }
@@ -557,7 +556,7 @@ export class DefaultRegistrationService implements RegistrationService {
             },
             meta: this.notificationService.createEmailNotificationMetaData(
                 user.email,
-                `Noch keine Admin Aktivierung Ihres ${this.appName} Kontos`
+                `The ${this.appName} administrator has not yet activated your account`
             ),
         };
     }
@@ -602,7 +601,7 @@ export class DefaultRegistrationService implements RegistrationService {
             },
             meta: this.notificationService.createEmailNotificationMetaData(
                 credentials.email,
-                `Ihre Registrierung für ein ${this.appName} Konto`
+                `Your ${this.appName} registration`
             ),
         };
     }

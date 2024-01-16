@@ -1,4 +1,4 @@
-import * as jwt from 'express-jwt';
+import {expressjwt} from 'express-jwt';
 import { ROUTE } from '../model/enums';
 
 function validateToken(secret: string) {
@@ -19,10 +19,10 @@ function validateToken(secret: string) {
         /\/v1\/users\/news-confirmation\/*/,
     ];
 
-    return jwt({
+    return expressjwt({
         secret,
         algorithms: ['HS256'],
-        getToken: getTokenFromHeader,
+        getToken: (req) => getTokenFromHeader(req) ?? undefined,
     }).unless({
         path: whiteList,
     });
