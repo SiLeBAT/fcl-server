@@ -1,6 +1,5 @@
 import { getContainer } from '../../../../aspects/container/container';
-import * as mockReq from 'mock-express-request';
-import * as mockRes from 'mock-express-response';
+import * as httpMocks from 'node-mocks-http';
 import {
     AuthorizationError,
     getApplicationContainerModule,
@@ -61,12 +60,12 @@ describe('Login controller', () => {
                 },
             ]
         );
-        const req = new mockReq({
+        const req = httpMocks.createRequest({
             body: {
                 email: 'test',
             },
         });
-        const res = new mockRes();
+        const res = httpMocks.createResponse();
         const result = controller.postLogin(req, res);
         // tslint:disable-next-line: no-floating-promises
         expect(result).toBeInstanceOf(Promise);
@@ -86,12 +85,12 @@ describe('Login controller', () => {
         mockLoginService.loginUser.mockImplementation(() => {
             throw new Error('Fake error');
         });
-        const req = new mockReq({
+        const req = httpMocks.createRequest({
             body: {
                 email: 'test2',
             },
         });
-        const res = new mockRes();
+        const res = httpMocks.createResponse();
         const result = controller.postLogin(req, res);
         expect.assertions(1);
         return result.then((data) => {
@@ -114,12 +113,12 @@ describe('Login controller', () => {
         mockLoginService.loginUser.mockImplementation(() => {
             throw new AuthorizationError('Fake error');
         });
-        const req = new mockReq({
+        const req = httpMocks.createRequest({
             body: {
                 email: 'test3',
             },
         });
-        const res = new mockRes();
+        const res = httpMocks.createResponse();
         const result = controller.postLogin(req, res);
         expect.assertions(1);
         return result.then((data) => {
@@ -139,12 +138,12 @@ describe('Login controller', () => {
                 },
             ]
         );
-        const req = new mockReq({
+        const req = httpMocks.createRequest({
             body: {
                 email: 'test4',
             },
         });
-        const res = new mockRes();
+        const res = httpMocks.createResponse();
         const result = controller.postLogin(req, res);
         expect.assertions(1);
         return result.then((data) => {

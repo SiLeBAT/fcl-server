@@ -1,8 +1,7 @@
 /// <reference types='jest' />
 
 import { getContainer } from '../../../../aspects/container/container';
-import * as mockReq from 'mock-express-request';
-import * as mockRes from 'mock-express-response';
+import * as httpMocks from 'node-mocks-http';
 import { getApplicationContainerModule } from '../../../../app/ports';
 import { InstitutesController } from '../../model/controller.model';
 import { Container } from 'inversify';
@@ -49,17 +48,17 @@ describe('Institution controller', () => {
     });
 
     it('should respond with list of institutes', function () {
-        const req = new mockReq({
+        const req = httpMocks.createRequest({
             method: 'GET',
             headers: {
                 'content-type': 'application/json',
             },
         });
-        const res = new mockRes();
+        const res = httpMocks.createResponse();
         expect.assertions(2);
         return controller.getInstitutes(req, res).then((success) => {
-            expect(res.statusCode).toBe(200);
-            const body = res._getJSON();
+            expect(res.statusCode).toBe(200)
+            const body = res._getJSONData();
             expect(body).toHaveProperty('institutes');
         });
     });
