@@ -1,6 +1,6 @@
 /// <reference types='jest' />
 
-import * as mockRes from 'mock-express-response';
+import * as httpMocks from 'node-mocks-http';
 import { SystemInfoController } from '../../model/controller.model';
 import { getServerContainerModule } from '../../server.module';
 import { Container } from 'inversify';
@@ -48,11 +48,11 @@ describe('Info controller', () => {
     });
 
     it('should respond with JSON', function () {
-        const res = new mockRes();
+        const res = httpMocks.createResponse();
         expect.assertions(4);
         return controller.getSystemInfo(res).then((success) => {
             expect(res.statusCode).toBe(200);
-            const body = res._getJSON();
+            const body = res._getJSONData();
             expect(body).toHaveProperty('version');
             expect(body).toHaveProperty('supportContact');
             expect(body).toHaveProperty('lastChange');
