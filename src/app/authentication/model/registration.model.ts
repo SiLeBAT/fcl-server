@@ -34,6 +34,7 @@ interface BaseNotificationPayload {
     appName: string;
     client_url: string;
 }
+
 export interface RequestActivationNotificationPayload
     extends BaseNotificationPayload {
     action_url: string;
@@ -66,6 +67,14 @@ export interface RequestForUnknownInstituteNotificationPayload
 
 export interface AdminActivationNotificationPayload
     extends BaseNotificationPayload {}
+
+export interface AutoActivationNotificationForUserPayload
+    extends BaseNotificationPayload {}
+
+export interface AutoActivationNotificationForAdminPayload
+    extends BaseNotificationPayload {
+    email: string;
+}
 
 export interface AdminActivationReminderPayload
     extends BaseNotificationPayload {
