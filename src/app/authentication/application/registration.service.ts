@@ -9,6 +9,8 @@ import {
     AdminActivationReminderPayload,
     AlreadyRegisteredUserNotificationPayload,
     RequestNewsletterAgreementNotificationPayload,
+    AutoActivationNotificationForAdminPayload,
+    AutoActivationNotificationForUserPayload,
 } from '../model/registration.model';
 import {
     NotificationService,
@@ -64,6 +66,10 @@ export class DefaultRegistrationService implements RegistrationService {
     }
 
     async verifyUser(token: string): Promise<string> {
+        return this.verifyAndActivateUser(token);
+    }
+
+    private async verifyUserOnly(token: string): Promise<string> {
         const userToken = await this.tokenService.getUserTokenByJWT(token);
         this.tokenService.verifyTokenWithUser(token, userToken.userId);
         const user = await this.userService.getUserById(userToken.userId);
@@ -76,6 +82,31 @@ export class DefaultRegistrationService implements RegistrationService {
         );
         return user.email;
     }
+
+    private async verifyAndActivateUser(token: string): Promise<string> {
+        const userToken = await this.tokenService.getUserTokenByJWT(token);
+        this.tokenService.verifyTokenWithUser(token, userToken.userId);
+        const user = await this.userService.getUserById(userToken.userId);
+        user.isVerified(true);
+        user.isActivated(true);
+        await this.userService.updateUser(user);
+        await this.tokenService.deleteTokenForUser(user, TokenType.VERIFY);
+
+        const userName = user.firstName + ' ' + user.lastName;        
+        const activationNotificationForUser =
+            this.createAutoActivationNotificationForUser(user);
+        this.notificationService.sendNotification(activationNotificationForUser);
+    
+        const activationNotificationForAdmin =
+            this.createAutoActivationNotificationForAdmin(user);
+        this.notificationService.sendNotification(activationNotificationForAdmin);
+        
+        logger.verbose(
+            `${this.constructor.name}.${this.verifyAndActivateUser.name}, User verification & auto activation successful. token=${token}`
+        );
+        return user.email;
+    }
+
 
     async activateUser(token: string): Promise<string> {
         const userToken = await this.tokenService.getUserTokenByJWT(token);
@@ -538,6 +569,47 @@ export class DefaultRegistrationService implements RegistrationService {
             meta: this.notificationService.createEmailNotificationMetaData(
                 user.email,
                 `The ${this.appName} administrator has activated your account`
+            ),
+        };
+    }
+
+    private createAutoActivationNotificationForUser(
+        user: User
+    ): Notification<AutoActivationNotificationForUserPayload, EmailNotificationMeta> {
+        const fullName = user.firstName + ' ' + user.lastName;
+
+        return {
+            type: NotificationType.NOTIFICATION_AUTO_ACTIVATION_FOR_USER,
+
+            payload: {
+                name: fullName,
+                appName: this.appName,
+                client_url: this.clientUrl,
+            },
+            meta: this.notificationService.createEmailNotificationMetaData(
+                user.email,
+                `Welcome to ${this.appName}`
+            ),
+        };
+    }
+
+    private createAutoActivationNotificationForAdmin(
+        user: User
+    ): Notification<AutoActivationNotificationForAdminPayload, EmailNotificationMeta> {
+        const fullName = user.firstName + ' ' + user.lastName;
+
+        return {
+            type: NotificationType.NOTIFICATION_AUTO_ACTIVATION_FOR_ADMIN,
+
+            payload: {
+                name: fullName,
+                appName: this.appName,
+                client_url: this.clientUrl,
+                email: user.email,
+            },
+            meta: this.notificationService.createEmailNotificationMetaData(
+                this.supportContact,
+                `New ${this.appName} account for ${fullName}`
             ),
         };
     }

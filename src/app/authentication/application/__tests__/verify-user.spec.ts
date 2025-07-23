@@ -162,7 +162,7 @@ describe('Verify User Use Case', () => {
             .then((result) =>
                 expect(
                     mockTokenService.deleteTokenForUser.mock.calls.length
-                ).toBe(2)
+                ).toBe(1)
             );
     });
     it('should throw an error because user is faulty', () => {

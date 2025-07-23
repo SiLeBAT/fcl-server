@@ -76,6 +76,16 @@ export class DefaultMailService implements MailService {
                         this.viewsDir + 'adminactivationNotification.html'
                     );
                     break;
+                case NotificationType.NOTIFICATION_AUTO_ACTIVATION_FOR_USER:
+                    templateFile = await readFilePromise(
+                        this.viewsDir + 'autoActivationNotificationForUser.html'
+                    );
+                    break;
+                case NotificationType.NOTIFICATION_AUTO_ACTIVATION_FOR_ADMIN:
+                    templateFile = await readFilePromise(
+                        this.viewsDir + 'autoActivationNotificationForAdmin.html'
+                    );
+                    break;
                 case NotificationType.NOTIFICATION_NOT_ADMIN_ACTIVATED:
                     templateFile = await readFilePromise(
                         this.viewsDir + 'notAdminactivationNotification.html'
