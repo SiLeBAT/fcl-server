@@ -17,7 +17,8 @@
         "test:watch": "npm test -- --watch",
         "test:coverage": "npm test -- --coverage",
         "clean": "npx rimraf lib/*",
-        "lint": "tslint --project tsconfig.json --fix -c tslint.json -e \"src/**/__mocks__/*.ts\" -e \"src/**/__tests__/*.ts\" -e \"test/**/*.ts\" \"src/**/*.ts\"",
+        "lint": "npm run pretty && npm run tslint",
+        "tslint": "tslint --project tsconfig.json --fix -c tslint.json -e \"src/**/__mocks__/*.ts\" -e \"src/**/__tests__/*.ts\" -e \"test/**/*.ts\" \"src/**/*.ts\"",
         "pretty": "prettier --write \"src/**/*.ts\""
     },
     "husky": {
