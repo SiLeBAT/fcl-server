@@ -9,10 +9,12 @@
         "strictNullChecks": true,
         "noImplicitAny": true,
         "removeComments": true,
+        "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
         "alwaysStrict": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
+        "skipLibCheck": true,
         "typeRoots": [
             "./node_modules/@types",
             "./typings"
@@ -22,7 +24,6 @@
         "src/**/*.ts"
     ],
     "exclude": [
-        "node_modules",
         "src/**/__mocks__/*.ts",
         "src/**/__tests__/*.ts",
         "test/**/*.ts"

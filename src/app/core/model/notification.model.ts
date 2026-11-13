@@ -12,7 +12,7 @@ export interface NotificationPort {
 }
 
 export interface NotificationService extends NotificationPort {
-    sendNotification<T, V>(notification: Notification<T, V>): void;
+    sendNotification<T, V extends NotificationMeta>(notification: Notification<T, V>): void;
     createEmailNotificationMetaData(
         to: string,
         subject: string,

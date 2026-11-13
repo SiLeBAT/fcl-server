@@ -1,6 +1,6 @@
 import { ROUTE } from './ui/server/model/enums';
-import * as path from 'path';
-import * as config from 'config';
+import path from 'path';
+import config from 'config';
 import { logger, getContainer } from './aspects';
 import { getServerContainerModule, validateToken } from './ui/server/ports';
 import {

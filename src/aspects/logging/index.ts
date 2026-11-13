@@ -1,5 +1,5 @@
-import * as winston from 'winston';
-import * as config from 'config';
+import winston from 'winston';
+import config from 'config';
 import { TransformableInfo } from 'logform';
 
 interface LogConfiguration {
@@ -43,6 +43,7 @@ export class Logger {
 
     static mapLogMessage(info: TransformableInfo): string {
         let logMsg = `${info.level} ${info.message}`;
+        // tslint:disable:strict-type-predicates
         logMsg =
             info.meta !== undefined
                 ? logMsg +
@@ -51,7 +52,7 @@ export class Logger {
                       ? JSON.stringify(info.meta)
                       : info.meta)
                 : logMsg;
-
+        // tslint:enable:strict-type-predicates
         return logMsg;
     }
 

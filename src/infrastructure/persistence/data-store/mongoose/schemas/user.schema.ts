@@ -1,5 +1,5 @@
 import { Schema, Document, Types } from 'mongoose';
-import * as mongooseUniqueValidator from 'mongoose-unique-validator';
+import mongooseUniqueValidator from 'mongoose-unique-validator';
 import { InstitutionModel } from './institution.schema';
 
 export interface UserModel extends Document {
